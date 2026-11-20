@@ -1146,7 +1146,8 @@
         }
         #fab-add-habit,
         #undo-bar,
-        #pwa-install-banner {
+        #pwa-install-banner,
+        #pwa-update-banner {
           bottom: calc(6rem + env(safe-area-inset-bottom));
         }
       }
@@ -2010,6 +2011,31 @@
             Install
           </button>
           <button type="button" onclick="dismissInstallBanner()" aria-label="Dismiss install banner"
+            class="w-7 h-7 rounded-lg bg-cozy-secondary text-cozy-muted hover:text-cozy-primary flex items-center justify-center text-xs">
+            <i class="ph-bold ph-x"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================================
+         PWA UPDATE READY BANNER (1-Tap Refresh when a new version is published)
+         ====================================================================== -->
+    <div id="pwa-update-banner" class="fixed sm:absolute bottom-24 left-4 right-20 z-30 hidden opacity-0 translate-y-3 transition-all duration-300">
+      <div class="px-3.5 py-2.5 rounded-2xl bg-glass-modal border border-cozy shadow-float flex items-center justify-between gap-2.5">
+        <div class="flex items-center gap-2.5 min-w-0">
+          <span class="w-8 h-8 rounded-xl accent-bg-soft accent-text flex items-center justify-center flex-shrink-0 text-sm">✨</span>
+          <div class="min-w-0">
+            <p class="text-xs font-bold text-cozy-primary truncate">Update Ready</p>
+            <p class="text-[10px] text-cozy-secondary truncate">A fresh version of Nook is here</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-1.5 flex-shrink-0">
+          <button type="button" onclick="applyPwaUpdate()"
+            class="px-3 py-1.5 rounded-xl accent-bg text-white font-bold text-[11px] shadow-2xs">
+            Refresh
+          </button>
+          <button type="button" onclick="dismissUpdateBanner()" aria-label="Dismiss update banner"
             class="w-7 h-7 rounded-lg bg-cozy-secondary text-cozy-muted hover:text-cozy-primary flex items-center justify-center text-xs">
             <i class="ph-bold ph-x"></i>
           </button>
@@ -5235,23 +5261,70 @@
       }
     }
 
+    let waitingServiceWorker = null;
+    let isRefreshingForUpdate = false;
+
+    function showUpdateBanner(worker) {
+      waitingServiceWorker = worker;
+      dismissInstallBanner();
+      const banner = document.getElementById('pwa-update-banner');
+      if (!banner) return;
+      banner.classList.remove('hidden');
+      requestAnimationFrame(() => {
+        banner.classList.remove('opacity-0', 'translate-y-3');
+      });
+    }
+
+    function dismissUpdateBanner() {
+      const banner = document.getElementById('pwa-update-banner');
+      if (banner) {
+        banner.classList.add('opacity-0', 'translate-y-3');
+        setTimeout(() => banner.classList.add('hidden'), 300);
+      }
+    }
+
+    function applyPwaUpdate() {
+      if (waitingServiceWorker) {
+        waitingServiceWorker.postMessage({ type: 'SKIP_WAITING' });
+      } else {
+        window.location.reload();
+      }
+    }
+
     function registerServiceWorker() {
       if (!('serviceWorker' in navigator)) return;
       if (window.location.protocol !== 'https:' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
         return;
       }
+
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (isRefreshingForUpdate) return;
+        isRefreshingForUpdate = true;
+        window.location.reload();
+      });
+
       navigator.serviceWorker
-        .register('./sw.js', { scope: './' })
+        .register('./sw.js', { scope: './', updateViaCache: 'none' })
         .then((reg) => {
+          if (reg.waiting && navigator.serviceWorker.controller) {
+            showUpdateBanner(reg.waiting);
+          }
+
           reg.addEventListener('updatefound', () => {
             const newWorker = reg.installing;
             if (!newWorker) return;
             newWorker.addEventListener('statechange', () => {
               if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                newWorker.postMessage({ type: 'SKIP_WAITING' });
-                showToast('Nook updated for your next visit', '✨');
+                showUpdateBanner(newWorker);
               }
             });
+          });
+
+          // Automatically check for new versions whenever the app returns to foreground
+          document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') {
+              reg.update().catch(() => {});
+            }
           });
         })
         .catch(() => {
