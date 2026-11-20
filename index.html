@@ -2130,6 +2130,49 @@
             </div>
           </div>
 
+          <!-- Daily Target: Single Check-in vs. Countable Ritual -->
+          <div>
+            <div class="flex items-center justify-between mb-1.5">
+              <label class="text-xs font-semibold text-cozy-secondary">Daily Target</label>
+              <span id="daily-target-helper" class="text-[11px] font-semibold accent-text">Single check-in</span>
+            </div>
+            <div class="grid grid-cols-2 gap-1.5 p-1.5 rounded-2xl bg-cozy-secondary/60 border border-cozy">
+              <button type="button" id="target-mode-single" onclick="setModalCountableMode(false)"
+                class="py-1.5 rounded-xl text-[11px] font-bold transition accent-bg text-white shadow-xs">
+                Single Check-in
+              </button>
+              <button type="button" id="target-mode-multi" onclick="setModalCountableMode(true)"
+                class="py-1.5 rounded-xl text-[11px] font-bold transition text-cozy-secondary hover:bg-cozy-elevated">
+                Countable Goal
+              </button>
+            </div>
+
+            <div id="countable-config-panel" class="hidden mt-2.5 p-3 rounded-2xl bg-cozy-secondary/50 border border-cozy space-y-2.5">
+              <div class="flex items-center gap-2">
+                <div class="flex items-center gap-1.5 flex-shrink-0">
+                  <button type="button" onclick="stepModalTargetCount(-1)" aria-label="Decrease target"
+                    class="w-8 h-9 rounded-xl glass-input text-cozy-primary font-bold flex items-center justify-center">−</button>
+                  <input id="habit-target-count-input" type="number" min="2" max="99" value="8"
+                    oninput="handleModalTargetCountInput(this.value)"
+                    class="w-14 h-9 text-center rounded-xl glass-input text-sm font-extrabold text-cozy-primary focus:outline-none focus:border-[var(--accent-primary)]" />
+                  <button type="button" onclick="stepModalTargetCount(1)" aria-label="Increase target"
+                    class="w-8 h-9 rounded-xl glass-input text-cozy-primary font-bold flex items-center justify-center">+</button>
+                </div>
+                <input id="habit-unit-input" type="text" maxlength="16" placeholder="Unit (e.g. glasses, pages)"
+                  oninput="handleModalUnitInput(this.value)"
+                  class="flex-1 min-w-0 h-9 px-3 rounded-xl glass-input text-xs text-cozy-primary focus:outline-none focus:border-[var(--accent-primary)]" />
+              </div>
+
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <span class="text-[10px] text-cozy-muted mr-0.5">Quick:</span>
+                <button type="button" onclick="applyCountablePreset(3, 'times')" class="px-2 py-0.5 rounded-lg bg-cozy-elevated border border-cozy text-[10px] font-semibold text-cozy-secondary">3 times</button>
+                <button type="button" onclick="applyCountablePreset(8, 'glasses')" class="px-2 py-0.5 rounded-lg bg-cozy-elevated border border-cozy text-[10px] font-semibold text-cozy-secondary">8 glasses</button>
+                <button type="button" onclick="applyCountablePreset(10, 'pages')" class="px-2 py-0.5 rounded-lg bg-cozy-elevated border border-cozy text-[10px] font-semibold text-cozy-secondary">10 pages</button>
+                <button type="button" onclick="applyCountablePreset(20, 'mins')" class="px-2 py-0.5 rounded-lg bg-cozy-elevated border border-cozy text-[10px] font-semibold text-cozy-secondary">20 mins</button>
+              </div>
+            </div>
+          </div>
+
           <!-- Categorized Rich Emoji Picker + Custom Emoji Input -->
           <div>
             <div class="flex items-center justify-between mb-1.5">
@@ -2242,12 +2285,12 @@
       mind: [
         { title: 'Morning Matcha or Warm Tea', subtitle: 'Savor a quiet cup before checking messages', emoji: '🍵', timeOfDay: 'morning', weeklyGoal: 7 },
         { title: '5-Min Gratitude Journal', subtitle: 'Write down 3 small joys from today', emoji: '✍️', timeOfDay: 'morning', weeklyGoal: 5 },
-        { title: 'Read 10 Pages of a Book', subtitle: 'Cozy fiction or mindful reading', emoji: '📖', timeOfDay: 'evening', weeklyGoal: 5 },
+        { title: 'Read 10 Pages of a Book', subtitle: 'Cozy fiction or mindful reading', emoji: '📖', timeOfDay: 'evening', weeklyGoal: 5, targetCount: 10, unit: 'pages' },
         { title: 'Evening Candle & Wind-down', subtitle: 'Dim the lights and relax your shoulders', emoji: '🕯️', timeOfDay: 'evening', weeklyGoal: 7 },
         { title: '10m Mindful Breathing', subtitle: 'Unclench your jaw and breathe deeply', emoji: '🧘', timeOfDay: 'afternoon', weeklyGoal: 4 }
       ],
       body: [
-        { title: 'Drink a Warm Glass of Water', subtitle: 'Hydrate gently right after waking up', emoji: '💧', timeOfDay: 'morning', weeklyGoal: 7 },
+        { title: 'Drink 8 Glasses of Water', subtitle: 'Stay gently hydrated through the day', emoji: '💧', timeOfDay: 'morning', weeklyGoal: 7, targetCount: 8, unit: 'glasses' },
         { title: '8,000 Daily Steps or Walk', subtitle: 'Fresh air and gentle outdoor movement', emoji: '👟', timeOfDay: 'afternoon', weeklyGoal: 5 },
         { title: '30m Workout or Stretching', subtitle: 'Move your body in a way that feels good', emoji: '💪', timeOfDay: 'morning', weeklyGoal: 4 },
         { title: 'Eat a Colorful Whole Meal', subtitle: 'Nourish yourself with greens & protein', emoji: '🥗', timeOfDay: 'afternoon', weeklyGoal: 6 },
@@ -2337,6 +2380,7 @@
       habits: [],
       archivedHabits: [],
       logs: {},
+      counts: {},
       ui: {
         activeTab: 'today',
         onboardingStep: 0,
@@ -2358,6 +2402,8 @@
         modalEmoji: '🍵',
         modalTimeOfDay: 'morning',
         modalWeeklyGoal: 7,
+        modalTargetCount: 1,
+        modalUnit: '',
         lastDroppedHabit: null,
         undoTimer: null
       }
@@ -2467,7 +2513,8 @@
         },
         habits: createCleanStarterHabits(),
         archivedHabits: [],
-        logs: {}
+        logs: {},
+        counts: {}
       };
     }
 
@@ -2485,18 +2532,28 @@
     function normalizeHabitRecord(habit, logsObj) {
       const fallbackCreated = habit.createdAt || getEarliestLogDateForHabit(habit.id, logsObj) || getTodayKey();
       const weeklyGoal = Math.min(7, Math.max(1, Number(habit.weeklyGoal) || 7));
+      const targetCount = Math.min(99, Math.max(1, Number(habit.targetCount) || 1));
+      const unit = typeof habit.unit === 'string' ? habit.unit.trim() : '';
       const versions = Array.isArray(habit.versions) && habit.versions.length > 0
-        ? habit.versions
+        ? habit.versions.map(v => ({
+            ...v,
+            targetCount: Math.min(99, Math.max(1, Number(v.targetCount) || targetCount)),
+            unit: typeof v.unit === 'string' ? v.unit.trim() : unit
+          }))
         : [{
             effectiveFrom: fallbackCreated,
             title: habit.title,
             subtitle: habit.subtitle || '',
             emoji: habit.emoji || '🌿',
-            weeklyGoal
+            weeklyGoal,
+            targetCount,
+            unit
           }];
       return {
         ...habit,
         weeklyGoal,
+        targetCount,
+        unit,
         createdAt: fallbackCreated,
         versions
       };
@@ -2517,6 +2574,7 @@
               state.user.accent = 'blue';
             }
             state.logs = parsed.logs && typeof parsed.logs === 'object' ? parsed.logs : {};
+            state.counts = parsed.counts && typeof parsed.counts === 'object' ? parsed.counts : {};
             const rawHabits = Array.isArray(parsed.habits) ? parsed.habits : defaults.habits;
             const rawArchived = Array.isArray(parsed.archivedHabits) ? parsed.archivedHabits : [];
             state.habits = rawHabits.map(h => normalizeHabitRecord(h, state.logs));
@@ -2531,6 +2589,7 @@
       state.habits = defaults.habits;
       state.archivedHabits = defaults.archivedHabits;
       state.logs = defaults.logs;
+      state.counts = defaults.counts;
     }
 
     function saveState() {
@@ -2539,7 +2598,8 @@
           user: state.user,
           habits: state.habits,
           archivedHabits: state.archivedHabits,
-          logs: state.logs
+          logs: state.logs,
+          counts: state.counts || {}
         }));
       } catch (err) {
         // Ignore storage quota errors gracefully
@@ -2916,8 +2976,50 @@
         title: chosen.title,
         subtitle: chosen.subtitle,
         emoji: chosen.emoji,
-        weeklyGoal: chosen.weeklyGoal || habit.weeklyGoal || 7
+        weeklyGoal: chosen.weeklyGoal || habit.weeklyGoal || 7,
+        targetCount: Math.min(99, Math.max(1, Number(chosen.targetCount) || Number(habit.targetCount) || 1)),
+        unit: typeof chosen.unit === 'string' ? chosen.unit : (habit.unit || '')
       };
+    }
+
+    function getHabitTargetCount(habit) {
+      return Math.min(99, Math.max(1, Number(habit && habit.targetCount) || 1));
+    }
+
+    function getHabitCountOn(habitId, dateKey, habitObj = null) {
+      const target = getHabitTargetCount(habitObj);
+      const dayCounts = state.counts && state.counts[dateKey];
+      if (dayCounts && typeof dayCounts[habitId] === 'number') {
+        return Math.max(0, dayCounts[habitId]);
+      }
+      return isHabitCompletedOn(habitId, dateKey) ? target : 0;
+    }
+
+    function setHabitCountOn(habitId, dateKey, newCount, targetCount) {
+      const clamped = Math.max(0, Math.min(99, Math.round(newCount)));
+      if (!state.counts || typeof state.counts !== 'object') state.counts = {};
+      if (clamped > 0) {
+        if (!state.counts[dateKey]) state.counts[dateKey] = {};
+        state.counts[dateKey][habitId] = clamped;
+      } else if (state.counts[dateKey]) {
+        delete state.counts[dateKey][habitId];
+        if (Object.keys(state.counts[dateKey]).length === 0) delete state.counts[dateKey];
+      }
+
+      if (!Array.isArray(state.logs[dateKey])) state.logs[dateKey] = [];
+      const idx = state.logs[dateKey].indexOf(habitId);
+      if (clamped >= targetCount) {
+        if (idx === -1) state.logs[dateKey].push(habitId);
+      } else {
+        if (idx !== -1) state.logs[dateKey].splice(idx, 1);
+        if (state.logs[dateKey].length === 0) delete state.logs[dateKey];
+      }
+      return clamped;
+    }
+
+    function formatCountProgressText(count, target, unit) {
+      const suffix = unit ? ` ${unit}` : '';
+      return `${count}/${target}${suffix}`;
     }
 
     function isHabitActiveOnDate(habit, dateKey) {
@@ -3484,7 +3586,11 @@
       container.innerHTML = '';
 
       habitsToShow.forEach((habit, idx) => {
-        const done = isHabitCompletedOn(habit.id, dateKey);
+        const targetCount = getHabitTargetCount(habit);
+        const isCountable = targetCount > 1;
+        const currentCount = isCountable ? getHabitCountOn(habit.id, dateKey, habit) : (isHabitCompletedOn(habit.id, dateKey) ? 1 : 0);
+        const done = isCountable ? currentCount >= targetCount : isHabitCompletedOn(habit.id, dateKey);
+        const countPct = isCountable ? Math.min(100, Math.round((currentCount / targetCount) * 100)) : 0;
         const streak = getHabitStreak(habit);
         const weekly = getWeeklyProgressForHabit(habit, dateKey);
         const isArchivedPast = Boolean(habit.archivedAt);
@@ -3496,10 +3602,22 @@
 
         if (!inDropMode) {
           card.onclick = (e) => {
-            if (e.target.closest('.check-btn')) return;
+            if (e.target.closest('.check-btn') || e.target.closest('.count-step-btn')) return;
             openHabitDetailModal(habit.id);
           };
         }
+
+        const countPillHtml = isCountable
+          ? `<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[10px] font-bold ${done ? 'accent-bg text-white' : 'accent-bg-soft accent-text'}">${done ? '✦' : '◎'} ${escapeHtml(formatCountProgressText(currentCount, targetCount, habit.unit))}</span>`
+          : '';
+
+        const countProgressBarHtml = isCountable && !inDropMode
+          ? `
+            <div class="w-full h-1.5 bg-cozy-secondary rounded-full overflow-hidden mt-2 p-[0.5px]">
+              <div class="h-full accent-progress-gradient rounded-full transition-all duration-300" style="width: ${countPct}%"></div>
+            </div>
+          `
+          : '';
 
         const weeklyPillHtml = weekly.goal < 7
           ? `<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[10px] font-bold ${weekly.met ? 'accent-bg text-white' : 'accent-bg-soft accent-text'}">${weekly.met ? '✦' : '🎯'} ${weekly.done}/${weekly.goal} wk</span>`
@@ -3522,14 +3640,32 @@
               </button>
             </div>
           `
-          : `
-            <button type="button" onclick="toggleHabitCompletion('${habit.id}', event)"
-              aria-label="Toggle ${escapeHtml(habit.title)}"
-              class="check-btn w-11 h-11 flex-shrink-0 border border-cozy bg-cozy-elevated flex items-center justify-center ${done ? 'completed' : ''}">
-              <span class="seal-seed-ring"></span>
-              <span class="relative z-10 flex items-center justify-center">${getBloomSealSvg(done)}</span>
-            </button>
-          `;
+          : isCountable
+            ? `
+              <div class="flex items-center gap-1.5 flex-shrink-0">
+                <button type="button" onclick="adjustHabitCount('${habit.id}', -1, event)" ${currentCount <= 0 ? 'disabled' : ''}
+                  aria-label="Decrease ${escapeHtml(habit.title)}"
+                  class="count-step-btn w-8 h-9 rounded-xl border border-cozy bg-cozy-elevated text-cozy-secondary font-bold text-sm flex items-center justify-center ${currentCount <= 0 ? 'opacity-35 cursor-default' : 'hover:text-cozy-primary'}">
+                  −
+                </button>
+                <button type="button" onclick="adjustHabitCount('${habit.id}', 1, event)"
+                  aria-label="Add one to ${escapeHtml(habit.title)}"
+                  class="check-btn w-11 h-11 flex-shrink-0 border border-cozy bg-cozy-elevated flex items-center justify-center ${done ? 'completed' : ''}">
+                  <span class="seal-seed-ring"></span>
+                  <span class="relative z-10 flex items-center justify-center">
+                    ${done ? getBloomSealSvg(true) : '<span class="text-xs font-extrabold accent-text">+1</span>'}
+                  </span>
+                </button>
+              </div>
+            `
+            : `
+              <button type="button" onclick="toggleHabitCompletion('${habit.id}', event)"
+                aria-label="Toggle ${escapeHtml(habit.title)}"
+                class="check-btn w-11 h-11 flex-shrink-0 border border-cozy bg-cozy-elevated flex items-center justify-center ${done ? 'completed' : ''}">
+                <span class="seal-seed-ring"></span>
+                <span class="relative z-10 flex items-center justify-center">${getBloomSealSvg(done)}</span>
+              </button>
+            `;
 
         card.innerHTML = `
           <div class="flex items-center gap-3 min-w-0 flex-1">
@@ -3546,9 +3682,11 @@
                 <span class="inline-flex items-center gap-0.5 text-[10px] font-bold ${streak > 0 ? 'accent-text' : 'text-cozy-muted'}">
                   🌿 ${streak}d
                 </span>
+                ${countPillHtml}
                 ${weeklyPillHtml}
                 ${pastPillHtml}
               </div>
+              ${countProgressBarHtml}
             </div>
           </div>
           ${rightControlHtml}
@@ -3599,6 +3737,64 @@
       }
 
       if (nowCompleted && state.user.confettiEnabled) {
+        let x = window.innerWidth / 2;
+        let y = window.innerHeight / 2;
+        if (event && event.currentTarget) {
+          const rect = event.currentTarget.getBoundingClientRect();
+          x = rect.left + rect.width / 2;
+          y = rect.top + rect.height / 2;
+        }
+        spawnConfettiBurst(x, y);
+      }
+
+      renderHeader();
+      renderWeekStrip(false);
+      renderDailyProgress();
+      renderHabitsList();
+    }
+
+    function adjustHabitCount(habitId, delta, event) {
+      if (event) event.stopPropagation();
+      const dateKey = state.ui.selectedDate;
+      const habit = getHabitsForDate(dateKey).find(h => h.id === habitId) || getAllKnownHabits().find(h => h.id === habitId);
+      if (!habit) return;
+
+      const targetCount = getHabitTargetCount(habit);
+      const prevCount = getHabitCountOn(habitId, dateKey, habit);
+      const nextCount = Math.max(0, Math.min(targetCount, prevCount + delta));
+      if (nextCount === prevCount) {
+        if (delta > 0 && prevCount >= targetCount) {
+          showToast('Daily goal reached! Tap − to adjust', habit.emoji || '✨');
+        }
+        return;
+      }
+
+      const beforeInfo = getDayCompletionInfo(dateKey);
+      const wasAllDone = beforeInfo.total > 0 && beforeInfo.done >= beforeInfo.total;
+      const wasHabitDone = prevCount >= targetCount;
+
+      setHabitCountOn(habitId, dateKey, nextCount, targetCount);
+      saveState();
+
+      const afterInfo = getDayCompletionInfo(dateKey);
+      const isAllDone = afterInfo.total > 0 && afterInfo.done >= afterInfo.total;
+      const isHabitDone = nextCount >= targetCount;
+
+      if (!wasHabitDone && isHabitDone && isAllDone) {
+        playCozySound('celebrate');
+        showToast('All rituals completed for the day!', '✨');
+      } else if (wasHabitDone && !isHabitDone && wasAllDone) {
+        playCozySound('uncelebrate');
+      } else if (!wasHabitDone && isHabitDone) {
+        playCozySound('check');
+        showToast(`${habit.title} complete!`, habit.emoji || '🌿');
+      } else if (delta > 0) {
+        playCozySound('tap');
+      } else {
+        playCozySound('uncheck');
+      }
+
+      if (!wasHabitDone && isHabitDone && state.user.confettiEnabled) {
         let x = window.innerWidth / 2;
         let y = window.innerHeight / 2;
         if (event && event.currentTarget) {
@@ -3698,6 +3894,8 @@
       if (!rec) return;
       const todayKey = getTodayKey();
       const weeklyGoal = rec.weeklyGoal || 7;
+      const targetCount = Math.min(99, Math.max(1, Number(rec.targetCount) || 1));
+      const unit = rec.unit || '';
       state.habits.push({
         id: `h_${Date.now()}_${Math.floor(Math.random() * 1000)}`,
         title: rec.title,
@@ -3705,13 +3903,17 @@
         emoji: rec.emoji,
         timeOfDay: rec.timeOfDay,
         weeklyGoal,
+        targetCount,
+        unit,
         createdAt: todayKey,
         versions: [{
           effectiveFrom: todayKey,
           title: rec.title,
           subtitle: rec.subtitle,
           emoji: rec.emoji,
-          weeklyGoal
+          weeklyGoal,
+          targetCount,
+          unit
         }]
       });
       saveState();
@@ -4199,10 +4401,15 @@
 
       const formatChip = (h, isTracked) => {
         const pastTag = h.archivedAt ? ' <span class="opacity-65 text-[9px]">(past)</span>' : '';
+        const target = getHabitTargetCount(h);
+        const count = target > 1 ? getHabitCountOn(h.id, dateKey, h) : 0;
+        const countTag = target > 1 && count > 0
+          ? ` <span class="opacity-80 text-[10px]">· ${escapeHtml(formatCountProgressText(count, target, h.unit))}</span>`
+          : '';
         const cls = isTracked
           ? 'inline-flex items-center gap-1 px-2 py-1 rounded-xl accent-bg-soft accent-text text-[11px] font-semibold'
           : 'inline-flex items-center gap-1 px-2 py-1 rounded-xl bg-cozy-secondary text-cozy-secondary text-[11px] font-medium';
-        return `<span class="${cls}">${escapeHtml(h.emoji)} ${escapeHtml(h.title)}${pastTag}</span>`;
+        return `<span class="${cls}">${escapeHtml(h.emoji)} ${escapeHtml(h.title)}${countTag}${pastTag}</span>`;
       };
 
       const trackedChips = tracked.length > 0
@@ -4322,6 +4529,8 @@
         if (subInput) subInput.value = editing.subtitle || '';
         state.ui.modalEmoji = editing.emoji || '🍵';
         state.ui.modalWeeklyGoal = Math.min(7, Math.max(1, Number(editing.weeklyGoal) || 7));
+        state.ui.modalTargetCount = getHabitTargetCount(editing);
+        state.ui.modalUnit = editing.unit || '';
         if (delBtn) delBtn.classList.remove('hidden');
         if (recSec) recSec.classList.add('hidden');
       } else {
@@ -4331,6 +4540,8 @@
         if (subInput) subInput.value = '';
         state.ui.modalEmoji = '🍵';
         state.ui.modalWeeklyGoal = 7;
+        state.ui.modalTargetCount = 1;
+        state.ui.modalUnit = '';
         if (delBtn) delBtn.classList.add('hidden');
         if (recSec) recSec.classList.remove('hidden');
       }
@@ -4338,6 +4549,7 @@
       if (customEmojiInput) customEmojiInput.value = '';
       renderModalRecChips();
       renderWeeklyGoalPicker();
+      renderModalDailyTargetUI();
       renderEmojiGrid();
 
       if (backdrop && sheet) {
@@ -4382,7 +4594,10 @@
           if (subInput) subInput.value = item.subtitle;
           state.ui.modalEmoji = item.emoji;
           state.ui.modalWeeklyGoal = item.weeklyGoal || 7;
+          state.ui.modalTargetCount = Math.min(99, Math.max(1, Number(item.targetCount) || 1));
+          state.ui.modalUnit = item.unit || '';
           renderWeeklyGoalPicker();
+          renderModalDailyTargetUI();
           renderEmojiGrid();
         };
         btn.className = 'px-2.5 py-1.5 rounded-xl bg-cozy-elevated border border-cozy text-[11px] font-semibold text-cozy-primary whitespace-nowrap flex items-center gap-1';
@@ -4416,6 +4631,69 @@
         btn.textContent = n === 7 ? 'Daily' : `${n}x`;
         picker.appendChild(btn);
       }
+    }
+
+    function setModalCountableMode(isCountable) {
+      if (isCountable) {
+        if ((state.ui.modalTargetCount || 1) < 2) state.ui.modalTargetCount = 8;
+      } else {
+        state.ui.modalTargetCount = 1;
+      }
+      renderModalDailyTargetUI();
+    }
+
+    function stepModalTargetCount(delta) {
+      const current = Math.max(2, Number(state.ui.modalTargetCount) || 2);
+      state.ui.modalTargetCount = Math.min(99, Math.max(2, current + delta));
+      renderModalDailyTargetUI();
+    }
+
+    function handleModalTargetCountInput(val) {
+      const parsed = parseInt(val, 10);
+      if (!Number.isNaN(parsed)) {
+        state.ui.modalTargetCount = Math.min(99, Math.max(2, parsed));
+        updateModalDailyTargetHelper();
+      }
+    }
+
+    function handleModalUnitInput(val) {
+      state.ui.modalUnit = String(val || '').slice(0, 16);
+      updateModalDailyTargetHelper();
+    }
+
+    function applyCountablePreset(count, unit) {
+      state.ui.modalTargetCount = count;
+      state.ui.modalUnit = unit;
+      renderModalDailyTargetUI();
+    }
+
+    function updateModalDailyTargetHelper() {
+      const helper = document.getElementById('daily-target-helper');
+      if (!helper) return;
+      const count = Math.max(1, Number(state.ui.modalTargetCount) || 1);
+      const unit = (state.ui.modalUnit || '').trim();
+      helper.textContent = count > 1
+        ? `${count}${unit ? ' ' + unit : 'x'} per day`
+        : 'Single check-in';
+    }
+
+    function renderModalDailyTargetUI() {
+      const count = Math.max(1, Number(state.ui.modalTargetCount) || 1);
+      const isCountable = count > 1;
+      const singleBtn = document.getElementById('target-mode-single');
+      const multiBtn = document.getElementById('target-mode-multi');
+      const panel = document.getElementById('countable-config-panel');
+      const countInput = document.getElementById('habit-target-count-input');
+      const unitInput = document.getElementById('habit-unit-input');
+
+      if (singleBtn && multiBtn) {
+        singleBtn.className = `py-1.5 rounded-xl text-[11px] font-bold transition ${!isCountable ? 'accent-bg text-white shadow-xs' : 'text-cozy-secondary hover:bg-cozy-elevated'}`;
+        multiBtn.className = `py-1.5 rounded-xl text-[11px] font-bold transition ${isCountable ? 'accent-bg text-white shadow-xs' : 'text-cozy-secondary hover:bg-cozy-elevated'}`;
+      }
+      if (panel) panel.classList.toggle('hidden', !isCountable);
+      if (countInput && isCountable) countInput.value = String(count);
+      if (unitInput) unitInput.value = state.ui.modalUnit || '';
+      updateModalDailyTargetHelper();
     }
 
     function setEmojiTab(tab) {
@@ -4471,6 +4749,8 @@
       const todayKey = getTodayKey();
       const emoji = state.ui.modalEmoji || '🌿';
       const weeklyGoal = state.ui.modalWeeklyGoal || 7;
+      const targetCount = Math.min(99, Math.max(1, Number(state.ui.modalTargetCount) || 1));
+      const unit = targetCount > 1 ? (state.ui.modalUnit || '').trim() : '';
 
       if (id) {
         const existing = state.habits.find(h => h.id === id);
@@ -4482,7 +4762,9 @@
               title: existing.title,
               subtitle: existing.subtitle || '',
               emoji: existing.emoji || '🌿',
-              weeklyGoal: existing.weeklyGoal || 7
+              weeklyGoal: existing.weeklyGoal || 7,
+              targetCount: getHabitTargetCount(existing),
+              unit: existing.unit || ''
             }];
           }
 
@@ -4490,7 +4772,9 @@
             existing.title !== title ||
             (existing.subtitle || '') !== subtitle ||
             (existing.emoji || '🌿') !== emoji ||
-            (existing.weeklyGoal || 7) !== weeklyGoal;
+            (existing.weeklyGoal || 7) !== weeklyGoal ||
+            getHabitTargetCount(existing) !== targetCount ||
+            (existing.unit || '') !== unit;
 
           if (changed) {
             const lastVer = existing.versions[existing.versions.length - 1];
@@ -4499,13 +4783,17 @@
               lastVer.subtitle = subtitle;
               lastVer.emoji = emoji;
               lastVer.weeklyGoal = weeklyGoal;
+              lastVer.targetCount = targetCount;
+              lastVer.unit = unit;
             } else {
               existing.versions.push({
                 effectiveFrom: todayKey,
                 title,
                 subtitle,
                 emoji,
-                weeklyGoal
+                weeklyGoal,
+                targetCount,
+                unit
               });
             }
           }
@@ -4514,6 +4802,16 @@
           existing.subtitle = subtitle;
           existing.emoji = emoji;
           existing.weeklyGoal = weeklyGoal;
+          existing.targetCount = targetCount;
+          existing.unit = unit;
+
+          // Keep today's completion status synced if target changed
+          if (targetCount > 1) {
+            const todayCount = getHabitCountOn(existing.id, todayKey, existing);
+            if (todayCount > 0) {
+              setHabitCountOn(existing.id, todayKey, Math.min(todayCount, targetCount), targetCount);
+            }
+          }
         }
         showToast('Ritual updated from today onward', emoji);
       } else {
@@ -4524,13 +4822,17 @@
           emoji,
           timeOfDay: 'morning',
           weeklyGoal,
+          targetCount,
+          unit,
           createdAt: todayKey,
           versions: [{
             effectiveFrom: todayKey,
             title,
             subtitle,
             emoji,
-            weeklyGoal
+            weeklyGoal,
+            targetCount,
+            unit
           }]
         });
         showToast('New ritual planted from today', emoji);
@@ -4600,15 +4902,25 @@
 
     function toggleHabitFromDetail(habitId, dateKey) {
       if (dateKey > getTodayKey()) return;
-      if (!Array.isArray(state.logs[dateKey])) state.logs[dateKey] = [];
-      const idx = state.logs[dateKey].indexOf(habitId);
-      if (idx === -1) {
-        state.logs[dateKey].push(habitId);
-        playCozySound('check');
+      const habit = getAllKnownHabits().find(h => h.id === habitId);
+      const snapshot = habit ? getHabitSnapshotForDate(habit, dateKey) : null;
+      const targetCount = getHabitTargetCount(snapshot);
+
+      if (targetCount > 1) {
+        const done = isHabitCompletedOn(habitId, dateKey);
+        setHabitCountOn(habitId, dateKey, done ? 0 : targetCount, targetCount);
+        playCozySound(done ? 'uncheck' : 'check');
       } else {
-        state.logs[dateKey].splice(idx, 1);
-        if (state.logs[dateKey].length === 0) delete state.logs[dateKey];
-        playCozySound('uncheck');
+        if (!Array.isArray(state.logs[dateKey])) state.logs[dateKey] = [];
+        const idx = state.logs[dateKey].indexOf(habitId);
+        if (idx === -1) {
+          state.logs[dateKey].push(habitId);
+          playCozySound('check');
+        } else {
+          state.logs[dateKey].splice(idx, 1);
+          if (state.logs[dateKey].length === 0) delete state.logs[dateKey];
+          playCozySound('uncheck');
+        }
       }
       saveState();
       renderHabitDetailContent(false);
@@ -4685,7 +4997,7 @@
                 <h3 class="text-base font-bold text-cozy-primary truncate">${escapeHtml(habit.title)}</h3>
                 ${isArchived ? '<span class="px-1.5 py-0.5 rounded-md bg-cozy-secondary text-[9px] font-bold text-cozy-muted flex-shrink-0">Past</span>' : ''}
               </div>
-              <p class="text-xs text-cozy-secondary truncate">${escapeHtml(habit.subtitle || 'Mindful daily ritual')}</p>
+              <p class="text-xs text-cozy-secondary truncate">${escapeHtml(habit.subtitle || 'Mindful daily ritual')}${getHabitTargetCount(habit) > 1 ? ` · <span class="accent-text font-semibold">${escapeHtml(formatCountProgressText(getHabitCountOn(habit.id, todayKey, habit), getHabitTargetCount(habit), habit.unit))} today</span>` : ''}</p>
             </div>
           </div>
           <div class="flex items-center gap-1.5 flex-shrink-0">
@@ -4910,6 +5222,7 @@
         habits: state.habits,
         archivedHabits: state.archivedHabits || [],
         logs: state.logs,
+        counts: state.counts || {},
         exportedAt: new Date().toISOString()
       };
       const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
@@ -4934,6 +5247,7 @@
           if (parsed && Array.isArray(parsed.habits)) {
             state.user = { ...state.user, ...(parsed.user || {}) };
             state.logs = parsed.logs || {};
+            state.counts = parsed.counts && typeof parsed.counts === 'object' ? parsed.counts : {};
             state.habits = parsed.habits.map(h => normalizeHabitRecord(h, state.logs));
             state.archivedHabits = Array.isArray(parsed.archivedHabits)
               ? parsed.archivedHabits.map(h => normalizeHabitRecord(h, state.logs))
@@ -4984,6 +5298,7 @@
       state.habits = createCleanStarterHabits();
       state.archivedHabits = [];
       state.logs = {};
+      state.counts = {};
       state.user = preservedUser;
       state.ui.selectedDate = getTodayKey();
       state.ui.weekOffsetDays = 0;
