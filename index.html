@@ -1374,18 +1374,28 @@
         <!-- Prominent Date Title Row + Mindful Quote Card (Matching Reference Layout) -->
         <div id="today-hero-section" class="space-y-3 px-1">
           <div class="flex items-center justify-between gap-2">
-            <h2 id="hero-date-heading" class="text-[26px] font-extrabold tracking-tight text-cozy-primary leading-none">
+            <h2 id="hero-date-heading" class="text-[26px] font-extrabold tracking-tight text-cozy-primary leading-none truncate">
               Today, Nov 19
             </h2>
-            <!-- Auto-fading Return to Today Pill (Appears when viewing past dates) -->
-            <button id="jump-today-btn" type="button" onclick="returnToCurrentToday()"
-              class="return-today-pill" title="Return to Today">
-              <svg class="w-3 h-3 flex-shrink-0" viewBox="0 0 16 16" fill="none">
-                <path d="M6.2 4.5L3 7.7L6.2 10.9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M3.5 7.7H10.2C11.85 7.7 13 8.85 13 10.4C13 11.95 11.85 13.1 10.2 13.1H8.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-              </svg>
-              <span>Today</span>
-            </button>
+            <div class="flex items-center gap-1.5 flex-shrink-0">
+              <!-- Auto-fading Return to Today Pill (Appears when viewing past dates) -->
+              <button id="jump-today-btn" type="button" onclick="returnToCurrentToday()"
+                class="return-today-pill" title="Return to Today">
+                <svg class="w-3 h-3 flex-shrink-0" viewBox="0 0 16 16" fill="none">
+                  <path d="M6.2 4.5L3 7.7L6.2 10.9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M3.5 7.7H10.2C11.85 7.7 13 8.85 13 10.4C13 11.95 11.85 13.1 10.2 13.1H8.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                </svg>
+                <span>Today</span>
+              </button>
+
+              <!-- Planned Rest Day / Streak Shield Pill -->
+              <button id="rest-day-toggle-btn" type="button" onclick="toggleRestDay()"
+                title="Mark as a planned Rest Day to shield your streaks"
+                class="px-2.5 py-1.5 rounded-full glass-pill text-[11px] font-semibold text-cozy-secondary hover:text-cozy-primary inline-flex items-center gap-1 transition">
+                <span id="rest-day-btn-icon" class="text-xs leading-none">🌙</span>
+                <span id="rest-day-btn-label">Rest</span>
+              </button>
+            </div>
           </div>
 
           <!-- Mindful Daily Quote Banner -->
@@ -2381,6 +2391,7 @@
       archivedHabits: [],
       logs: {},
       counts: {},
+      restDays: {},
       ui: {
         activeTab: 'today',
         onboardingStep: 0,
@@ -2514,7 +2525,8 @@
         habits: createCleanStarterHabits(),
         archivedHabits: [],
         logs: {},
-        counts: {}
+        counts: {},
+        restDays: {}
       };
     }
 
@@ -2575,6 +2587,8 @@
             }
             state.logs = parsed.logs && typeof parsed.logs === 'object' ? parsed.logs : {};
             state.counts = parsed.counts && typeof parsed.counts === 'object' ? parsed.counts : {};
+            state.restDays = parsed.restDays && typeof parsed.restDays === 'object' ? parsed.restDays : {};
+            state.restDays = parsed.restDays && typeof parsed.restDays === 'object' ? parsed.restDays : {};
             const rawHabits = Array.isArray(parsed.habits) ? parsed.habits : defaults.habits;
             const rawArchived = Array.isArray(parsed.archivedHabits) ? parsed.archivedHabits : [];
             state.habits = rawHabits.map(h => normalizeHabitRecord(h, state.logs));
@@ -2590,6 +2604,7 @@
       state.archivedHabits = defaults.archivedHabits;
       state.logs = defaults.logs;
       state.counts = defaults.counts;
+      state.restDays = defaults.restDays;
     }
 
     function saveState() {
@@ -2599,7 +2614,8 @@
           habits: state.habits,
           archivedHabits: state.archivedHabits,
           logs: state.logs,
-          counts: state.counts || {}
+          counts: state.counts || {},
+          restDays: state.restDays || {}
         }));
       } catch (err) {
         // Ignore storage quota errors gracefully
@@ -3022,6 +3038,27 @@
       return `${count}/${target}${suffix}`;
     }
 
+    function isRestDay(dateKey) {
+      return Boolean(state.restDays && state.restDays[dateKey]);
+    }
+
+    function toggleRestDay(dateKey = state.ui.selectedDate) {
+      if (!dateKey || dateKey > getTodayKey()) return;
+      if (!state.restDays || typeof state.restDays !== 'object') state.restDays = {};
+      const nowRest = !state.restDays[dateKey];
+      if (nowRest) {
+        state.restDays[dateKey] = true;
+        playCozySound('check');
+        showToast('Rest Day active — your streaks are shielded', '🌙');
+      } else {
+        delete state.restDays[dateKey];
+        playCozySound('uncheck');
+        showToast('Rest Day removed', '🌿');
+      }
+      saveState();
+      renderAll();
+    }
+
     function isHabitActiveOnDate(habit, dateKey) {
       const created = habit.createdAt || '1970-01-01';
       const archived = habit.archivedAt || null;
@@ -3084,10 +3121,14 @@
 
       if (goal >= 7) {
         let streak = 0;
-        let cursor = isHabitCompletedOn(habit.id, refEndKey) ? refEndKey : addDays(refEndKey, -1);
+        let cursor = (isHabitCompletedOn(habit.id, refEndKey) || isRestDay(refEndKey))
+          ? refEndKey
+          : addDays(refEndKey, -1);
         for (let i = 0; i < 3650; i++) {
           if (isHabitCompletedOn(habit.id, cursor)) {
             streak++;
+            cursor = addDays(cursor, -1);
+          } else if (isRestDay(cursor)) {
             cursor = addDays(cursor, -1);
           } else {
             break;
@@ -3096,10 +3137,12 @@
         return streak;
       }
 
-      // Forgiving streak for flexible weekly goals (planned rest days don't break flow)
+      // Forgiving streak for flexible weekly goals (planned rest days also shield flow)
       const allowedMissesPerWeek = 7 - goal;
       let streak = 0;
-      let cursor = isHabitCompletedOn(habit.id, refEndKey) ? refEndKey : addDays(refEndKey, -1);
+      let cursor = (isHabitCompletedOn(habit.id, refEndKey) || isRestDay(refEndKey))
+        ? refEndKey
+        : addDays(refEndKey, -1);
       const missesByWeek = {};
 
       for (let i = 0; i < 365; i++) {
@@ -3108,6 +3151,8 @@
         }
         if (isHabitCompletedOn(habit.id, cursor)) {
           streak++;
+        } else if (isRestDay(cursor)) {
+          // Planned Rest Day shields the streak without using a weekly rest allowance
         } else {
           const wk = getWeekStartKey(cursor);
           missesByWeek[wk] = (missesByWeek[wk] || 0) + 1;
@@ -3131,10 +3176,14 @@
     function getGlobalActiveStreak() {
       const todayKey = getTodayKey();
       let streak = 0;
-      let cursor = getDayCompletionInfo(todayKey).done > 0 ? todayKey : addDays(todayKey, -1);
+      let cursor = (getDayCompletionInfo(todayKey).done > 0 || isRestDay(todayKey))
+        ? todayKey
+        : addDays(todayKey, -1);
       for (let i = 0; i < 3650; i++) {
         if (getDayCompletionInfo(cursor).done > 0) {
           streak++;
+          cursor = addDays(cursor, -1);
+        } else if (isRestDay(cursor)) {
           cursor = addDays(cursor, -1);
         } else {
           break;
@@ -3152,7 +3201,16 @@
       let best = 1;
       let current = 1;
       for (let i = 1; i < activeDates.length; i++) {
-        if (addDays(activeDates[i - 1], 1) === activeDates[i]) {
+        let gapCursor = addDays(activeDates[i - 1], 1);
+        let bridged = true;
+        while (gapCursor < activeDates[i]) {
+          if (!isRestDay(gapCursor)) {
+            bridged = false;
+            break;
+          }
+          gapCursor = addDays(gapCursor, 1);
+        }
+        if (bridged) {
           current++;
           if (current > best) best = current;
         } else {
@@ -3170,8 +3228,13 @@
       for (let i = 0; i < 30; i++) {
         const k = addDays(todayKey, -i);
         if (isHabitActiveOnDate(habit, k)) {
-          activeWindowDays++;
-          if (isHabitCompletedOn(habit.id, k)) done++;
+          const completed = isHabitCompletedOn(habit.id, k);
+          if (completed) {
+            activeWindowDays++;
+            done++;
+          } else if (!isRestDay(k)) {
+            activeWindowDays++;
+          }
         }
       }
       const effectiveDays = Math.max(1, activeWindowDays);
@@ -3211,7 +3274,7 @@
           running++;
           if (running > bestStreak) bestStreak = running;
           if (info.total > 0 && info.done >= info.total) fullDays++;
-        } else {
+        } else if (!isRestDay(key)) {
           running = 0;
         }
       }
@@ -3236,7 +3299,7 @@
           doneDays++;
           running++;
           if (running > bestStreak) bestStreak = running;
-        } else {
+        } else if (!isRestDay(key)) {
           running = 0;
         }
       }
@@ -3463,26 +3526,33 @@
         const isToday = key === todayKey;
         const info = getDayCompletionInfo(key);
         const isFull = info.total > 0 && info.done >= info.total;
+        const resting = isRestDay(key);
 
         const btn = document.createElement('button');
         btn.type = 'button';
         btn.setAttribute('data-week-day', key);
         btn.onclick = () => selectDate(key);
         btn.className = `week-day-capsule py-2 px-1 flex flex-col items-center justify-between gap-1 ${isSelected ? 'is-selected' : ''} ${animate ? 'cal-cell-bloom' : ''}`;
+        if (resting && !isSelected) {
+          btn.style.backgroundColor = 'var(--accent-honey-soft)';
+          btn.style.borderColor = 'rgba(217, 155, 56, 0.38)';
+        }
         if (animate) btn.style.animationDelay = `${i * 32}ms`;
 
         btn.innerHTML = `
           <div class="week-day-liquid-fill" style="height: ${info.pct}%;"></div>
-          <span class="relative z-10 text-[10px] font-semibold ${isSelected ? 'accent-text' : 'text-cozy-muted'} leading-none">${dayLetter}</span>
+          <span class="relative z-10 text-[10px] font-semibold ${isSelected ? 'accent-text' : (resting ? 'honey-text' : 'text-cozy-muted')} leading-none">${dayLetter}</span>
           <span class="relative z-10 text-xs font-extrabold ${isSelected ? 'text-cozy-primary' : 'text-cozy-secondary'} leading-none">${dayNum}</span>
           <span class="relative z-10 h-2.5 flex items-center justify-center">
-            ${isFull
-              ? '<span class="text-[9px] accent-text cal-star-breathe leading-none">✦</span>'
-              : isToday
-                ? '<span class="w-2.5 h-[3px] rounded-full accent-bg opacity-80"></span>'
-                : info.done > 0
-                  ? '<span class="w-1.5 h-1.5 rotate-45 rounded-[1px] accent-bg opacity-65"></span>'
-                  : '<span class="w-1 h-1 rounded-full bg-cozy-muted/25"></span>'
+            ${resting
+              ? '<span class="text-[9px] leading-none" title="Planned Rest Day">🌙</span>'
+              : isFull
+                ? '<span class="text-[9px] accent-text cal-star-breathe leading-none">✦</span>'
+                : isToday
+                  ? '<span class="w-2.5 h-[3px] rounded-full accent-bg opacity-80"></span>'
+                  : info.done > 0
+                    ? '<span class="w-1.5 h-1.5 rotate-45 rounded-[1px] accent-bg opacity-65"></span>'
+                    : '<span class="w-1 h-1 rounded-full bg-cozy-muted/25"></span>'
             }
           </span>
         `;
@@ -3506,9 +3576,13 @@
       if (countEl) countEl.textContent = `${info.done} / ${info.total}`;
       if (barEl) barEl.style.width = `${info.pct}%`;
 
+      const resting = isRestDay(state.ui.selectedDate);
       let title = 'A gentle start';
       let subtitle = 'Pick one small ritual to begin your rhythm.';
-      if (info.total === 0) {
+      if (resting && info.pct < 100) {
+        title = 'Planned Rest Day 🌙';
+        subtitle = 'Your streaks are gently shielded—rest well or still check in anytime.';
+      } else if (info.total === 0) {
         title = 'Open canvas';
         subtitle = 'Tap + or open Ideas to plant your first ritual.';
       } else if (info.pct === 100) {
@@ -3821,6 +3895,17 @@
       if (jumpBtn) {
         const isAway = state.ui.selectedDate !== getTodayKey() || state.ui.weekOffsetDays !== 0;
         jumpBtn.classList.toggle('is-visible', isAway);
+      }
+
+      const restBtn = document.getElementById('rest-day-toggle-btn');
+      const restLabel = document.getElementById('rest-day-btn-label');
+      if (restBtn && restLabel) {
+        const resting = isRestDay(state.ui.selectedDate);
+        restBtn.classList.toggle('honey-bg-soft', resting);
+        restBtn.classList.toggle('honey-text', resting);
+        restBtn.classList.toggle('text-cozy-secondary', !resting);
+        restBtn.style.borderColor = resting ? 'var(--accent-honey)' : '';
+        restLabel.textContent = resting ? 'Rest Day' : 'Rest';
       }
 
       const quoteBanner = document.getElementById('quote-banner');
@@ -4325,7 +4410,10 @@
           else level = 1;
         }
 
-        const style = getHeatCellStyle(level);
+        const resting = isRestDay(key);
+        const style = (resting && level === 0)
+          ? { bg: 'var(--accent-honey-soft)', border: 'rgba(217, 155, 56, 0.5)', text: 'var(--accent-honey)' }
+          : getHeatCellStyle(level);
         const isSelected = key === state.ui.heatmapSelectedDate;
         const isToday = key === todayKey;
         const isFuture = key > todayKey;
@@ -4348,7 +4436,9 @@
           btn.style.boxShadow = 'inset 0 0 0 1.5px var(--accent-primary)';
         }
         if (animate) btn.style.animationDelay = `${(row + col) * 18}ms`;
-        btn.textContent = String(d);
+        btn.innerHTML = resting
+          ? `<span>${d}</span><span class="absolute top-0.5 right-0.5 text-[7px] leading-none">🌙</span>`
+          : String(d);
         grid.appendChild(btn);
       }
 
@@ -4392,11 +4482,14 @@
       const tracked = habitsForDay.filter(h => isHabitCompletedOn(h.id, dateKey));
       const notTracked = habitsForDay.filter(h => !isHabitCompletedOn(h.id, dateKey));
       const isOpen = state.ui.heatmapInspectorOpen;
+      const resting = isRestDay(dateKey);
 
       if (detailLabel) {
-        detailLabel.textContent = habitsForDay.length > 0
-          ? `${formatted} · ${tracked.length}/${habitsForDay.length} done`
-          : `${formatted} · No rituals active`;
+        detailLabel.textContent = resting
+          ? `${formatted} · 🌙 Rest Day (${tracked.length}/${habitsForDay.length})`
+          : habitsForDay.length > 0
+            ? `${formatted} · ${tracked.length}/${habitsForDay.length} done`
+            : `${formatted} · No rituals active`;
       }
 
       const formatChip = (h, isTracked) => {
@@ -4441,6 +4534,11 @@
                   <path d="M4.25 6.75L8 10.5L11.75 6.75" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
               </span>
+            </button>
+
+            <button type="button" onclick="toggleRestDay('${dateKey}')"
+              class="inline-flex items-center gap-1 px-2 py-1.5 rounded-xl text-[10px] font-bold leading-none ${resting ? 'honey-bg-soft honey-text' : 'bg-cozy-secondary text-cozy-secondary hover:text-cozy-primary'}">
+              <span>🌙 ${resting ? 'Shielded' : 'Rest'}</span>
             </button>
 
             <button type="button" onclick="jumpToDateFromInsights('${dateKey}')"
@@ -5223,6 +5321,7 @@
         archivedHabits: state.archivedHabits || [],
         logs: state.logs,
         counts: state.counts || {},
+        restDays: state.restDays || {},
         exportedAt: new Date().toISOString()
       };
       const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
@@ -5299,6 +5398,7 @@
       state.archivedHabits = [];
       state.logs = {};
       state.counts = {};
+      state.restDays = {};
       state.user = preservedUser;
       state.ui.selectedDate = getTodayKey();
       state.ui.weekOffsetDays = 0;
