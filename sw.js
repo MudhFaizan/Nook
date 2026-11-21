@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v5';
+const CACHE_VERSION = 'v10';
 const APP_SHELL_CACHE = `nook-shell-${CACHE_VERSION}`;
 const RUNTIME_CACHE = `nook-runtime-${CACHE_VERSION}`;
 

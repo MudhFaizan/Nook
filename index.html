@@ -31,6 +31,7 @@
       --bg-base: #F7F3EB;
       --bg-secondary: rgba(240, 233, 221, 0.65);
       --bg-glass-card: rgba(255, 255, 255, 0.52);
+      --bg-glass-completed: rgba(255, 255, 255, 0.32);
       --bg-glass-elevated: rgba(255, 255, 255, 0.72);
       --bg-glass-nav: rgba(255, 255, 255, 0.62);
       --bg-glass-modal: rgba(252, 249, 244, 0.84);
@@ -72,6 +73,7 @@
       --bg-base: #121316;
       --bg-secondary: rgba(38, 40, 46, 0.65);
       --bg-glass-card: rgba(30, 32, 37, 0.56);
+      --bg-glass-completed: rgba(26, 28, 33, 0.36);
       --bg-glass-elevated: rgba(42, 45, 52, 0.72);
       --bg-glass-nav: rgba(22, 24, 28, 0.68);
       --bg-glass-modal: rgba(28, 30, 35, 0.86);
@@ -1057,6 +1059,113 @@
       100% { opacity: 1; transform: translateY(0); }
     }
 
+    /* Soft Dimming & Completion Order Styling */
+    .cozy-card.habit-card-completed {
+      background: var(--bg-glass-completed);
+      border-color: var(--border-subtle);
+      box-shadow: 0 4px 14px -6px rgba(45, 42, 38, 0.04), inset 0 1px 0.5px rgba(255, 255, 255, 0.28);
+    }
+    .cozy-card.habit-card-completed:hover {
+      transform: translateY(-1px);
+    }
+    .habit-card-body {
+      transition: opacity 0.34s ease, filter 0.34s ease;
+    }
+    .cozy-card.habit-card-completed .habit-card-body {
+      opacity: 0.62;
+      filter: saturate(0.72);
+    }
+    .cozy-card.habit-card-completed:hover .habit-card-body {
+      opacity: 0.78;
+      filter: saturate(0.86);
+    }
+    .cozy-card.habit-card-completed .check-btn.completed {
+      opacity: 0.88;
+      box-shadow: 0 4px 12px -4px var(--accent-glow), inset 0 1.5px 2px rgba(255, 255, 255, 0.42);
+    }
+    .completed-divider-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 6px 2px;
+      animation: calHeaderSlide 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+    .completed-divider-line {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border-subtle), transparent);
+    }
+
+    /* Swipe-to-Check / Swipe-to-Step Habit Card Surface */
+    .habit-swipe-slot {
+      position: relative;
+      border-radius: 24px;
+    }
+    .habit-swipe-track {
+      position: absolute;
+      inset: 1px;
+      border-radius: 23px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 18px;
+      opacity: 0;
+      pointer-events: none;
+      overflow: hidden;
+      transition: opacity 0.22s ease, background 0.22s ease;
+    }
+    .habit-swipe-track.is-forward {
+      background: linear-gradient(115deg, var(--accent-grad-start) 0%, var(--accent-primary) 55%, var(--accent-grad-end) 100%);
+      box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.35);
+      color: #FFFFFF;
+    }
+    .habit-swipe-track.is-undo {
+      background: linear-gradient(245deg, var(--accent-secondary) 0%, rgba(224, 122, 95, 0.78) 65%, var(--accent-secondary-soft) 100%);
+      box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.28);
+      color: #FFFFFF;
+    }
+    .habit-swipe-cue {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.01em;
+      opacity: 0;
+      transform: scale(0.86);
+      transition: transform 0.24s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.18s ease;
+    }
+    .habit-swipe-cue.is-visible {
+      opacity: 0.9;
+      transform: scale(0.96);
+    }
+    .habit-swipe-cue.is-armed {
+      opacity: 1;
+      transform: scale(1.08);
+    }
+    .habit-swipe-cue-orb {
+      width: 28px;
+      height: 28px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.24);
+      border: 1px solid rgba(255, 255, 255, 0.38);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .habit-swipe-card {
+      position: relative;
+      z-index: 1;
+      touch-action: pan-y;
+      will-change: transform;
+    }
+    .habit-swipe-card.is-swiping {
+      transition: none !important;
+      user-select: none;
+    }
+
     /* Drop / Reorder Mode Card Styles */
     .drop-mode-card {
       border-style: dashed;
@@ -1127,6 +1236,33 @@
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
+    }
+
+    /* Touch Swipe Gesture Polish */
+    .swipe-surface {
+      touch-action: pan-y;
+    }
+    .cozy-modal-sheet.is-swiping {
+      transition: none !important;
+      user-select: none;
+    }
+    @keyframes swipeEdgeBumpLeft {
+      0% { transform: translateX(0); }
+      35% { transform: translateX(-8px); }
+      70% { transform: translateX(3px); }
+      100% { transform: translateX(0); }
+    }
+    @keyframes swipeEdgeBumpRight {
+      0% { transform: translateX(0); }
+      35% { transform: translateX(8px); }
+      70% { transform: translateX(-3px); }
+      100% { transform: translateX(0); }
+    }
+    .swipe-bump-left {
+      animation: swipeEdgeBumpLeft 0.34s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .swipe-bump-right {
+      animation: swipeEdgeBumpRight 0.34s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
     /* Splash Zen Bloom Animation */
@@ -1367,7 +1503,7 @@
     <!-- ======================================================================
          MAIN SCROLLABLE VIEWPORT
          ====================================================================== -->
-    <main class="flex-1 px-4 pb-28 pt-2 overflow-y-auto no-scrollbar z-10">
+    <main class="flex-1 px-4 pb-28 pt-2 overflow-y-auto overflow-x-hidden no-scrollbar z-10">
 
       <!-- ====================================================================
            1. TODAY VIEW
@@ -1420,7 +1556,7 @@
         </div>
 
         <!-- 7-Day Interactive Liquid-Glass Calendar Strip -->
-        <div class="cozy-card p-3.5">
+        <div id="week-strip-card" class="cozy-card swipe-surface p-3.5">
           <div class="flex items-center justify-between mb-2.5 px-1">
             <span id="week-range-label" class="text-xs font-bold text-cozy-secondary">This Week</span>
 
@@ -1598,7 +1734,7 @@
         </div>
 
         <!-- Monthly Consistency Heatmap Card -->
-        <div class="cozy-card p-4">
+        <div id="heatmap-card" class="cozy-card swipe-surface p-4">
           <div class="flex items-center justify-between mb-3">
             <div>
               <h3 class="text-sm font-bold text-cozy-primary">Monthly Rhythm</h3>
@@ -1874,6 +2010,20 @@
               class="cozy-switch-track">
               <span id="toggle-quotes-knob" class="cozy-switch-knob">
                 <i class="ph-fill ph-quotes"></i>
+              </span>
+            </button>
+          </div>
+
+          <!-- Completion Order Toggle -->
+          <div class="flex items-center justify-between pt-2 border-t border-subtle-cozy">
+            <div>
+              <p class="text-xs font-semibold text-cozy-primary">Glide Completed Below</p>
+              <p class="text-[11px] text-cozy-secondary">Gently tuck finished rituals beneath active ones</p>
+            </div>
+            <button id="toggle-sort-completed-btn" onclick="togglePreference('autoSortCompleted')"
+              class="cozy-switch-track">
+              <span id="toggle-sort-completed-knob" class="cozy-switch-knob">
+                <i class="ph-fill ph-check-circle"></i>
               </span>
             </button>
           </div>
@@ -2389,7 +2539,8 @@
         accent: 'sage',
         soundEnabled: true,
         confettiEnabled: true,
-        showQuotes: true
+        showQuotes: true,
+        autoSortCompleted: true
       },
       habits: [],
       archivedHabits: [],
@@ -2528,7 +2679,8 @@
           accent: 'sage',
           soundEnabled: true,
           confettiEnabled: true,
-          showQuotes: true
+          showQuotes: true,
+          autoSortCompleted: true
         },
         habits: createCleanStarterHabits(),
         archivedHabits: [],
@@ -3492,14 +3644,27 @@
       renderTodayView(true);
     }
 
+    function triggerSwipeBump(el, direction = 'left') {
+      if (!el) return;
+      const cls = direction === 'right' ? 'swipe-bump-right' : 'swipe-bump-left';
+      el.classList.remove('swipe-bump-left', 'swipe-bump-right');
+      void el.offsetWidth;
+      el.classList.add(cls);
+      setTimeout(() => el.classList.remove(cls), 360);
+    }
+
     function shiftWeek(deltaDays) {
       const nextOffset = Math.min(0, state.ui.weekOffsetDays + deltaDays);
-      if (nextOffset === state.ui.weekOffsetDays) return;
+      if (nextOffset === state.ui.weekOffsetDays) {
+        triggerSwipeBump(document.getElementById('week-strip-card'), deltaDays > 0 ? 'left' : 'right');
+        return false;
+      }
       state.ui.weekOffsetDays = nextOffset;
       const shiftedSelected = addDays(state.ui.selectedDate, deltaDays);
       const todayKey = getTodayKey();
       state.ui.selectedDate = shiftedSelected > todayKey ? todayKey : shiftedSelected;
       renderTodayView(true);
+      return true;
     }
 
     function selectDate(dateKey) {
@@ -3647,7 +3812,7 @@
       `;
     }
 
-    function renderHabitsList(animateCascade = false, justCompletedId = null) {
+    function renderHabitsList(animateCascade = false, justCompletedId = null, animateFlip = false) {
       const container = document.getElementById('habits-list-container');
       if (!container) return;
 
@@ -3685,29 +3850,71 @@
         return;
       }
 
-      container.innerHTML = '';
+      // Measure existing card positions for smooth FLIP glide when order changes
+      const prevTops = new Map();
+      if (animateFlip && !animateCascade) {
+        container.querySelectorAll('[data-habit-id]').forEach(el => {
+          prevTops.set(el.getAttribute('data-habit-id'), el.getBoundingClientRect().top);
+        });
+      }
 
-      habitsToShow.forEach((habit, idx) => {
+      // Compute completion metadata and optionally glide finished rituals beneath active ones
+      const enriched = habitsToShow.map(habit => {
         const targetCount = getHabitTargetCount(habit);
         const isCountable = targetCount > 1;
         const currentCount = isCountable ? getHabitCountOn(habit.id, dateKey, habit) : (isHabitCompletedOn(habit.id, dateKey) ? 1 : 0);
         const done = isCountable ? currentCount >= targetCount : isHabitCompletedOn(habit.id, dateKey);
+        return { habit, targetCount, isCountable, currentCount, done };
+      });
+
+      const autoSort = !inDropMode && state.user.autoSortCompleted !== false;
+      const pendingItems = enriched.filter(item => !item.done);
+      const completedItems = enriched.filter(item => item.done);
+      const orderedItems = autoSort ? [...pendingItems, ...completedItems] : enriched;
+      const showCompletedDivider = autoSort && pendingItems.length > 0 && completedItems.length > 0;
+
+      // Lock height momentarily during DOM swap to prevent mobile scroll jump
+      const lockedHeight = container.offsetHeight;
+      if (lockedHeight > 0) container.style.minHeight = `${lockedHeight}px`;
+
+      const frag = document.createDocumentFragment();
+      const renderedCards = [];
+
+      orderedItems.forEach((item, idx) => {
+        const { habit, targetCount, isCountable, currentCount, done } = item;
+
+        if (showCompletedDivider && idx === pendingItems.length) {
+          const divider = document.createElement('div');
+          divider.className = 'completed-divider-row';
+          divider.innerHTML = `
+            <span class="completed-divider-line"></span>
+            <span class="text-[10px] font-bold uppercase tracking-[0.14em] text-cozy-muted inline-flex items-center gap-1 flex-shrink-0">
+              <span class="accent-text">✦</span>
+              <span>Completed · ${completedItems.length}</span>
+            </span>
+            <span class="completed-divider-line"></span>
+          `;
+          frag.appendChild(divider);
+        }
+
         const justDoneClass = done && justCompletedId === habit.id ? 'just-completed' : '';
         const countPct = isCountable ? Math.min(100, Math.round((currentCount / targetCount) * 100)) : 0;
         const streak = getHabitStreak(habit);
         const weekly = getWeeklyProgressForHabit(habit, dateKey);
         const isArchivedPast = Boolean(habit.archivedAt);
+        const dimmedClass = done && !inDropMode ? 'habit-card-completed' : '';
 
         const card = document.createElement('div');
-        card.setAttribute('data-habit-id', habit.id);
-        card.className = `cozy-card p-3.5 flex items-center justify-between gap-3 ${inDropMode ? 'drop-mode-card' : 'cursor-pointer'} ${animateCascade ? 'cascade-item' : ''}`;
-        if (animateCascade) {
-          card.style.animationDelay = `${Math.min(idx * 35, 240)}ms`;
-        }
-
-        if (!inDropMode) {
+        card.className = `cozy-card p-3.5 flex items-center justify-between gap-3 ${inDropMode ? 'drop-mode-card' : 'habit-swipe-card cursor-pointer'} ${dimmedClass} ${inDropMode && animateCascade ? 'cascade-item' : ''}`;
+        if (inDropMode) {
+          card.setAttribute('data-habit-id', habit.id);
+          if (animateCascade) {
+            card.style.animationDelay = `${Math.min(idx * 35, 240)}ms`;
+          }
+        } else {
           card.onclick = (e) => {
             if (e.target.closest('.check-btn') || e.target.closest('.count-step-btn')) return;
+            if (Date.now() < Number(card.dataset.swipeSuppressUntil || 0)) return;
             openHabitDetailModal(habit.id);
           };
         }
@@ -3773,13 +3980,13 @@
             `;
 
         card.innerHTML = `
-          <div class="flex items-center gap-3 min-w-0 flex-1">
+          <div class="habit-card-body flex items-center gap-3 min-w-0 flex-1">
             ${inDropMode ? '<span class="drag-handle text-cozy-muted flex-shrink-0 px-0.5"><i class="ph-bold ph-dots-six-vertical text-base"></i></span>' : ''}
             <div class="emoji-pebble-well w-11 h-11 bg-cozy-elevated border border-cozy flex items-center justify-center text-xl flex-shrink-0">
               ${escapeHtml(habit.emoji || '🌿')}
             </div>
             <div class="min-w-0 flex-1">
-              <p class="text-[13.5px] font-bold text-cozy-primary truncate leading-snug ${done && !inDropMode ? 'opacity-65 line-through decoration-[var(--accent-primary)]/60' : ''}">
+              <p class="text-[13.5px] font-bold text-cozy-primary truncate leading-snug ${done && !inDropMode ? 'line-through decoration-[var(--accent-primary)]/55' : ''}">
                 ${escapeHtml(habit.title)}
               </p>
               ${habit.subtitle ? `<p class="text-[11px] text-cozy-secondary truncate mt-0.5">${escapeHtml(habit.subtitle)}</p>` : ''}
@@ -3799,10 +4006,97 @@
 
         if (inDropMode) {
           attachDragReorderHandlers(card, habit.id);
-        }
+          frag.appendChild(card);
+          renderedCards.push({ id: habit.id, el: card });
+        } else {
+          const slot = document.createElement('div');
+          slot.setAttribute('data-habit-id', habit.id);
+          slot.className = `habit-swipe-slot ${animateCascade ? 'cascade-item' : ''}`;
+          if (animateCascade) {
+            slot.style.animationDelay = `${Math.min(idx * 35, 240)}ms`;
+          }
 
-        container.appendChild(card);
+          const nextStepCount = Math.min(targetCount, currentCount + 1);
+          const prevStepCount = Math.max(0, currentCount - 1);
+          const forwardOrbHtml = isCountable
+            ? (nextStepCount >= targetCount ? getBloomSealSvg(true) : '+1')
+            : getBloomSealSvg(true);
+          const forwardLabel = isCountable
+            ? (nextStepCount >= targetCount ? `Done · ${targetCount}/${targetCount}` : `${nextStepCount}/${targetCount}`)
+            : 'Done';
+          const undoOrbHtml = isCountable
+            ? '−1'
+            : `<svg class="w-4 h-4" viewBox="0 0 16 16" fill="none"><path d="M6.2 4.5L3 7.7L6.2 10.9" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.5 7.7H10.2C11.85 7.7 13 8.85 13 10.4C13 11.95 11.85 13.1 10.2 13.1H8.5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg>`;
+          const undoLabel = isCountable ? `${prevStepCount}/${targetCount}` : 'Undo';
+
+          const track = document.createElement('div');
+          track.className = 'habit-swipe-track';
+          track.setAttribute('aria-hidden', 'true');
+          track.innerHTML = `
+            <span class="habit-swipe-cue habit-swipe-cue-left">
+              <span class="habit-swipe-cue-orb">${forwardOrbHtml}</span>
+              <span>${escapeHtml(forwardLabel)}</span>
+            </span>
+            <span class="habit-swipe-cue habit-swipe-cue-right">
+              <span>${escapeHtml(undoLabel)}</span>
+              <span class="habit-swipe-cue-orb">${undoOrbHtml}</span>
+            </span>
+          `;
+
+          slot.appendChild(track);
+          slot.appendChild(card);
+
+          attachHabitCardSwipe({
+            card,
+            track,
+            habitId: habit.id,
+            isCountable,
+            done,
+            currentCount,
+            targetCount
+          });
+
+          frag.appendChild(slot);
+          renderedCards.push({ id: habit.id, el: slot });
+        }
       });
+
+      container.innerHTML = '';
+      container.appendChild(frag);
+      container.style.minHeight = '';
+
+      // Animate cards smoothly from their previous Y positions to their new slots
+      if (prevTops.size > 0) {
+        const moving = [];
+        renderedCards.forEach(({ id, el }) => {
+          const prevTop = prevTops.get(id);
+          if (typeof prevTop !== 'number') return;
+          const deltaY = prevTop - el.getBoundingClientRect().top;
+          if (Math.abs(deltaY) > 1) {
+            el.style.transition = 'none';
+            el.style.transform = `translateY(${Math.round(deltaY)}px)`;
+            if (id === justCompletedId) el.style.zIndex = '12';
+            moving.push(el);
+          }
+        });
+
+        if (moving.length > 0) {
+          void container.offsetHeight;
+          requestAnimationFrame(() => {
+            moving.forEach(el => {
+              el.style.transition = 'transform 0.44s cubic-bezier(0.22, 1, 0.36, 1)';
+              el.style.transform = '';
+            });
+            setTimeout(() => {
+              moving.forEach(el => {
+                el.style.transition = '';
+                el.style.transform = '';
+                el.style.zIndex = '';
+              });
+            }, 470);
+          });
+        }
+      }
     }
 
     function toggleHabitCompletion(habitId, event) {
@@ -3844,8 +4138,9 @@
       if (nowCompleted && state.user.confettiEnabled) {
         let x = window.innerWidth / 2;
         let y = window.innerHeight / 2;
-        if (event && event.currentTarget) {
-          const rect = event.currentTarget.getBoundingClientRect();
+        const originEl = (event && event.currentTarget) || document.querySelector(`[data-habit-id="${habitId}"] .check-btn`);
+        if (originEl) {
+          const rect = originEl.getBoundingClientRect();
           x = rect.left + rect.width / 2;
           y = rect.top + rect.height / 2;
         }
@@ -3855,7 +4150,7 @@
       renderHeader();
       renderWeekStrip(false);
       renderDailyProgress();
-      renderHabitsList(false, nowCompleted ? habitId : null);
+      renderHabitsList(false, nowCompleted ? habitId : null, true);
     }
 
     function adjustHabitCount(habitId, delta, event) {
@@ -3902,8 +4197,9 @@
       if (!wasHabitDone && isHabitDone && state.user.confettiEnabled) {
         let x = window.innerWidth / 2;
         let y = window.innerHeight / 2;
-        if (event && event.currentTarget) {
-          const rect = event.currentTarget.getBoundingClientRect();
+        const originEl = (event && event.currentTarget) || document.querySelector(`[data-habit-id="${habitId}"] .check-btn`);
+        if (originEl) {
+          const rect = originEl.getBoundingClientRect();
           x = rect.left + rect.width / 2;
           y = rect.top + rect.height / 2;
         }
@@ -3913,7 +4209,7 @@
       renderHeader();
       renderWeekStrip(false);
       renderDailyProgress();
-      renderHabitsList(false, (!wasHabitDone && isHabitDone) ? habitId : null);
+      renderHabitsList(false, (!wasHabitDone && isHabitDone) ? habitId : null, wasHabitDone !== isHabitDone);
     }
 
     function renderTodayView(animateCalendar = false) {
@@ -4050,7 +4346,7 @@
         btn.classList.toggle('text-cozy-secondary', !state.ui.dropMode);
         label.textContent = state.ui.dropMode ? 'Done' : 'Drop / Edit';
       }
-      renderHabitsList();
+      renderHabitsList(false, null, true);
     }
 
     function quickDropHabit(habitId) {
@@ -4700,6 +4996,8 @@
       renderEmojiGrid();
 
       if (backdrop && sheet) {
+        sheet.classList.remove('is-swiping');
+        sheet.style.transform = '';
         backdrop.classList.remove('hidden');
         requestAnimationFrame(() => {
           backdrop.classList.remove('opacity-0');
@@ -5033,6 +5331,8 @@
       const backdrop = document.getElementById('habit-detail-backdrop');
       const sheet = document.getElementById('habit-detail-sheet');
       if (backdrop && sheet) {
+        sheet.classList.remove('is-swiping');
+        sheet.style.transform = '';
         backdrop.classList.remove('hidden');
         requestAnimationFrame(() => {
           backdrop.classList.remove('opacity-0');
@@ -5206,7 +5506,7 @@
           <div class="grid grid-cols-7 gap-1.5">${miniWeekHtml}</div>
         </div>
 
-        <div class="p-3.5 rounded-2xl bg-cozy-secondary/40 border border-cozy space-y-2.5">
+        <div id="detail-monthly-history-box" class="swipe-surface p-3.5 rounded-2xl bg-cozy-secondary/40 border border-cozy space-y-2.5">
           <div class="flex items-center justify-between gap-2">
             <div>
               <p class="text-xs font-bold text-cozy-primary">Monthly History</p>
@@ -5329,7 +5629,7 @@
       state.user[key] = !state.user[key];
       saveState();
       renderSettingsView();
-      if (key === 'showQuotes') {
+      if (key === 'showQuotes' || key === 'autoSortCompleted') {
         renderTodayView(false);
       }
     }
@@ -5373,7 +5673,8 @@
       const prefBindings = [
         { key: 'soundEnabled', btnId: 'toggle-sound-btn', knobId: 'toggle-sound-knob' },
         { key: 'confettiEnabled', btnId: 'toggle-confetti-btn', knobId: 'toggle-confetti-knob' },
-        { key: 'showQuotes', btnId: 'toggle-quotes-btn', knobId: 'toggle-quotes-knob' }
+        { key: 'showQuotes', btnId: 'toggle-quotes-btn', knobId: 'toggle-quotes-knob' },
+        { key: 'autoSortCompleted', btnId: 'toggle-sort-completed-btn', knobId: 'toggle-sort-completed-knob' }
       ];
       prefBindings.forEach(({ key, btnId, knobId }) => {
         const btn = document.getElementById(btnId);
@@ -5876,6 +6177,302 @@
       showToast('Back online', '☀️');
     });
 
+    // ========================================================================
+    // TOUCH SWIPE POLISH
+    // ========================================================================
+    function attachHabitCardSwipe({ card, track, habitId, isCountable, done, currentCount, targetCount }) {
+      if (!card || !track) return;
+      const leftCue = track.querySelector('.habit-swipe-cue-left');
+      const rightCue = track.querySelector('.habit-swipe-cue-right');
+      const canSwipeRight = isCountable ? currentCount < targetCount : !done;
+      const canSwipeLeft = isCountable ? currentCount > 0 : done;
+
+      const TRIGGER_PX = 64;
+      const MAX_DRAG_PX = 104;
+
+      let startX = 0;
+      let startY = 0;
+      let directionLocked = null;
+      let lastDx = 0;
+      let armed = false;
+      let committed = false;
+
+      const resetTrackVisuals = () => {
+        track.style.opacity = '0';
+        if (leftCue) leftCue.classList.remove('is-visible', 'is-armed');
+        if (rightCue) rightCue.classList.remove('is-visible', 'is-armed');
+      };
+
+      card.addEventListener('touchstart', (e) => {
+        if (committed || !e.touches || e.touches.length !== 1) return;
+        if (e.target.closest('button')) return;
+        const t = e.touches[0];
+        startX = t.clientX;
+        startY = t.clientY;
+        directionLocked = null;
+        lastDx = 0;
+        armed = false;
+      }, { passive: true });
+
+      card.addEventListener('touchmove', (e) => {
+        if (committed || !e.touches || e.touches.length !== 1 || directionLocked === 'v') return;
+        if (!startX && !startY) return;
+        const t = e.touches[0];
+        const rawDx = t.clientX - startX;
+        const rawDy = t.clientY - startY;
+
+        if (!directionLocked) {
+          if (Math.abs(rawDy) > 10 && Math.abs(rawDy) > Math.abs(rawDx)) {
+            directionLocked = 'v';
+            return;
+          }
+          if (Math.abs(rawDx) > 10 && Math.abs(rawDx) > Math.abs(rawDy) * 1.2) {
+            directionLocked = 'h';
+            card.classList.add('is-swiping');
+          } else {
+            return;
+          }
+        }
+
+        if (e.cancelable) e.preventDefault();
+
+        const isRight = rawDx > 0;
+        const canAct = isRight ? canSwipeRight : canSwipeLeft;
+        let dx = 0;
+
+        if (!canAct) {
+          // Gentle damped rubber-band pull when direction is unavailable
+          dx = Math.sign(rawDx) * Math.min(22, Math.abs(rawDx) * 0.22);
+        } else {
+          const abs = Math.abs(rawDx);
+          const elastic = abs <= 72 ? abs : 72 + (abs - 72) * 0.28;
+          dx = Math.sign(rawDx) * Math.min(MAX_DRAG_PX, elastic);
+        }
+
+        lastDx = dx;
+        card.style.transform = `translateX(${Math.round(dx)}px)`;
+
+        if (canAct && Math.abs(dx) > 4) {
+          track.classList.toggle('is-forward', isRight);
+          track.classList.toggle('is-undo', !isRight);
+          const progress = Math.min(1, Math.abs(dx) / TRIGGER_PX);
+          track.style.opacity = String(Math.min(1, 0.28 + progress * 0.72));
+
+          const nowArmed = Math.abs(dx) >= TRIGGER_PX;
+          if (leftCue) {
+            leftCue.classList.toggle('is-visible', isRight);
+            leftCue.classList.toggle('is-armed', isRight && nowArmed);
+          }
+          if (rightCue) {
+            rightCue.classList.toggle('is-visible', !isRight);
+            rightCue.classList.toggle('is-armed', !isRight && nowArmed);
+          }
+
+          if (nowArmed && !armed) {
+            armed = true;
+            playCozySound('tap');
+          } else if (!nowArmed && armed) {
+            armed = false;
+          }
+        } else {
+          resetTrackVisuals();
+          armed = false;
+        }
+      }, { passive: false });
+
+      const finishCardSwipe = (isCancel) => {
+        const wasHorizontal = directionLocked === 'h';
+        const swipeDx = lastDx;
+        const shouldTrigger = !committed && !isCancel && wasHorizontal && armed && (
+          (swipeDx > 0 && canSwipeRight) ||
+          (swipeDx < 0 && canSwipeLeft)
+        );
+
+        directionLocked = null;
+        startX = 0;
+        startY = 0;
+        lastDx = 0;
+        armed = false;
+
+        if (!wasHorizontal) return;
+
+        card.dataset.swipeSuppressUntil = String(Date.now() + 380);
+        card.classList.remove('is-swiping');
+        void card.offsetWidth;
+
+        if (shouldTrigger) {
+          committed = true;
+          card.style.transition = 'transform 0.16s cubic-bezier(0.22, 1, 0.36, 1)';
+          card.style.transform = 'translateX(0px)';
+          resetTrackVisuals();
+
+          setTimeout(() => {
+            if (isCountable) {
+              adjustHabitCount(habitId, swipeDx > 0 ? 1 : -1);
+            } else {
+              toggleHabitCompletion(habitId);
+            }
+          }, 145);
+        } else {
+          card.style.transition = 'transform 0.36s cubic-bezier(0.34, 1.56, 0.64, 1)';
+          card.style.transform = 'translateX(0px)';
+          resetTrackVisuals();
+
+          setTimeout(() => {
+            card.style.transition = '';
+            card.style.transform = '';
+          }, 370);
+        }
+      };
+
+      card.addEventListener('touchend', () => finishCardSwipe(false), { passive: true });
+      card.addEventListener('touchcancel', () => finishCardSwipe(true), { passive: true });
+    }
+    function attachHorizontalSwipe(el, { onSwipeLeft, onSwipeRight, filterTarget } = {}) {
+      if (!el) return;
+      let startX = 0;
+      let startY = 0;
+      let startTime = 0;
+      let active = false;
+
+      el.addEventListener('touchstart', (e) => {
+        if (!e.touches || e.touches.length !== 1) return;
+        if (filterTarget && !filterTarget(e.target)) return;
+        if (e.target.closest('input, textarea, select, #accent-carousel, #modal-rec-chips, #emoji-cat-tabs')) return;
+        const t = e.touches[0];
+        startX = t.clientX;
+        startY = t.clientY;
+        startTime = Date.now();
+        active = true;
+      }, { passive: true });
+
+      el.addEventListener('touchend', (e) => {
+        if (!active || !e.changedTouches || e.changedTouches.length === 0) return;
+        active = false;
+        const t = e.changedTouches[0];
+        const dx = t.clientX - startX;
+        const dy = t.clientY - startY;
+        const elapsed = Date.now() - startTime;
+
+        if (elapsed > 750) return;
+        if (Math.abs(dx) < 44 || Math.abs(dx) < Math.abs(dy) * 1.25) return;
+
+        playCozySound('tap');
+        if (dx < 0 && typeof onSwipeLeft === 'function') {
+          onSwipeLeft();
+        } else if (dx > 0 && typeof onSwipeRight === 'function') {
+          onSwipeRight();
+        }
+      }, { passive: true });
+
+      el.addEventListener('touchcancel', () => {
+        active = false;
+      }, { passive: true });
+    }
+
+    function attachSheetSwipeDismiss(sheetEl, closeFn) {
+      if (!sheetEl || typeof closeFn !== 'function') return;
+      let startY = 0;
+      let startX = 0;
+      let startTime = 0;
+      let dragging = false;
+      let lastDy = 0;
+
+      sheetEl.addEventListener('touchstart', (e) => {
+        if (!e.touches || e.touches.length !== 1) return;
+        if (sheetEl.scrollTop > 2) return;
+        if (e.target.closest('input, textarea, select, #modal-rec-chips, #emoji-cat-tabs, #emoji-picker-grid, #detail-monthly-history-box')) return;
+        const t = e.touches[0];
+        startY = t.clientY;
+        startX = t.clientX;
+        startTime = Date.now();
+        dragging = false;
+        lastDy = 0;
+      }, { passive: true });
+
+      sheetEl.addEventListener('touchmove', (e) => {
+        if (!startTime || !e.touches || e.touches.length !== 1) return;
+        const t = e.touches[0];
+        const dy = t.clientY - startY;
+        const dx = t.clientX - startX;
+
+        if (!dragging) {
+          if (dy < 12) return;
+          if (Math.abs(dx) > dy * 0.9 || sheetEl.scrollTop > 2) {
+            startTime = 0;
+            return;
+          }
+          dragging = true;
+          sheetEl.classList.add('is-swiping');
+        }
+
+        if (dragging && dy > 0) {
+          lastDy = dy;
+          sheetEl.style.transform = `translateY(${Math.round(dy)}px)`;
+          if (e.cancelable) e.preventDefault();
+        }
+      }, { passive: false });
+
+      const finishSheetDrag = () => {
+        if (!dragging) {
+          startTime = 0;
+          return;
+        }
+        const elapsed = Math.max(1, Date.now() - startTime);
+        const velocity = lastDy / elapsed;
+        const shouldClose = lastDy > 88 || (lastDy > 42 && velocity > 0.45);
+
+        dragging = false;
+        startTime = 0;
+        sheetEl.classList.remove('is-swiping');
+        void sheetEl.offsetWidth;
+        sheetEl.style.transform = '';
+
+        if (shouldClose) {
+          playCozySound('tap');
+          closeFn();
+        }
+      };
+
+      sheetEl.addEventListener('touchend', finishSheetDrag, { passive: true });
+      sheetEl.addEventListener('touchcancel', finishSheetDrag, { passive: true });
+    }
+
+    function initSwipeGestures() {
+      // 1. Today 7-day strip: swipe left/right to navigate weeks
+      attachHorizontalSwipe(document.getElementById('week-strip-card'), {
+        onSwipeLeft: () => shiftWeek(7),
+        onSwipeRight: () => shiftWeek(-7)
+      });
+
+      // 2. Insights Monthly Rhythm heatmap: swipe left/right to navigate months
+      attachHorizontalSwipe(document.getElementById('heatmap-card'), {
+        onSwipeLeft: () => changeHeatmapMonth(1),
+        onSwipeRight: () => changeHeatmapMonth(-1)
+      });
+
+      // 3. Habit Detail modal monthly calendar: swipe left/right to navigate months
+      attachHorizontalSwipe(document.getElementById('habit-detail-content'), {
+        filterTarget: (target) => Boolean(target.closest('#detail-monthly-history-box')),
+        onSwipeLeft: () => changeDetailMonth(1),
+        onSwipeRight: () => changeDetailMonth(-1)
+      });
+
+      // 4. Onboarding 2-step terrarium: swipe between Step 1 & Step 2
+      attachHorizontalSwipe(document.getElementById('onboarding-screen'), {
+        onSwipeLeft: () => {
+          if (state.ui.onboardingStep === 0) setOnboardingStep(1);
+        },
+        onSwipeRight: () => {
+          if (state.ui.onboardingStep === 1) setOnboardingStep(0);
+        }
+      });
+
+      // 5. Swipe down to dismiss frosted bottom-sheet modals
+      attachSheetSwipeDismiss(document.getElementById('habit-modal-sheet'), closeHabitModal);
+      attachSheetSwipeDismiss(document.getElementById('habit-detail-sheet'), closeHabitDetailModal);
+    }
+
     // Boot Application
     window.addEventListener('DOMContentLoaded', () => {
       loadState();
@@ -5883,6 +6480,7 @@
       switchTab('today');
       handlePwaLaunchShortcuts();
       updatePwaInstallUI();
+      initSwipeGestures();
       registerServiceWorker();
       runSplashScreen(1500);
     });
