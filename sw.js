@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v4';
+const CACHE_VERSION = 'v5';
 const APP_SHELL_CACHE = `nook-shell-${CACHE_VERSION}`;
 const RUNTIME_CACHE = `nook-runtime-${CACHE_VERSION}`;
 
@@ -20,9 +20,23 @@ const CACHEABLE_CDN_HOSTS = [
   'unpkg.com'
 ];
 
+function offlineFallbackResponse() {
+  return new Response('', { status: 503, statusText: 'Offline' });
+}
+
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(APP_SHELL_CACHE).then((cache) => cache.addAll(APP_SHELL_ASSETS))
+    caches.open(APP_SHELL_CACHE).then((cache) =>
+      Promise.allSettled(
+        APP_SHELL_ASSETS.map((asset) =>
+          fetch(asset, { cache: 'no-cache' }).then((response) => {
+            if (response && response.ok) {
+              return cache.put(asset, response);
+            }
+          })
+        )
+      )
+    )
   );
 });
 
@@ -53,6 +67,11 @@ self.addEventListener('fetch', (event) => {
 
   const url = new URL(request.url);
 
+  // Never intercept updates to the service worker script itself
+  if (url.origin === self.location.origin && url.pathname.endsWith('/sw.js')) {
+    return;
+  }
+
   // Navigation requests: network-first with cached index.html fallback for offline launches
   if (request.mode === 'navigate') {
     event.respondWith(
@@ -64,7 +83,7 @@ self.addEventListener('fetch', (event) => {
           }
           return response;
         })
-        .catch(() => caches.match('./index.html'))
+        .catch(() => caches.match('./index.html').then((cached) => cached || offlineFallbackResponse()))
     );
     return;
   }
@@ -81,7 +100,7 @@ self.addEventListener('fetch', (event) => {
             }
             return response;
           })
-          .catch(() => cached);
+          .catch(() => cached || offlineFallbackResponse());
 
         return cached || networkPromise;
       })
@@ -101,7 +120,7 @@ self.addEventListener('fetch', (event) => {
               }
               return response;
             })
-            .catch(() => cached);
+            .catch(() => cached || offlineFallbackResponse());
 
           return cached || networkPromise;
         })

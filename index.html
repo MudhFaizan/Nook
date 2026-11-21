@@ -545,6 +545,8 @@
       border-color: transparent;
       color: #FFFFFF;
       box-shadow: 0 6px 16px -3px var(--accent-glow), inset 0 1.5px 2px rgba(255, 255, 255, 0.5);
+    }
+    .check-btn.just-completed {
       animation: bloomSealPop 0.48s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
     .seal-seed-ring {
@@ -1067,6 +1069,7 @@
       z-index: 30;
       box-shadow: var(--shadow-float);
       opacity: 0.94;
+      transition: none !important;
     }
 
     .nav-icon-active {
@@ -1156,7 +1159,7 @@
 </head>
 <body class="min-h-screen flex items-center justify-center sm:py-6 sm:px-4">
   <!-- Full-Viewport Confetti Canvas -->
-  <canvas id="confetti-canvas" class="fixed inset-0 pointer-events-none z-50"></canvas>
+  <canvas id="confetti-canvas" class="fixed inset-0 pointer-events-none z-[60]"></canvas>
 
   <!-- Main Mobile-First Frosted App Container -->
   <div id="app-shell" class="relative w-full sm:max-w-[430px] min-h-screen sm:min-h-[820px] sm:max-h-[880px] sm:rounded-[40px] bg-cozy-primary sm:border border-cozy shadow-float overflow-hidden flex flex-col">
@@ -2164,6 +2167,7 @@
                     class="w-8 h-9 rounded-xl glass-input text-cozy-primary font-bold flex items-center justify-center">−</button>
                   <input id="habit-target-count-input" type="number" min="2" max="99" value="8"
                     oninput="handleModalTargetCountInput(this.value)"
+                    onblur="syncModalTargetCountInput(this)"
                     class="w-14 h-9 text-center rounded-xl glass-input text-sm font-extrabold text-cozy-primary focus:outline-none focus:border-[var(--accent-primary)]" />
                   <button type="button" onclick="stepModalTargetCount(1)" aria-label="Increase target"
                     class="w-8 h-9 rounded-xl glass-input text-cozy-primary font-bold flex items-center justify-center">+</button>
@@ -2189,7 +2193,7 @@
               <label class="text-xs font-semibold text-cozy-secondary">Choose an Emoji</label>
               <div class="flex items-center gap-1.5">
                 <span class="text-[11px] text-cozy-muted">Or type:</span>
-                <input id="custom-emoji-input" type="text" maxlength="2" placeholder="✨"
+                <input id="custom-emoji-input" type="text" maxlength="8" placeholder="✨"
                   oninput="handleCustomEmojiInput(this.value)"
                   class="w-10 h-7 text-center rounded-lg glass-input text-sm focus:outline-none focus:border-[var(--accent-primary)]" />
               </div>
@@ -2266,7 +2270,7 @@
     <!-- ======================================================================
          TOAST NOTIFICATION PILL
          ====================================================================== -->
-    <div id="toast-pill" class="fixed top-5 left-1/2 -translate-x-1/2 z-50 pointer-events-none opacity-0 -translate-y-3 transition-all duration-300">
+    <div id="toast-pill" class="fixed top-5 left-1/2 -translate-x-1/2 z-[60] pointer-events-none opacity-0 -translate-y-3 transition-all duration-300">
       <div class="px-4 py-2 rounded-full bg-glass-modal border border-cozy shadow-float flex items-center gap-2 text-xs font-semibold text-cozy-primary">
         <span id="toast-icon">🌿</span>
         <span id="toast-message">Saved</span>
@@ -2501,13 +2505,17 @@
         emoji: opt.emoji,
         timeOfDay: opt.timeOfDay,
         weeklyGoal: opt.weeklyGoal || 7,
+        targetCount: 1,
+        unit: '',
         createdAt: todayKey,
         versions: [{
           effectiveFrom: todayKey,
           title: opt.title,
           subtitle: opt.subtitle,
           emoji: opt.emoji,
-          weeklyGoal: opt.weeklyGoal || 7
+          weeklyGoal: opt.weeklyGoal || 7,
+          targetCount: 1,
+          unit: ''
         }]
       }));
     }
@@ -2549,8 +2557,8 @@
       const versions = Array.isArray(habit.versions) && habit.versions.length > 0
         ? habit.versions.map(v => ({
             ...v,
-            targetCount: Math.min(99, Math.max(1, Number(v.targetCount) || targetCount)),
-            unit: typeof v.unit === 'string' ? v.unit.trim() : unit
+            targetCount: Math.min(99, Math.max(1, Number(v.targetCount) || 1)),
+            unit: typeof v.unit === 'string' ? v.unit.trim() : ''
           }))
         : [{
             effectiveFrom: fallbackCreated,
@@ -2587,7 +2595,6 @@
             }
             state.logs = parsed.logs && typeof parsed.logs === 'object' ? parsed.logs : {};
             state.counts = parsed.counts && typeof parsed.counts === 'object' ? parsed.counts : {};
-            state.restDays = parsed.restDays && typeof parsed.restDays === 'object' ? parsed.restDays : {};
             state.restDays = parsed.restDays && typeof parsed.restDays === 'object' ? parsed.restDays : {};
             const rawHabits = Array.isArray(parsed.habits) ? parsed.habits : defaults.habits;
             const rawArchived = Array.isArray(parsed.archivedHabits) ? parsed.archivedHabits : [];
@@ -2909,13 +2916,17 @@
           emoji: opt.emoji,
           timeOfDay: opt.timeOfDay,
           weeklyGoal: opt.weeklyGoal || 7,
+          targetCount: 1,
+          unit: '',
           createdAt: todayKey,
           versions: [{
             effectiveFrom: todayKey,
             title: opt.title,
             subtitle: opt.subtitle,
             emoji: opt.emoji,
-            weeklyGoal: opt.weeklyGoal || 7
+            weeklyGoal: opt.weeklyGoal || 7,
+            targetCount: 1,
+            unit: ''
           }]
         }));
         state.archivedHabits = [];
@@ -2930,13 +2941,17 @@
               emoji: opt.emoji,
               timeOfDay: opt.timeOfDay,
               weeklyGoal: opt.weeklyGoal || 7,
+              targetCount: 1,
+              unit: '',
               createdAt: todayKey,
               versions: [{
                 effectiveFrom: todayKey,
                 title: opt.title,
                 subtitle: opt.subtitle,
                 emoji: opt.emoji,
-                weeklyGoal: opt.weeklyGoal || 7
+                weeklyGoal: opt.weeklyGoal || 7,
+                targetCount: 1,
+                unit: ''
               }]
             });
           }
@@ -3194,7 +3209,7 @@
 
     function getGlobalBestStreak() {
       const activeDates = Object.keys(state.logs)
-        .filter(k => getDayCompletionInfo(k).done > 0)
+        .filter(k => /^\d{4}-\d{2}-\d{2}$/.test(k) && getDayCompletionInfo(k).done > 0)
         .sort();
       if (activeDates.length === 0) return 0;
 
@@ -3259,14 +3274,26 @@
       return { label: '🌙 Quiet Month', bg: 'var(--bg-secondary)', color: 'var(--text-muted)' };
     }
 
+    function getElapsedDaysInMonth(year, month, daysInMonth) {
+      const now = new Date();
+      if (year > now.getFullYear() || (year === now.getFullYear() && month > now.getMonth())) {
+        return 0;
+      }
+      if (year === now.getFullYear() && month === now.getMonth()) {
+        return now.getDate();
+      }
+      return daysInMonth;
+    }
+
     function getMonthStreakStats(year, month) {
       const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const elapsedDays = getElapsedDaysInMonth(year, month, daysInMonth);
       let bestStreak = 0;
       let running = 0;
       let activeDays = 0;
       let fullDays = 0;
 
-      for (let d = 1; d <= daysInMonth; d++) {
+      for (let d = 1; d <= elapsedDays; d++) {
         const key = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
         const info = getDayCompletionInfo(key);
         if (info.done > 0) {
@@ -3283,17 +3310,18 @@
         activeDays,
         fullDays,
         daysInMonth,
-        vibe: getStreakVibe(bestStreak, activeDays, daysInMonth)
+        vibe: getStreakVibe(bestStreak, activeDays, elapsedDays)
       };
     }
 
     function getSingleHabitMonthStats(habit, year, month) {
       const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const elapsedDays = getElapsedDaysInMonth(year, month, daysInMonth);
       let bestStreak = 0;
       let running = 0;
       let doneDays = 0;
 
-      for (let d = 1; d <= daysInMonth; d++) {
+      for (let d = 1; d <= elapsedDays; d++) {
         const key = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
         if (isHabitCompletedOn(habit.id, key)) {
           doneDays++;
@@ -3307,7 +3335,7 @@
         bestStreak,
         doneDays,
         daysInMonth,
-        vibe: getStreakVibe(bestStreak, doneDays, daysInMonth)
+        vibe: getStreakVibe(bestStreak, doneDays, elapsedDays)
       };
     }
 
@@ -3619,7 +3647,7 @@
       `;
     }
 
-    function renderHabitsList() {
+    function renderHabitsList(animateCascade = false, justCompletedId = null) {
       const container = document.getElementById('habits-list-container');
       if (!container) return;
 
@@ -3664,6 +3692,7 @@
         const isCountable = targetCount > 1;
         const currentCount = isCountable ? getHabitCountOn(habit.id, dateKey, habit) : (isHabitCompletedOn(habit.id, dateKey) ? 1 : 0);
         const done = isCountable ? currentCount >= targetCount : isHabitCompletedOn(habit.id, dateKey);
+        const justDoneClass = done && justCompletedId === habit.id ? 'just-completed' : '';
         const countPct = isCountable ? Math.min(100, Math.round((currentCount / targetCount) * 100)) : 0;
         const streak = getHabitStreak(habit);
         const weekly = getWeeklyProgressForHabit(habit, dateKey);
@@ -3671,8 +3700,10 @@
 
         const card = document.createElement('div');
         card.setAttribute('data-habit-id', habit.id);
-        card.className = `cozy-card p-3.5 flex items-center justify-between gap-3 ${inDropMode ? 'drop-mode-card' : 'cursor-pointer'} cascade-item`;
-        card.style.animationDelay = `${Math.min(idx * 35, 240)}ms`;
+        card.className = `cozy-card p-3.5 flex items-center justify-between gap-3 ${inDropMode ? 'drop-mode-card' : 'cursor-pointer'} ${animateCascade ? 'cascade-item' : ''}`;
+        if (animateCascade) {
+          card.style.animationDelay = `${Math.min(idx * 35, 240)}ms`;
+        }
 
         if (!inDropMode) {
           card.onclick = (e) => {
@@ -3724,7 +3755,7 @@
                 </button>
                 <button type="button" onclick="adjustHabitCount('${habit.id}', 1, event)"
                   aria-label="Add one to ${escapeHtml(habit.title)}"
-                  class="check-btn w-11 h-11 flex-shrink-0 border border-cozy bg-cozy-elevated flex items-center justify-center ${done ? 'completed' : ''}">
+                  class="check-btn w-11 h-11 flex-shrink-0 border border-cozy bg-cozy-elevated flex items-center justify-center ${done ? 'completed' : ''} ${justDoneClass}">
                   <span class="seal-seed-ring"></span>
                   <span class="relative z-10 flex items-center justify-center">
                     ${done ? getBloomSealSvg(true) : '<span class="text-xs font-extrabold accent-text">+1</span>'}
@@ -3735,7 +3766,7 @@
             : `
               <button type="button" onclick="toggleHabitCompletion('${habit.id}', event)"
                 aria-label="Toggle ${escapeHtml(habit.title)}"
-                class="check-btn w-11 h-11 flex-shrink-0 border border-cozy bg-cozy-elevated flex items-center justify-center ${done ? 'completed' : ''}">
+                class="check-btn w-11 h-11 flex-shrink-0 border border-cozy bg-cozy-elevated flex items-center justify-center ${done ? 'completed' : ''} ${justDoneClass}">
                 <span class="seal-seed-ring"></span>
                 <span class="relative z-10 flex items-center justify-center">${getBloomSealSvg(done)}</span>
               </button>
@@ -3824,7 +3855,7 @@
       renderHeader();
       renderWeekStrip(false);
       renderDailyProgress();
-      renderHabitsList();
+      renderHabitsList(false, nowCompleted ? habitId : null);
     }
 
     function adjustHabitCount(habitId, delta, event) {
@@ -3882,7 +3913,7 @@
       renderHeader();
       renderWeekStrip(false);
       renderDailyProgress();
-      renderHabitsList();
+      renderHabitsList(false, (!wasHabitDone && isHabitDone) ? habitId : null);
     }
 
     function renderTodayView(animateCalendar = false) {
@@ -3915,7 +3946,7 @@
 
       renderWeekStrip(animateCalendar);
       renderDailyProgress();
-      renderHabitsList();
+      renderHabitsList(animateCalendar);
       if (state.ui.discoverOpen) renderRecommendations();
     }
 
@@ -4028,16 +4059,25 @@
       const todayKey = getTodayKey();
       const [removed] = state.habits.splice(idx, 1);
 
-      // Remember whether it was checked today so Undo can restore today's check-in too
+      // Remember whether it was checked or partially counted today so Undo can restore it
       const wasLoggedToday = isHabitCompletedOn(habitId, todayKey);
       if (wasLoggedToday && Array.isArray(state.logs[todayKey])) {
         state.logs[todayKey] = state.logs[todayKey].filter(id => id !== habitId);
         if (state.logs[todayKey].length === 0) delete state.logs[todayKey];
       }
 
+      const todayCount = (state.counts && state.counts[todayKey] && typeof state.counts[todayKey][habitId] === 'number')
+        ? state.counts[todayKey][habitId]
+        : 0;
+      if (state.counts && state.counts[todayKey] && habitId in state.counts[todayKey]) {
+        delete state.counts[todayKey][habitId];
+        if (Object.keys(state.counts[todayKey]).length === 0) delete state.counts[todayKey];
+      }
+
       // Preserve past days' history by archiving any habit that existed before today
       const hadPastHistory = (removed.createdAt && removed.createdAt < todayKey) ||
-        Object.keys(state.logs).some(k => k < todayKey && isHabitCompletedOn(habitId, k));
+        Object.keys(state.logs).some(k => k < todayKey && isHabitCompletedOn(habitId, k)) ||
+        Object.keys(state.counts || {}).some(k => k < todayKey && state.counts[k] && state.counts[k][habitId] > 0);
 
       if (hadPastHistory) {
         if (!Array.isArray(state.archivedHabits)) state.archivedHabits = [];
@@ -4048,7 +4088,7 @@
         });
       }
 
-      state.ui.lastDroppedHabit = { habit: removed, index: idx, wasLoggedToday };
+      state.ui.lastDroppedHabit = { habit: removed, index: idx, wasLoggedToday, todayCount };
       saveState();
       playCozySound('uncheck');
       renderTodayView(false);
@@ -4074,15 +4114,20 @@
 
     function undoDropHabit() {
       if (!state.ui.lastDroppedHabit) return;
-      const { habit, index, wasLoggedToday } = state.ui.lastDroppedHabit;
+      const { habit, index, wasLoggedToday, todayCount } = state.ui.lastDroppedHabit;
       if (Array.isArray(state.archivedHabits)) {
         state.archivedHabits = state.archivedHabits.filter(h => h.id !== habit.id);
       }
       state.habits.splice(Math.min(index, state.habits.length), 0, habit);
+      const todayKey = getTodayKey();
       if (wasLoggedToday) {
-        const todayKey = getTodayKey();
         if (!Array.isArray(state.logs[todayKey])) state.logs[todayKey] = [];
         if (!state.logs[todayKey].includes(habit.id)) state.logs[todayKey].push(habit.id);
+      }
+      if (todayCount > 0) {
+        if (!state.counts || typeof state.counts !== 'object') state.counts = {};
+        if (!state.counts[todayKey]) state.counts[todayKey] = {};
+        state.counts[todayKey][habit.id] = todayCount;
       }
       state.ui.lastDroppedHabit = null;
       clearTimeout(state.ui.undoTimer);
@@ -4125,6 +4170,7 @@
           const sibId = sib.getAttribute('data-habit-id');
           const fromIdx = state.habits.findIndex(h => h.id === habitId);
           const toIdx = state.habits.findIndex(h => h.id === sibId);
+          if (fromIdx === -1 || toIdx === -1) continue;
 
           if (fromIdx < toIdx && cardMid > sibMid) {
             const [item] = state.habits.splice(fromIdx, 1);
@@ -4144,11 +4190,14 @@
         }
       });
 
-      const endDrag = () => {
+      const endDrag = (e) => {
         if (!dragging) return;
         dragging = false;
         card.classList.remove('is-dragging');
         card.style.transform = '';
+        if (e && e.pointerId != null && card.hasPointerCapture(e.pointerId)) {
+          card.releasePointerCapture(e.pointerId);
+        }
         saveState();
       };
 
@@ -4754,6 +4803,14 @@
       }
     }
 
+    function syncModalTargetCountInput(inputEl) {
+      if (!inputEl) return;
+      const clamped = Math.min(99, Math.max(2, Number(state.ui.modalTargetCount) || 2));
+      state.ui.modalTargetCount = clamped;
+      inputEl.value = String(clamped);
+      updateModalDailyTargetHelper();
+    }
+
     function handleModalUnitInput(val) {
       state.ui.modalUnit = String(val || '').slice(0, 16);
       updateModalDailyTargetHelper();
@@ -4831,8 +4888,17 @@
 
     function handleCustomEmojiInput(val) {
       const trimmed = (val || '').trim();
-      if (trimmed) {
-        state.ui.modalEmoji = Array.from(trimmed)[0];
+      if (!trimmed) return;
+      let firstGrapheme = '';
+      if (typeof Intl !== 'undefined' && typeof Intl.Segmenter === 'function') {
+        const seg = new Intl.Segmenter(undefined, { granularity: 'grapheme' });
+        const first = seg.segment(trimmed)[Symbol.iterator]().next();
+        firstGrapheme = first.value ? first.value.segment : '';
+      } else {
+        firstGrapheme = Array.from(trimmed)[0] || '';
+      }
+      if (firstGrapheme) {
+        state.ui.modalEmoji = firstGrapheme;
         renderEmojiGrid();
       }
     }
@@ -4909,6 +4975,9 @@
             if (todayCount > 0) {
               setHabitCountOn(existing.id, todayKey, Math.min(todayCount, targetCount), targetCount);
             }
+          } else if (state.counts && state.counts[todayKey] && existing.id in state.counts[todayKey]) {
+            delete state.counts[todayKey][existing.id];
+            if (Object.keys(state.counts[todayKey]).length === 0) delete state.counts[todayKey];
           }
         }
         showToast('Ritual updated from today onward', emoji);
@@ -5001,7 +5070,8 @@
     function toggleHabitFromDetail(habitId, dateKey) {
       if (dateKey > getTodayKey()) return;
       const habit = getAllKnownHabits().find(h => h.id === habitId);
-      const snapshot = habit ? getHabitSnapshotForDate(habit, dateKey) : null;
+      if (!habit || (habit.archivedAt && dateKey >= habit.archivedAt)) return;
+      const snapshot = getHabitSnapshotForDate(habit, dateKey);
       const targetCount = getHabitTargetCount(snapshot);
 
       if (targetCount > 1) {
@@ -5049,10 +5119,11 @@
         const dt = parseDateKey(key);
         const done = isHabitCompletedOn(habit.id, key);
         const activeOnDay = isHabitActiveOnDate(habit, key);
+        const isArchivedDay = Boolean(habit.archivedAt && key >= habit.archivedAt);
         const letter = dt.toLocaleDateString('en-US', { weekday: 'short' }).slice(0, 2);
         miniWeekHtml += `
-          <button type="button" onclick="toggleHabitFromDetail('${habit.id}', '${key}')"
-            class="cal-grid-cell py-2 rounded-2xl border flex flex-col items-center gap-1 ${done ? 'accent-bg text-white border-transparent' : 'bg-cozy-secondary/60 border-cozy text-cozy-secondary'} ${!activeOnDay && !done ? 'opacity-45' : ''} ${animateCalendar ? 'cal-cell-bloom' : ''}"
+          <button type="button" ${isArchivedDay ? 'disabled' : ''} onclick="toggleHabitFromDetail('${habit.id}', '${key}')"
+            class="cal-grid-cell py-2 rounded-2xl border flex flex-col items-center gap-1 ${done ? 'accent-bg text-white border-transparent' : 'bg-cozy-secondary/60 border-cozy text-cozy-secondary'} ${isArchivedDay ? 'opacity-30 cursor-default' : (!activeOnDay && !done ? 'opacity-45' : '')} ${animateCalendar ? 'cal-cell-bloom' : ''}"
             ${animateCalendar ? `style="animation-delay: ${(6 - i) * 28}ms"` : ''}>
             <span class="text-[9px] font-semibold opacity-80">${letter}</span>
             <span class="text-xs font-extrabold">${dt.getDate()}</span>
@@ -5072,12 +5143,13 @@
         const done = isHabitCompletedOn(habit.id, key);
         const activeOnDay = isHabitActiveOnDate(habit, key);
         const isFuture = key > todayKey;
+        const isDisabled = isFuture || Boolean(habit.archivedAt && key >= habit.archivedAt);
         const cellIdx = startPad + d - 1;
         const delay = (Math.floor(cellIdx / 7) + (cellIdx % 7)) * 16;
 
         monthGridHtml += `
-          <button type="button" ${isFuture ? 'disabled' : ''} onclick="toggleHabitFromDetail('${habit.id}', '${key}')"
-            class="cal-grid-cell aspect-square rounded-xl border text-[11px] font-bold flex items-center justify-center ${done ? 'accent-bg text-white border-transparent' : 'bg-cozy-secondary/55 border-cozy text-cozy-secondary'} ${isFuture ? 'opacity-30 cursor-default' : (!activeOnDay && !done ? 'opacity-45' : '')} ${animateCalendar ? 'cal-cell-bloom' : ''}"
+          <button type="button" ${isDisabled ? 'disabled' : ''} onclick="toggleHabitFromDetail('${habit.id}', '${key}')"
+            class="cal-grid-cell aspect-square rounded-xl border text-[11px] font-bold flex items-center justify-center ${done ? 'accent-bg text-white border-transparent' : 'bg-cozy-secondary/55 border-cozy text-cozy-secondary'} ${isDisabled ? 'opacity-30 cursor-default' : (!activeOnDay && !done ? 'opacity-45' : '')} ${animateCalendar ? 'cal-cell-bloom' : ''}"
             ${animateCalendar ? `style="animation-delay: ${delay}ms"` : ''}>
             ${d}
           </button>
@@ -5345,8 +5417,15 @@
           const parsed = JSON.parse(e.target.result);
           if (parsed && Array.isArray(parsed.habits)) {
             state.user = { ...state.user, ...(parsed.user || {}) };
-            state.logs = parsed.logs || {};
+            if (!BOTANICAL_COMPANIONS.some(c => c.id === state.user.companion)) {
+              state.user.companion = 'fern';
+            }
+            if (state.user.accent === 'berry') {
+              state.user.accent = 'blue';
+            }
+            state.logs = parsed.logs && typeof parsed.logs === 'object' ? parsed.logs : {};
             state.counts = parsed.counts && typeof parsed.counts === 'object' ? parsed.counts : {};
+            state.restDays = parsed.restDays && typeof parsed.restDays === 'object' ? parsed.restDays : {};
             state.habits = parsed.habits.map(h => normalizeHabitRecord(h, state.logs));
             state.archivedHabits = Array.isArray(parsed.archivedHabits)
               ? parsed.archivedHabits.map(h => normalizeHabitRecord(h, state.logs))
@@ -5414,6 +5493,11 @@
         dropBtn.classList.add('glass-pill', 'text-cozy-secondary');
         dropLabel.textContent = 'Drop / Edit';
       }
+
+      state.ui.lastDroppedHabit = null;
+      clearTimeout(state.ui.undoTimer);
+      const undoBar = document.getElementById('undo-bar');
+      if (undoBar) undoBar.classList.add('pointer-events-none', 'opacity-0', 'translate-y-4');
 
       saveState();
       closeResetConfirmModal();
@@ -5489,8 +5573,13 @@
     document.addEventListener('pointerdown', (e) => {
       const btn = e.target.closest('button, label.cursor-pointer');
       if (!btn || btn.disabled) return;
-      if (btn.classList.contains('check-btn')) return; // Handled with check/celebrate/uncelebrate
-      if (btn.classList.contains('nav-tab')) return; // Handled in switchTab
+      if (
+        btn.classList.contains('check-btn') ||
+        btn.classList.contains('count-step-btn') ||
+        btn.classList.contains('nav-tab') ||
+        btn.id === 'rest-day-toggle-btn' ||
+        btn.closest('#onboarding-companions-grid, #onboarding-starters-grid')
+      ) return;
       playCozySound('tap');
     }, { passive: true });
 
