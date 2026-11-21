@@ -1265,6 +1265,178 @@
       animation: swipeEdgeBumpRight 0.34s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
+    /* Interactive Sanctuary Garden Sheet Styles */
+    .sanctuary-terrarium-btn {
+      position: relative;
+      border-radius: 9999px;
+      background: transparent;
+      border: 0;
+      padding: 0;
+      cursor: pointer;
+    }
+    .sanctuary-terrarium-btn:active {
+      transform: scale(0.95) !important;
+    }
+    .sanctuary-sparkle {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      border-radius: 9999px;
+      background: var(--accent-primary);
+      box-shadow: 0 0 10px var(--accent-glow);
+      pointer-events: none;
+      z-index: 4;
+      animation: sanctuarySparkleFloat 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+    @keyframes sanctuarySparkleFloat {
+      0% { opacity: 0; transform: translate(0, 6px) scale(0.4); }
+      25% { opacity: 0.95; transform: translate(var(--sx, 0px), -10px) scale(1.1); }
+      100% { opacity: 0; transform: translate(calc(var(--sx, 0px) * 1.4), -36px) scale(0.3); }
+    }
+    .sanctuary-ambient-dot {
+      position: absolute;
+      width: 5px;
+      height: 5px;
+      border-radius: 9999px;
+      background: #FFFFFF;
+      box-shadow: 0 0 8px var(--accent-glow);
+      opacity: 0.75;
+      pointer-events: none;
+      z-index: 3;
+      animation: sanctuaryFirefly 3.6s ease-in-out infinite alternate;
+    }
+    @keyframes sanctuaryFirefly {
+      0% { transform: translate(0, 0) scale(0.8); opacity: 0.35; }
+      100% { transform: translate(6px, -8px) scale(1.15); opacity: 0.9; }
+    }
+    .sanctuary-stage-node {
+      width: 24px;
+      height: 24px;
+      border-radius: 9px;
+      border: 1px solid var(--border-glass);
+      background: var(--bg-glass-input);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      transition: all 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .sanctuary-stage-node.is-reached {
+      background: linear-gradient(135deg, var(--accent-grad-start) 0%, var(--accent-primary) 55%, var(--accent-grad-end) 100%);
+      border-color: transparent;
+      color: #FFFFFF;
+      box-shadow: 0 4px 12px -3px var(--accent-glow);
+    }
+    .sanctuary-stage-node.is-current {
+      transform: scale(1.12);
+      box-shadow: 0 0 0 3px var(--accent-soft), 0 6px 14px -3px var(--accent-glow);
+    }
+    .sanctuary-badge-card {
+      border-radius: 18px;
+      padding: 10px 8px;
+      border: 1px solid var(--border-glass);
+      background: var(--bg-glass-input);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1),
+                  border-color 0.25s ease,
+                  background-color 0.25s ease,
+                  opacity 0.25s ease;
+    }
+    .sanctuary-badge-card.is-unlocked {
+      background: var(--bg-glass-elevated);
+      border-color: var(--accent-medium);
+      box-shadow: 0 6px 16px -8px var(--accent-glow), inset 0 1px 1px rgba(255, 255, 255, 0.55);
+    }
+    .sanctuary-badge-card.is-locked {
+      opacity: 0.58;
+      filter: grayscale(0.45);
+    }
+
+    /* Liquid-Glass Mindful Timer Styles */
+    .timer-orb-wrap {
+      position: relative;
+      width: 152px;
+      height: 152px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .timer-orb-ring {
+      position: absolute;
+      inset: -7px;
+      border-radius: 9999px;
+      border: 1.5px dashed var(--accent-medium);
+      opacity: 0.45;
+      pointer-events: none;
+      transition: opacity 0.35s ease;
+    }
+    .timer-orb-wrap.is-running .timer-orb-ring {
+      opacity: 0.78;
+      animation: terrariumOrbit 24s linear infinite;
+    }
+    .timer-orb-shell {
+      position: relative;
+      width: 140px;
+      height: 140px;
+      border-radius: 9999px;
+      background: var(--bg-glass-elevated);
+      border: 1.5px solid var(--border-glass);
+      box-shadow: var(--shadow-float),
+                  0 0 34px -8px var(--accent-glow),
+                  inset 0 2px 10px rgba(255, 255, 255, 0.65);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .timer-orb-shell::before {
+      content: '';
+      position: absolute;
+      top: 12px;
+      left: 22px;
+      width: 44px;
+      height: 16px;
+      border-radius: 9999px;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.62), rgba(255, 255, 255, 0));
+      transform: rotate(-28deg);
+      pointer-events: none;
+      z-index: 3;
+    }
+    .timer-clock-text {
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.02em;
+      text-shadow: 0 1px 10px rgba(255, 255, 255, 0.35);
+    }
+    [data-theme="dark"] .timer-clock-text {
+      text-shadow: 0 1px 12px rgba(0, 0, 0, 0.55);
+    }
+    .timer-live-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 9999px;
+      background: var(--accent-primary);
+      box-shadow: 0 0 10px var(--accent-glow);
+      animation: timerDotPulse 1.6s ease-in-out infinite;
+    }
+    @keyframes timerDotPulse {
+      0%, 100% { opacity: 0.45; transform: scale(0.85); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+    .habit-timer-chip {
+      transition: transform 0.24s cubic-bezier(0.34, 1.56, 0.64, 1),
+                  background-color 0.2s ease,
+                  border-color 0.2s ease;
+    }
+    .habit-timer-chip.is-live {
+      background: linear-gradient(135deg, var(--accent-grad-start) 0%, var(--accent-primary) 100%);
+      color: #FFFFFF;
+      box-shadow: 0 3px 10px -3px var(--accent-glow);
+    }
+
     /* Splash Zen Bloom Animation */
     .splash-bloom-orb {
       animation: splashOrbFloat 2.4s ease-in-out infinite alternate;
@@ -1285,6 +1457,7 @@
         }
         #fab-add-habit,
         #undo-bar,
+        #floating-timer-bar,
         #pwa-install-banner,
         #pwa-update-banner {
           bottom: calc(6rem + env(safe-area-inset-bottom));
@@ -1488,10 +1661,10 @@
 
       <!-- Right Action Pills: Streak Pill with Circular Leaf Well + Round Theme Button -->
       <div class="flex items-center gap-2 flex-shrink-0">
-        <div title="Current active daily streak" class="pl-1.5 pr-3 py-1.5 rounded-full glass-pill flex items-center gap-1.5">
+        <button type="button" onclick="openSanctuaryModal()" title="Open Sanctuary Garden" aria-label="Open Sanctuary Garden" class="pl-1.5 pr-3 py-1.5 rounded-full glass-pill flex items-center gap-1.5">
           <span class="w-6 h-6 rounded-full accent-bg-soft flex items-center justify-center text-xs leading-none">🌿</span>
           <span id="global-streak-count" class="text-xs font-bold text-cozy-primary">0d</span>
-        </div>
+        </button>
 
         <button type="button" onclick="toggleTheme()" aria-label="Toggle Light/Dark Mode"
           class="w-9 h-9 rounded-full glass-pill flex items-center justify-center text-cozy-secondary hover:text-cozy-primary">
@@ -2144,7 +2317,7 @@
     <!-- ======================================================================
          GLASSY UNDO TOAST FOR DROPPED HABITS
          ====================================================================== -->
-    <div id="undo-bar" class="fixed sm:absolute bottom-24 left-5 right-20 z-30 pointer-events-none opacity-0 translate-y-4 transition-all duration-300">
+    <div id="undo-bar" class="fixed sm:absolute bottom-24 left-5 right-20 z-[35] pointer-events-none opacity-0 translate-y-4 transition-all duration-300">
       <div class="px-4 py-3 rounded-2xl bg-glass-modal border border-cozy shadow-float flex items-center justify-between gap-2 text-xs font-semibold text-cozy-primary">
         <div class="flex items-center gap-2 truncate">
           <span id="undo-bar-emoji">🍃</span>
@@ -2153,6 +2326,38 @@
         <button type="button" onclick="undoDropHabit()" class="px-3 py-1 rounded-xl accent-bg text-white font-bold text-xs flex-shrink-0 active:scale-95 transition">
           Undo
         </button>
+      </div>
+    </div>
+
+    <!-- ======================================================================
+         FLOATING LIQUID-GLASS MINI TIMER CAPSULE (When Timer Is Minimized)
+         ====================================================================== -->
+    <div id="floating-timer-bar" class="fixed sm:absolute bottom-24 left-4 right-[84px] z-30 hidden opacity-0 translate-y-4 transition-all duration-300">
+      <div onclick="reopenActiveTimerSheet()" class="relative overflow-hidden px-3 py-2.5 rounded-2xl bg-glass-modal border border-cozy shadow-float flex items-center justify-between gap-2 cursor-pointer">
+        <div class="flex items-center gap-2.5 min-w-0">
+          <span id="floating-timer-emoji" class="w-8 h-8 rounded-xl accent-bg-soft flex items-center justify-center text-base flex-shrink-0">⏱️</span>
+          <div class="min-w-0">
+            <div class="flex items-center gap-1.5">
+              <span id="floating-timer-dot" class="timer-live-dot flex-shrink-0"></span>
+              <span id="floating-timer-clock" class="timer-clock-text text-xs font-extrabold accent-text">10:00</span>
+              <span id="floating-timer-state-tag" class="text-[9px] font-bold uppercase tracking-wider text-cozy-muted">Flow</span>
+            </div>
+            <p id="floating-timer-title" class="text-[11px] font-bold text-cozy-primary truncate leading-tight mt-0.5">Mindful ritual</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-1 flex-shrink-0">
+          <button type="button" id="floating-timer-toggle-btn" onclick="event.stopPropagation(); toggleMindfulTimer()" aria-label="Pause or resume timer"
+            class="timer-play-btn w-8 h-8 rounded-xl accent-bg text-white flex items-center justify-center shadow-2xs">
+            <i id="floating-timer-toggle-icon" class="ph-fill ph-pause text-xs"></i>
+          </button>
+          <button type="button" onclick="event.stopPropagation(); clearMindfulTimer()" aria-label="Stop and dismiss timer"
+            class="w-7 h-8 rounded-xl bg-cozy-secondary text-cozy-muted hover:text-cozy-primary flex items-center justify-center text-xs">
+            <i class="ph-bold ph-x"></i>
+          </button>
+        </div>
+        <div class="absolute left-0 right-0 bottom-0 h-[3px] bg-cozy-secondary/60 pointer-events-none">
+          <div id="floating-timer-progress" class="h-full accent-progress-gradient transition-all duration-300" style="width: 0%;"></div>
+        </div>
       </div>
     </div>
 
@@ -2337,6 +2542,50 @@
             </div>
           </div>
 
+          <!-- Mindful Timer: Optional Custom Duration -->
+          <div>
+            <div class="flex items-center justify-between mb-1.5">
+              <label class="text-xs font-semibold text-cozy-secondary">Mindful Timer</label>
+              <span id="timer-target-helper" class="text-[11px] font-semibold accent-text">No timer</span>
+            </div>
+            <div class="grid grid-cols-2 gap-1.5 p-1.5 rounded-2xl bg-cozy-secondary/60 border border-cozy">
+              <button type="button" id="timer-mode-off" onclick="setModalTimerMode(false)"
+                class="py-1.5 rounded-xl text-[11px] font-bold transition accent-bg text-white shadow-xs">
+                No Timer
+              </button>
+              <button type="button" id="timer-mode-on" onclick="setModalTimerMode(true)"
+                class="py-1.5 rounded-xl text-[11px] font-bold transition text-cozy-secondary hover:bg-cozy-elevated">
+                Custom Duration
+              </button>
+            </div>
+
+            <div id="timer-config-panel" class="hidden mt-2.5 p-3 rounded-2xl bg-cozy-secondary/50 border border-cozy space-y-2.5">
+              <div class="flex items-center justify-between gap-2">
+                <div class="flex items-center gap-1.5 flex-shrink-0">
+                  <button type="button" onclick="stepModalTimerMinutes(-1)" aria-label="Decrease timer minutes"
+                    class="w-8 h-9 rounded-xl glass-input text-cozy-primary font-bold flex items-center justify-center">−</button>
+                  <input id="habit-timer-mins-input" type="number" min="1" max="180" value="15"
+                    oninput="handleModalTimerMinutesInput(this.value)"
+                    onblur="syncModalTimerMinutesInput(this)"
+                    class="w-16 h-9 text-center rounded-xl glass-input text-sm font-extrabold text-cozy-primary focus:outline-none focus:border-[var(--accent-primary)]" />
+                  <button type="button" onclick="stepModalTimerMinutes(1)" aria-label="Increase timer minutes"
+                    class="w-8 h-9 rounded-xl glass-input text-cozy-primary font-bold flex items-center justify-center">+</button>
+                </div>
+                <span class="text-xs font-semibold text-cozy-secondary pr-1">minutes</span>
+              </div>
+
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <span class="text-[10px] text-cozy-muted mr-0.5">Quick:</span>
+                <button type="button" onclick="applyTimerPreset(5)" class="px-2 py-0.5 rounded-lg bg-cozy-elevated border border-cozy text-[10px] font-semibold text-cozy-secondary">5m</button>
+                <button type="button" onclick="applyTimerPreset(10)" class="px-2 py-0.5 rounded-lg bg-cozy-elevated border border-cozy text-[10px] font-semibold text-cozy-secondary">10m</button>
+                <button type="button" onclick="applyTimerPreset(15)" class="px-2 py-0.5 rounded-lg bg-cozy-elevated border border-cozy text-[10px] font-semibold text-cozy-secondary">15m</button>
+                <button type="button" onclick="applyTimerPreset(25)" class="px-2 py-0.5 rounded-lg bg-cozy-elevated border border-cozy text-[10px] font-semibold text-cozy-secondary">25m</button>
+                <button type="button" onclick="applyTimerPreset(45)" class="px-2 py-0.5 rounded-lg bg-cozy-elevated border border-cozy text-[10px] font-semibold text-cozy-secondary">45m</button>
+                <button type="button" onclick="applyTimerPreset(60)" class="px-2 py-0.5 rounded-lg bg-cozy-elevated border border-cozy text-[10px] font-semibold text-cozy-secondary">60m</button>
+              </div>
+            </div>
+          </div>
+
           <!-- Categorized Rich Emoji Picker + Custom Emoji Input -->
           <div>
             <div class="flex items-center justify-between mb-1.5">
@@ -2386,6 +2635,18 @@
         <div class="w-10 h-1 bg-cozy-secondary rounded-full mx-auto mb-3 sm:hidden"></div>
         <div id="habit-detail-content" class="space-y-4">
           <!-- Populated dynamically when a habit card is tapped -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================================
+         INTERACTIVE SANCTUARY GARDEN FROSTED BOTTOM-SHEET MODAL
+         ====================================================================== -->
+    <div id="sanctuary-modal-backdrop" class="fixed inset-0 bg-black/45 backdrop-blur-sm z-40 hidden opacity-0 transition-opacity duration-300 flex items-end sm:items-center justify-center p-0 sm:p-4">
+      <div id="sanctuary-modal-sheet" class="bg-glass-modal border border-cozy w-full max-w-[430px] rounded-t-[32px] sm:rounded-[32px] p-5 shadow-float transform translate-y-full sm:translate-y-6 sm:scale-95 cozy-modal-sheet max-h-[90vh] overflow-y-auto no-scrollbar">
+        <div class="w-10 h-1 bg-cozy-secondary rounded-full mx-auto mb-3 sm:hidden"></div>
+        <div id="sanctuary-modal-content" class="space-y-4">
+          <!-- Populated dynamically when Sanctuary Garden is opened -->
         </div>
       </div>
     </div>
@@ -2448,33 +2709,33 @@
     const HABIT_RECOMMENDATIONS = {
       mind: [
         { title: 'Morning Matcha or Warm Tea', subtitle: 'Savor a quiet cup before checking messages', emoji: '🍵', timeOfDay: 'morning', weeklyGoal: 7 },
-        { title: '5-Min Gratitude Journal', subtitle: 'Write down 3 small joys from today', emoji: '✍️', timeOfDay: 'morning', weeklyGoal: 5 },
+        { title: '5-Min Gratitude Journal', subtitle: 'Write down 3 small joys from today', emoji: '✍️', timeOfDay: 'morning', weeklyGoal: 5, timerMinutes: 5 },
         { title: 'Read 10 Pages of a Book', subtitle: 'Cozy fiction or mindful reading', emoji: '📖', timeOfDay: 'evening', weeklyGoal: 5, targetCount: 10, unit: 'pages' },
-        { title: 'Evening Candle & Wind-down', subtitle: 'Dim the lights and relax your shoulders', emoji: '🕯️', timeOfDay: 'evening', weeklyGoal: 7 },
-        { title: '10m Mindful Breathing', subtitle: 'Unclench your jaw and breathe deeply', emoji: '🧘', timeOfDay: 'afternoon', weeklyGoal: 4 }
+        { title: 'Evening Candle & Wind-down', subtitle: 'Dim the lights and relax your shoulders', emoji: '🕯️', timeOfDay: 'evening', weeklyGoal: 7, timerMinutes: 15 },
+        { title: '10m Mindful Breathing', subtitle: 'Unclench your jaw and breathe deeply', emoji: '🧘', timeOfDay: 'afternoon', weeklyGoal: 4, timerMinutes: 10 }
       ],
       body: [
         { title: 'Drink 8 Glasses of Water', subtitle: 'Stay gently hydrated through the day', emoji: '💧', timeOfDay: 'morning', weeklyGoal: 7, targetCount: 8, unit: 'glasses' },
         { title: '8,000 Daily Steps or Walk', subtitle: 'Fresh air and gentle outdoor movement', emoji: '👟', timeOfDay: 'afternoon', weeklyGoal: 5 },
-        { title: '30m Workout or Stretching', subtitle: 'Move your body in a way that feels good', emoji: '💪', timeOfDay: 'morning', weeklyGoal: 4 },
+        { title: '30m Workout or Stretching', subtitle: 'Move your body in a way that feels good', emoji: '💪', timeOfDay: 'morning', weeklyGoal: 4, timerMinutes: 30 },
         { title: 'Eat a Colorful Whole Meal', subtitle: 'Nourish yourself with greens & protein', emoji: '🥗', timeOfDay: 'afternoon', weeklyGoal: 6 },
         { title: 'In Bed by 11:00 PM', subtitle: 'Protect 8 hours of restful sleep', emoji: '😴', timeOfDay: 'evening', weeklyGoal: 6 }
       ],
       focus: [
-        { title: '1 Hour Deep Focus Block', subtitle: 'Single-task with notifications silenced', emoji: '💻', timeOfDay: 'morning', weeklyGoal: 5 },
-        { title: 'Digital Sunset (No Screens)', subtitle: 'Put phone away 30m before sleep', emoji: '📵', timeOfDay: 'evening', weeklyGoal: 6 },
-        { title: '10m Desk & Room Reset', subtitle: 'Clear your physical space for tomorrow', emoji: '🧹', timeOfDay: 'evening', weeklyGoal: 3 },
+        { title: '1 Hour Deep Focus Block', subtitle: 'Single-task with notifications silenced', emoji: '💻', timeOfDay: 'morning', weeklyGoal: 5, timerMinutes: 60 },
+        { title: 'Digital Sunset (No Screens)', subtitle: 'Put phone away 30m before sleep', emoji: '📵', timeOfDay: 'evening', weeklyGoal: 6, timerMinutes: 30 },
+        { title: '10m Desk & Room Reset', subtitle: 'Clear your physical space for tomorrow', emoji: '🧹', timeOfDay: 'evening', weeklyGoal: 3, timerMinutes: 10 },
         { title: 'Listen to an Inspiring Podcast', subtitle: 'Learn one new idea during your break', emoji: '🎧', timeOfDay: 'afternoon', weeklyGoal: 3 },
-        { title: 'Practice Creative Hobby', subtitle: 'Sketch, play music, or craft for 15m', emoji: '🎨', timeOfDay: 'afternoon', weeklyGoal: 3 }
+        { title: 'Practice Creative Hobby', subtitle: 'Sketch, play music, or craft for 15m', emoji: '🎨', timeOfDay: 'afternoon', weeklyGoal: 3, timerMinutes: 15 }
       ]
     };
 
     // Clean 2x2 Starter Seeds shown on First-Time Welcome Screen
     const ONBOARDING_STARTER_OPTIONS = [
-      { id: 'st_water', shortTitle: 'Warm Water', title: 'Drink a warm glass of water', subtitle: 'Hydrate gently upon waking', emoji: '💧', timeOfDay: 'morning', weeklyGoal: 7, selected: true },
-      { id: 'st_stretch', shortTitle: 'Morning Stretch', title: '10m morning stretch or walk', subtitle: 'Sunlight & gentle movement', emoji: '🧘', timeOfDay: 'morning', weeklyGoal: 5, selected: true },
-      { id: 'st_tea', shortTitle: 'Mindful Tea', title: 'Mindful afternoon tea pause', subtitle: 'Step away from screens for 10m', emoji: '🍵', timeOfDay: 'afternoon', weeklyGoal: 7, selected: true },
-      { id: 'st_read', shortTitle: 'Evening Read', title: 'Read 15 mins before sleep', subtitle: 'Unwind with a cozy book', emoji: '📖', timeOfDay: 'evening', weeklyGoal: 4, selected: true }
+      { id: 'st_water', shortTitle: 'Warm Water', title: 'Drink a warm glass of water', subtitle: 'Hydrate gently upon waking', emoji: '💧', timeOfDay: 'morning', weeklyGoal: 7, timerMinutes: 0, selected: true },
+      { id: 'st_stretch', shortTitle: 'Morning Stretch', title: '10m morning stretch or walk', subtitle: 'Sunlight & gentle movement', emoji: '🧘', timeOfDay: 'morning', weeklyGoal: 5, timerMinutes: 10, selected: true },
+      { id: 'st_tea', shortTitle: 'Mindful Tea', title: 'Mindful afternoon tea pause', subtitle: 'Step away from screens for 10m', emoji: '🍵', timeOfDay: 'afternoon', weeklyGoal: 7, timerMinutes: 10, selected: true },
+      { id: 'st_read', shortTitle: 'Evening Read', title: 'Read 15 mins before sleep', subtitle: 'Unwind with a cozy book', emoji: '📖', timeOfDay: 'evening', weeklyGoal: 4, timerMinutes: 15, selected: true }
     ];
 
     // Living Botanical Companions (Grow visually with your active streak)
@@ -2570,6 +2831,8 @@
         modalWeeklyGoal: 7,
         modalTargetCount: 1,
         modalUnit: '',
+        modalTimerMinutes: 0,
+        detailTimerExpanded: false,
         lastDroppedHabit: null,
         undoTimer: null
       }
@@ -2658,6 +2921,7 @@
         weeklyGoal: opt.weeklyGoal || 7,
         targetCount: 1,
         unit: '',
+        timerMinutes: opt.timerMinutes || 0,
         createdAt: todayKey,
         versions: [{
           effectiveFrom: todayKey,
@@ -2666,7 +2930,8 @@
           emoji: opt.emoji,
           weeklyGoal: opt.weeklyGoal || 7,
           targetCount: 1,
-          unit: ''
+          unit: '',
+          timerMinutes: opt.timerMinutes || 0
         }]
       }));
     }
@@ -2706,11 +2971,13 @@
       const weeklyGoal = Math.min(7, Math.max(1, Number(habit.weeklyGoal) || 7));
       const targetCount = Math.min(99, Math.max(1, Number(habit.targetCount) || 1));
       const unit = typeof habit.unit === 'string' ? habit.unit.trim() : '';
+      const timerMinutes = Math.min(180, Math.max(0, Math.round(Number(habit.timerMinutes) || 0)));
       const versions = Array.isArray(habit.versions) && habit.versions.length > 0
         ? habit.versions.map(v => ({
             ...v,
             targetCount: Math.min(99, Math.max(1, Number(v.targetCount) || 1)),
-            unit: typeof v.unit === 'string' ? v.unit.trim() : ''
+            unit: typeof v.unit === 'string' ? v.unit.trim() : '',
+            timerMinutes: Math.min(180, Math.max(0, Math.round(Number(v.timerMinutes) || 0)))
           }))
         : [{
             effectiveFrom: fallbackCreated,
@@ -2719,13 +2986,15 @@
             emoji: habit.emoji || '🌿',
             weeklyGoal,
             targetCount,
-            unit
+            unit,
+            timerMinutes
           }];
       return {
         ...habit,
         weeklyGoal,
         targetCount,
         unit,
+        timerMinutes,
         createdAt: fallbackCreated,
         versions
       };
@@ -3070,6 +3339,7 @@
           weeklyGoal: opt.weeklyGoal || 7,
           targetCount: 1,
           unit: '',
+          timerMinutes: opt.timerMinutes || 0,
           createdAt: todayKey,
           versions: [{
             effectiveFrom: todayKey,
@@ -3078,7 +3348,8 @@
             emoji: opt.emoji,
             weeklyGoal: opt.weeklyGoal || 7,
             targetCount: 1,
-            unit: ''
+            unit: '',
+            timerMinutes: opt.timerMinutes || 0
           }]
         }));
         state.archivedHabits = [];
@@ -3095,6 +3366,7 @@
               weeklyGoal: opt.weeklyGoal || 7,
               targetCount: 1,
               unit: '',
+              timerMinutes: opt.timerMinutes || 0,
               createdAt: todayKey,
               versions: [{
                 effectiveFrom: todayKey,
@@ -3103,7 +3375,8 @@
                 emoji: opt.emoji,
                 weeklyGoal: opt.weeklyGoal || 7,
                 targetCount: 1,
-                unit: ''
+                unit: '',
+                timerMinutes: opt.timerMinutes || 0
               }]
             });
           }
@@ -3161,12 +3434,37 @@
         emoji: chosen.emoji,
         weeklyGoal: chosen.weeklyGoal || habit.weeklyGoal || 7,
         targetCount: Math.min(99, Math.max(1, Number(chosen.targetCount) || Number(habit.targetCount) || 1)),
-        unit: typeof chosen.unit === 'string' ? chosen.unit : (habit.unit || '')
+        unit: typeof chosen.unit === 'string' ? chosen.unit : (habit.unit || ''),
+        timerMinutes: Math.min(180, Math.max(0, Math.round(Number(chosen.timerMinutes ?? habit.timerMinutes) || 0)))
       };
     }
 
     function getHabitTargetCount(habit) {
       return Math.min(99, Math.max(1, Number(habit && habit.targetCount) || 1));
+    }
+
+    function getHabitTimerMinutes(habit) {
+      return Math.min(180, Math.max(0, Math.round(Number(habit && habit.timerMinutes) || 0)));
+    }
+
+    function formatTimerDurationShort(mins) {
+      const m = Math.max(0, Math.round(Number(mins) || 0));
+      if (m <= 0) return '';
+      if (m < 60) return `${m}m`;
+      const h = Math.floor(m / 60);
+      const rem = m % 60;
+      return rem > 0 ? `${h}h ${rem}m` : `${h}h`;
+    }
+
+    function formatTimerClock(ms) {
+      const totalSec = Math.max(0, Math.ceil(ms / 1000));
+      const hours = Math.floor(totalSec / 3600);
+      const mins = Math.floor((totalSec % 3600) / 60);
+      const secs = totalSec % 60;
+      if (hours > 0) {
+        return `${hours}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+      }
+      return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
     }
 
     function getHabitCountOn(habitId, dateKey, habitObj = null) {
@@ -3524,16 +3822,13 @@
     }
 
     function inspectHeaderCompanion() {
-      const comp = getCompanionObj(state.user.companion);
-      const streak = getGlobalActiveStreak();
-      const stage = getCompanionGrowthStage(streak);
       const svgEl = document.getElementById('header-companion-svg');
       if (svgEl) {
         svgEl.classList.remove('companion-crest-pop');
         void svgEl.offsetWidth;
         svgEl.classList.add('companion-crest-pop');
       }
-      showToast(`${comp.label} · ${stage.label} (${streak}d) — ${stage.hint}`, comp.emoji);
+      openSanctuaryModal();
     }
 
     function toggleTheme() {
@@ -3913,7 +4208,7 @@
           }
         } else {
           card.onclick = (e) => {
-            if (e.target.closest('.check-btn') || e.target.closest('.count-step-btn')) return;
+            if (e.target.closest('.check-btn') || e.target.closest('.count-step-btn') || e.target.closest('.habit-timer-chip')) return;
             if (Date.now() < Number(card.dataset.swipeSuppressUntil || 0)) return;
             openHabitDetailModal(habit.id);
           };
@@ -3933,6 +4228,16 @@
 
         const weeklyPillHtml = weekly.goal < 7
           ? `<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[10px] font-bold ${weekly.met ? 'accent-bg text-white' : 'accent-bg-soft accent-text'}">${weekly.met ? '✦' : '🎯'} ${weekly.done}/${weekly.goal} wk</span>`
+          : '';
+
+        const timerMins = getHabitTimerMinutes(habit);
+        const isTimerLiveForHabit = mindfulTimer.habitId === habit.id && (mindfulTimer.status === 'running' || mindfulTimer.status === 'paused');
+        const timerPillHtml = !inDropMode && !isArchivedPast && (timerMins > 0 || isTimerLiveForHabit)
+          ? `<button type="button" onclick="openHabitTimer('${habit.id}', event)" data-live-timer-badge="${habit.id}"
+               class="habit-timer-chip inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[10px] font-bold ${isTimerLiveForHabit ? 'is-live' : 'bg-cozy-secondary text-cozy-secondary hover:text-cozy-primary'}">
+               <span>⏱</span>
+               <span class="timer-clock-text">${isTimerLiveForHabit ? formatTimerClock(getCurrentTimerRemainingMs()) : formatTimerDurationShort(timerMins)}</span>
+             </button>`
           : '';
 
         const pastPillHtml = isArchivedPast
@@ -3995,6 +4300,7 @@
                   🌿 ${streak}d
                 </span>
                 ${countPillHtml}
+                ${timerPillHtml}
                 ${weeklyPillHtml}
                 ${pastPillHtml}
               </div>
@@ -4308,6 +4614,7 @@
       const weeklyGoal = rec.weeklyGoal || 7;
       const targetCount = Math.min(99, Math.max(1, Number(rec.targetCount) || 1));
       const unit = rec.unit || '';
+      const timerMinutes = Math.min(180, Math.max(0, Math.round(Number(rec.timerMinutes) || 0)));
       state.habits.push({
         id: `h_${Date.now()}_${Math.floor(Math.random() * 1000)}`,
         title: rec.title,
@@ -4317,6 +4624,7 @@
         weeklyGoal,
         targetCount,
         unit,
+        timerMinutes,
         createdAt: todayKey,
         versions: [{
           effectiveFrom: todayKey,
@@ -4325,7 +4633,8 @@
           emoji: rec.emoji,
           weeklyGoal,
           targetCount,
-          unit
+          unit,
+          timerMinutes
         }]
       });
       saveState();
@@ -4352,6 +4661,7 @@
     function quickDropHabit(habitId) {
       const idx = state.habits.findIndex(h => h.id === habitId);
       if (idx === -1) return;
+      if (mindfulTimer.habitId === habitId) clearMindfulTimer(true);
       const todayKey = getTodayKey();
       const [removed] = state.habits.splice(idx, 1);
 
@@ -4974,6 +5284,7 @@
         state.ui.modalWeeklyGoal = Math.min(7, Math.max(1, Number(editing.weeklyGoal) || 7));
         state.ui.modalTargetCount = getHabitTargetCount(editing);
         state.ui.modalUnit = editing.unit || '';
+        state.ui.modalTimerMinutes = getHabitTimerMinutes(editing);
         if (delBtn) delBtn.classList.remove('hidden');
         if (recSec) recSec.classList.add('hidden');
       } else {
@@ -4985,6 +5296,7 @@
         state.ui.modalWeeklyGoal = 7;
         state.ui.modalTargetCount = 1;
         state.ui.modalUnit = '';
+        state.ui.modalTimerMinutes = 0;
         if (delBtn) delBtn.classList.add('hidden');
         if (recSec) recSec.classList.remove('hidden');
       }
@@ -4993,6 +5305,7 @@
       renderModalRecChips();
       renderWeeklyGoalPicker();
       renderModalDailyTargetUI();
+      renderModalTimerUI();
       renderEmojiGrid();
 
       if (backdrop && sheet) {
@@ -5041,8 +5354,10 @@
           state.ui.modalWeeklyGoal = item.weeklyGoal || 7;
           state.ui.modalTargetCount = Math.min(99, Math.max(1, Number(item.targetCount) || 1));
           state.ui.modalUnit = item.unit || '';
+          state.ui.modalTimerMinutes = Math.min(180, Math.max(0, Math.round(Number(item.timerMinutes) || 0)));
           renderWeeklyGoalPicker();
           renderModalDailyTargetUI();
+          renderModalTimerUI();
           renderEmojiGrid();
         };
         btn.className = 'px-2.5 py-1.5 rounded-xl bg-cozy-elevated border border-cozy text-[11px] font-semibold text-cozy-primary whitespace-nowrap flex items-center gap-1';
@@ -5149,6 +5464,68 @@
       updateModalDailyTargetHelper();
     }
 
+    function setModalTimerMode(enabled) {
+      if (enabled) {
+        if ((state.ui.modalTimerMinutes || 0) < 1) state.ui.modalTimerMinutes = 15;
+      } else {
+        state.ui.modalTimerMinutes = 0;
+      }
+      renderModalTimerUI();
+    }
+
+    function stepModalTimerMinutes(delta) {
+      const current = Math.max(1, Number(state.ui.modalTimerMinutes) || 1);
+      state.ui.modalTimerMinutes = Math.min(180, Math.max(1, current + delta));
+      renderModalTimerUI();
+    }
+
+    function handleModalTimerMinutesInput(val) {
+      const parsed = parseInt(val, 10);
+      if (!Number.isNaN(parsed)) {
+        state.ui.modalTimerMinutes = Math.min(180, Math.max(1, parsed));
+        updateModalTimerHelper();
+      }
+    }
+
+    function syncModalTimerMinutesInput(inputEl) {
+      if (!inputEl) return;
+      const clamped = Math.min(180, Math.max(1, Number(state.ui.modalTimerMinutes) || 1));
+      state.ui.modalTimerMinutes = clamped;
+      inputEl.value = String(clamped);
+      updateModalTimerHelper();
+    }
+
+    function applyTimerPreset(mins) {
+      state.ui.modalTimerMinutes = Math.min(180, Math.max(1, Number(mins) || 10));
+      renderModalTimerUI();
+    }
+
+    function updateModalTimerHelper() {
+      const helper = document.getElementById('timer-target-helper');
+      if (!helper) return;
+      const mins = Math.max(0, Math.round(Number(state.ui.modalTimerMinutes) || 0));
+      helper.textContent = mins > 0
+        ? `${formatTimerDurationShort(mins)} focus timer`
+        : 'No timer';
+    }
+
+    function renderModalTimerUI() {
+      const mins = Math.max(0, Math.round(Number(state.ui.modalTimerMinutes) || 0));
+      const hasTimer = mins > 0;
+      const offBtn = document.getElementById('timer-mode-off');
+      const onBtn = document.getElementById('timer-mode-on');
+      const panel = document.getElementById('timer-config-panel');
+      const minsInput = document.getElementById('habit-timer-mins-input');
+
+      if (offBtn && onBtn) {
+        offBtn.className = `py-1.5 rounded-xl text-[11px] font-bold transition ${!hasTimer ? 'accent-bg text-white shadow-xs' : 'text-cozy-secondary hover:bg-cozy-elevated'}`;
+        onBtn.className = `py-1.5 rounded-xl text-[11px] font-bold transition ${hasTimer ? 'accent-bg text-white shadow-xs' : 'text-cozy-secondary hover:bg-cozy-elevated'}`;
+      }
+      if (panel) panel.classList.toggle('hidden', !hasTimer);
+      if (minsInput && hasTimer) minsInput.value = String(mins);
+      updateModalTimerHelper();
+    }
+
     function setEmojiTab(tab) {
       state.ui.emojiTab = tab;
       renderEmojiGrid();
@@ -5213,6 +5590,7 @@
       const weeklyGoal = state.ui.modalWeeklyGoal || 7;
       const targetCount = Math.min(99, Math.max(1, Number(state.ui.modalTargetCount) || 1));
       const unit = targetCount > 1 ? (state.ui.modalUnit || '').trim() : '';
+      const timerMinutes = Math.min(180, Math.max(0, Math.round(Number(state.ui.modalTimerMinutes) || 0)));
 
       if (id) {
         const existing = state.habits.find(h => h.id === id);
@@ -5226,7 +5604,8 @@
               emoji: existing.emoji || '🌿',
               weeklyGoal: existing.weeklyGoal || 7,
               targetCount: getHabitTargetCount(existing),
-              unit: existing.unit || ''
+              unit: existing.unit || '',
+              timerMinutes: getHabitTimerMinutes(existing)
             }];
           }
 
@@ -5236,7 +5615,8 @@
             (existing.emoji || '🌿') !== emoji ||
             (existing.weeklyGoal || 7) !== weeklyGoal ||
             getHabitTargetCount(existing) !== targetCount ||
-            (existing.unit || '') !== unit;
+            (existing.unit || '') !== unit ||
+            getHabitTimerMinutes(existing) !== timerMinutes;
 
           if (changed) {
             const lastVer = existing.versions[existing.versions.length - 1];
@@ -5247,6 +5627,7 @@
               lastVer.weeklyGoal = weeklyGoal;
               lastVer.targetCount = targetCount;
               lastVer.unit = unit;
+              lastVer.timerMinutes = timerMinutes;
             } else {
               existing.versions.push({
                 effectiveFrom: todayKey,
@@ -5255,7 +5636,8 @@
                 emoji,
                 weeklyGoal,
                 targetCount,
-                unit
+                unit,
+                timerMinutes
               });
             }
           }
@@ -5266,6 +5648,17 @@
           existing.weeklyGoal = weeklyGoal;
           existing.targetCount = targetCount;
           existing.unit = unit;
+          existing.timerMinutes = timerMinutes;
+
+          // If an idle timer was loaded for this habit, sync or clear its duration
+          if (mindfulTimer.habitId === existing.id && mindfulTimer.status === 'idle') {
+            if (timerMinutes > 0) {
+              mindfulTimer.totalMs = timerMinutes * 60000;
+              mindfulTimer.remainingMs = mindfulTimer.totalMs;
+            } else {
+              mindfulTimer.habitId = null;
+            }
+          }
 
           // Keep today's completion status synced if target changed
           if (targetCount > 1) {
@@ -5289,6 +5682,7 @@
           weeklyGoal,
           targetCount,
           unit,
+          timerMinutes,
           createdAt: todayKey,
           versions: [{
             effectiveFrom: todayKey,
@@ -5297,7 +5691,8 @@
             emoji,
             weeklyGoal,
             targetCount,
-            unit
+            unit,
+            timerMinutes
           }]
         });
         showToast('New ritual planted from today', emoji);
@@ -5319,13 +5714,376 @@
     // ========================================================================
     // SINGLE HABIT DETAIL MODAL (7-Day Mini Strip & Monthly History)
     // ========================================================================
-    function openHabitDetailModal(habitId) {
+    // ========================================================================
+    // LIQUID-GLASS MINDFUL TIMER ENGINE (Timestamp-Accurate + Floating Pill)
+    // ========================================================================
+    const mindfulTimer = {
+      habitId: null,
+      totalMs: 10 * 60000,
+      remainingMs: 10 * 60000,
+      endTime: null,
+      status: 'idle', // 'idle' | 'running' | 'paused' | 'completed'
+      intervalId: null,
+      customDraftMins: 10
+    };
+
+    function getCurrentTimerRemainingMs() {
+      if (mindfulTimer.status === 'running' && mindfulTimer.endTime) {
+        return Math.max(0, mindfulTimer.endTime - Date.now());
+      }
+      return Math.max(0, mindfulTimer.remainingMs);
+    }
+
+    function getDetailTimerSnapshotForHabit(habit) {
+      const savedMins = getHabitTimerMinutes(habit);
+      const defaultMins = savedMins > 0 ? savedMins : (mindfulTimer.customDraftMins || 10);
+      if (mindfulTimer.habitId === habit.id) {
+        const remainingMs = getCurrentTimerRemainingMs();
+        const totalMs = Math.max(60000, mindfulTimer.totalMs);
+        const pct = Math.min(100, Math.max(0, Math.round(((totalMs - remainingMs) / totalMs) * 100)));
+        return {
+          status: mindfulTimer.status,
+          totalMs,
+          remainingMs,
+          mins: Math.max(1, Math.round(totalMs / 60000)),
+          pct
+        };
+      }
+      const totalMs = defaultMins * 60000;
+      return {
+        status: 'idle',
+        totalMs,
+        remainingMs: totalMs,
+        mins: defaultMins,
+        pct: 0
+      };
+    }
+
+    function openHabitTimer(habitId, event) {
+      if (event) event.stopPropagation();
+      openHabitDetailModal(habitId, true);
+    }
+
+    function expandDetailMindfulTimer(habitId) {
+      state.ui.detailTimerExpanded = true;
+      const habit = getAllKnownHabits().find(h => h.id === habitId);
+      if (habit && mindfulTimer.habitId !== habitId && mindfulTimer.status !== 'running') {
+        const mins = getHabitTimerMinutes(habit) || 10;
+        mindfulTimer.customDraftMins = mins;
+      }
+      renderHabitDetailContent(false);
+    }
+
+    function setDetailTimerDuration(habitId, mins) {
+      const clamped = Math.min(180, Math.max(1, Math.round(Number(mins) || 10)));
+      if (mindfulTimer.habitId === habitId && mindfulTimer.status === 'running') {
+        return;
+      }
+      if (mindfulTimer.habitId === habitId) {
+        mindfulTimer.totalMs = clamped * 60000;
+        mindfulTimer.remainingMs = clamped * 60000;
+        mindfulTimer.status = 'idle';
+        mindfulTimer.endTime = null;
+      } else {
+        mindfulTimer.customDraftMins = clamped;
+      }
+
+      // If this habit already has a saved timer, keep custom tweaks handy without overwriting unless user edits;
+      // update live draft for idle display
+      const habit = state.habits.find(h => h.id === habitId);
+      if (habit && getHabitTimerMinutes(habit) > 0 && mindfulTimer.habitId !== habitId) {
+        mindfulTimer.habitId = habitId;
+        mindfulTimer.totalMs = clamped * 60000;
+        mindfulTimer.remainingMs = clamped * 60000;
+        mindfulTimer.status = 'idle';
+        mindfulTimer.endTime = null;
+      }
+      updateFloatingTimerPill();
+      renderHabitDetailContent(false);
+    }
+
+    function stepDetailTimerDuration(habitId, deltaMins) {
+      const habit = getAllKnownHabits().find(h => h.id === habitId);
+      if (!habit) return;
+      const snap = getDetailTimerSnapshotForHabit(habit);
+      if (mindfulTimer.habitId === habitId && (mindfulTimer.status === 'running' || mindfulTimer.status === 'paused')) {
+        // Add/boost live time smoothly while session is active
+        const addMs = deltaMins * 60000;
+        mindfulTimer.totalMs = Math.min(180 * 60000, Math.max(60000, mindfulTimer.totalMs + addMs));
+        if (mindfulTimer.status === 'running' && mindfulTimer.endTime) {
+          mindfulTimer.endTime = Math.max(Date.now() + 1000, mindfulTimer.endTime + addMs);
+          mindfulTimer.remainingMs = Math.max(0, mindfulTimer.endTime - Date.now());
+        } else {
+          mindfulTimer.remainingMs = Math.min(mindfulTimer.totalMs, Math.max(1000, mindfulTimer.remainingMs + addMs));
+        }
+        playCozySound('tap');
+        syncMindfulTimerUI();
+        return;
+      }
+      setDetailTimerDuration(habitId, snap.mins + deltaMins);
+    }
+
+    function toggleMindfulTimer(targetHabitId = null) {
+      const habitId = targetHabitId || mindfulTimer.habitId || state.ui.detailHabitId;
+      if (!habitId) return;
+      const habit = getAllKnownHabits().find(h => h.id === habitId);
+      if (!habit || habit.archivedAt) return;
+
+      // Switching to a different habit's timer
+      if (mindfulTimer.habitId && mindfulTimer.habitId !== habitId) {
+        clearInterval(mindfulTimer.intervalId);
+        mindfulTimer.intervalId = null;
+        mindfulTimer.habitId = null;
+        mindfulTimer.status = 'idle';
+        mindfulTimer.endTime = null;
+      }
+
+      if (mindfulTimer.habitId === habitId && mindfulTimer.status === 'running') {
+        // Pause
+        mindfulTimer.remainingMs = getCurrentTimerRemainingMs();
+        mindfulTimer.endTime = null;
+        mindfulTimer.status = 'paused';
+        clearInterval(mindfulTimer.intervalId);
+        mindfulTimer.intervalId = null;
+        playCozySound('uncheck');
+        if (state.ui.detailHabitId === habitId) renderHabitDetailContent(false);
+        updateFloatingTimerPill();
+        renderHabitsList(false);
+        return;
+      }
+
+      // Start or Resume
+      if (mindfulTimer.habitId !== habitId || mindfulTimer.status === 'completed' || mindfulTimer.remainingMs <= 0) {
+        const snap = getDetailTimerSnapshotForHabit(habit);
+        mindfulTimer.habitId = habitId;
+        mindfulTimer.totalMs = snap.mins * 60000;
+        mindfulTimer.remainingMs = mindfulTimer.totalMs;
+      }
+
+      mindfulTimer.status = 'running';
+      mindfulTimer.endTime = Date.now() + mindfulTimer.remainingMs;
+      clearInterval(mindfulTimer.intervalId);
+      mindfulTimer.intervalId = setInterval(tickMindfulTimer, 250);
+
+      playCozySound('check');
+      if (state.ui.detailHabitId === habitId) renderHabitDetailContent(false);
+      updateFloatingTimerPill();
+      renderHabitsList(false);
+    }
+
+    function resetMindfulTimer(targetHabitId = null) {
+      const habitId = targetHabitId || mindfulTimer.habitId || state.ui.detailHabitId;
+      if (!habitId) return;
+      const habit = getAllKnownHabits().find(h => h.id === habitId);
+      const mins = habit ? (getHabitTimerMinutes(habit) || mindfulTimer.customDraftMins || 10) : 10;
+
+      clearInterval(mindfulTimer.intervalId);
+      mindfulTimer.intervalId = null;
+      mindfulTimer.habitId = habitId;
+      mindfulTimer.totalMs = mins * 60000;
+      mindfulTimer.remainingMs = mindfulTimer.totalMs;
+      mindfulTimer.endTime = null;
+      mindfulTimer.status = 'idle';
+
+      playCozySound('tap');
+      if (state.ui.detailHabitId === habitId) renderHabitDetailContent(false);
+      updateFloatingTimerPill();
+      renderHabitsList(false);
+    }
+
+    function clearMindfulTimer(silent = false) {
+      const prevHabitId = mindfulTimer.habitId;
+      clearInterval(mindfulTimer.intervalId);
+      mindfulTimer.intervalId = null;
+      mindfulTimer.habitId = null;
+      mindfulTimer.status = 'idle';
+      mindfulTimer.endTime = null;
+      mindfulTimer.remainingMs = 10 * 60000;
+      mindfulTimer.totalMs = 10 * 60000;
+
+      if (!silent) playCozySound('uncheck');
+      updateFloatingTimerPill();
+      if (prevHabitId && state.ui.detailHabitId === prevHabitId) {
+        renderHabitDetailContent(false);
+      }
+      if (state.ui.activeTab === 'today') renderHabitsList(false);
+    }
+
+    function tickMindfulTimer() {
+      if (mindfulTimer.status !== 'running') return;
+      const remaining = getCurrentTimerRemainingMs();
+      mindfulTimer.remainingMs = remaining;
+      if (remaining <= 0) {
+        completeMindfulTimer();
+        return;
+      }
+      syncMindfulTimerUI();
+    }
+
+    function syncMindfulTimerUI() {
+      const remainingMs = getCurrentTimerRemainingMs();
+      const totalMs = Math.max(1, mindfulTimer.totalMs);
+      const pct = Math.min(100, Math.max(0, Math.round(((totalMs - remainingMs) / totalMs) * 100)));
+      const clockText = formatTimerClock(remainingMs);
+
+      // 1. Update open Habit Detail timer orb in-place (no DOM thrash)
+      if (state.ui.detailHabitId && state.ui.detailHabitId === mindfulTimer.habitId) {
+        const displayEl = document.getElementById('detail-timer-display');
+        const waveEl = document.getElementById('detail-timer-wave');
+        if (displayEl) displayEl.textContent = clockText;
+        if (waveEl) {
+          const translateY = Math.round(84 - (pct * 0.96));
+          waveEl.style.transform = `translateY(${translateY}%)`;
+        }
+      }
+
+      // 2. Update live badge on the habit card
+      if (mindfulTimer.habitId) {
+        const badgeEl = document.querySelector(`[data-live-timer-badge="${mindfulTimer.habitId}"] .timer-clock-text`);
+        if (badgeEl) badgeEl.textContent = clockText;
+      }
+
+      // 3. Update floating mini capsule
+      const floatClock = document.getElementById('floating-timer-clock');
+      const floatBar = document.getElementById('floating-timer-progress');
+      if (floatClock) floatClock.textContent = clockText;
+      if (floatBar) floatBar.style.width = `${pct}%`;
+    }
+
+    function updateFloatingTimerPill() {
+      const bar = document.getElementById('floating-timer-bar');
+      if (!bar) return;
+
+      const isActive = mindfulTimer.habitId && (mindfulTimer.status === 'running' || mindfulTimer.status === 'paused');
+      const detailShowingSame = Boolean(
+        state.ui.detailHabitId &&
+        state.ui.detailHabitId === mindfulTimer.habitId &&
+        !document.getElementById('habit-detail-backdrop')?.classList.contains('hidden')
+      );
+
+      if (!isActive || detailShowingSame) {
+        bar.classList.add('opacity-0', 'translate-y-4');
+        setTimeout(() => {
+          if (bar.classList.contains('opacity-0')) bar.classList.add('hidden');
+        }, 280);
+        return;
+      }
+
+      const habit = getAllKnownHabits().find(h => h.id === mindfulTimer.habitId);
+      if (!habit) {
+        clearMindfulTimer(true);
+        return;
+      }
+
+      const emojiEl = document.getElementById('floating-timer-emoji');
+      const titleEl = document.getElementById('floating-timer-title');
+      const dotEl = document.getElementById('floating-timer-dot');
+      const stateTag = document.getElementById('floating-timer-state-tag');
+      const toggleIcon = document.getElementById('floating-timer-toggle-icon');
+
+      if (emojiEl) emojiEl.textContent = habit.emoji || '⏱️';
+      if (titleEl) titleEl.textContent = habit.title;
+      if (dotEl) dotEl.classList.toggle('hidden', mindfulTimer.status !== 'running');
+      if (stateTag) stateTag.textContent = mindfulTimer.status === 'running' ? 'Flow' : 'Paused';
+      if (toggleIcon) {
+        toggleIcon.className = mindfulTimer.status === 'running'
+          ? 'ph-fill ph-pause text-xs'
+          : 'ph-fill ph-play text-xs';
+      }
+
+      syncMindfulTimerUI();
+      bar.classList.remove('hidden');
+      requestAnimationFrame(() => {
+        bar.classList.remove('opacity-0', 'translate-y-4');
+      });
+    }
+
+    function reopenActiveTimerSheet() {
+      if (!mindfulTimer.habitId) return;
+      openHabitDetailModal(mindfulTimer.habitId, true);
+    }
+
+    function completeMindfulTimer() {
+      const habitId = mindfulTimer.habitId;
+      const completedMins = Math.max(1, Math.round(mindfulTimer.totalMs / 60000));
+      clearInterval(mindfulTimer.intervalId);
+      mindfulTimer.intervalId = null;
+      mindfulTimer.remainingMs = 0;
+      mindfulTimer.endTime = null;
+      mindfulTimer.status = 'completed';
+
+      const habit = getAllKnownHabits().find(h => h.id === habitId);
+      const todayKey = getTodayKey();
+      let completedWholeDay = false;
+
+      if (habit && !habit.archivedAt) {
+        const targetCount = getHabitTargetCount(habit);
+        if (targetCount > 1) {
+          const prev = getHabitCountOn(habit.id, todayKey, habit);
+          if (prev < targetCount) {
+            const unitLower = (habit.unit || '').trim().toLowerCase();
+            const isMinuteUnit = ['min', 'mins', 'minute', 'minutes', 'm'].includes(unitLower);
+            const nextCount = Math.min(targetCount, prev + (isMinuteUnit ? completedMins : 1));
+            setHabitCountOn(habit.id, todayKey, nextCount, targetCount);
+          }
+        } else if (!isHabitCompletedOn(habit.id, todayKey)) {
+          if (!Array.isArray(state.logs[todayKey])) state.logs[todayKey] = [];
+          state.logs[todayKey].push(habit.id);
+        }
+        saveState();
+
+        const dayInfo = getDayCompletionInfo(todayKey);
+        completedWholeDay = dayInfo.total > 0 && dayInfo.done >= dayInfo.total;
+      }
+
+      playCozySound(completedWholeDay ? 'celebrate' : 'timerDone');
+
+      if (state.user.confettiEnabled) {
+        const orbEl = document.getElementById('detail-timer-orb');
+        let x = window.innerWidth / 2;
+        let y = window.innerHeight / 2;
+        if (orbEl && state.ui.detailHabitId === habitId) {
+          const r = orbEl.getBoundingClientRect();
+          x = r.left + r.width / 2;
+          y = r.top + r.height / 2;
+        }
+        spawnConfettiBurst(x, y);
+      }
+
+      if (habit) {
+        showToast(
+          completedWholeDay
+            ? `${habit.title} done — Sanctuary complete!`
+            : `${formatTimerDurationShort(completedMins)} ${habit.title} complete!`,
+          habit.emoji || '✨'
+        );
+      }
+
+      updateFloatingTimerPill();
+      renderAll();
+      if (state.ui.detailHabitId === habitId) {
+        renderHabitDetailContent(false);
+      }
+    }
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible' && mindfulTimer.status === 'running') {
+        tickMindfulTimer();
+      }
+    });
+
+    function openHabitDetailModal(habitId, expandTimer = false) {
       const habit = getAllKnownHabits().find(h => h.id === habitId);
       if (!habit) return;
       const now = new Date();
       state.ui.detailHabitId = habitId;
       state.ui.detailMonth = now.getMonth();
       state.ui.detailYear = now.getFullYear();
+      state.ui.detailTimerExpanded = Boolean(
+        expandTimer ||
+        getHabitTimerMinutes(habit) > 0 ||
+        (mindfulTimer.habitId === habitId && (mindfulTimer.status === 'running' || mindfulTimer.status === 'paused'))
+      );
       renderHabitDetailContent(true);
 
       const backdrop = document.getElementById('habit-detail-backdrop');
@@ -5339,6 +6097,7 @@
           sheet.classList.remove('translate-y-full', 'sm:translate-y-6', 'sm:scale-95');
         });
       }
+      updateFloatingTimerPill();
     }
 
     function closeHabitDetailModal() {
@@ -5350,6 +6109,8 @@
       setTimeout(() => {
         backdrop.classList.add('hidden');
         state.ui.detailHabitId = null;
+        state.ui.detailTimerExpanded = false;
+        updateFloatingTimerPill();
       }, 300);
     }
 
@@ -5393,6 +6154,113 @@
       saveState();
       renderHabitDetailContent(false);
       renderAll();
+    }
+
+    function buildDetailMindfulTimerHtml(habit) {
+      const savedMins = getHabitTimerMinutes(habit);
+      const isThisActive = mindfulTimer.habitId === habit.id && (mindfulTimer.status === 'running' || mindfulTimer.status === 'paused');
+      const showExpanded = state.ui.detailTimerExpanded || savedMins > 0 || isThisActive;
+
+      if (!showExpanded) {
+        return `
+          <div class="p-3 rounded-2xl bg-cozy-secondary/45 border border-cozy flex items-center justify-between gap-2.5">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <span class="w-9 h-9 rounded-xl accent-bg-soft accent-text flex items-center justify-center text-base flex-shrink-0">⏱️</span>
+              <div class="min-w-0">
+                <p class="text-xs font-bold text-cozy-primary leading-tight">Mindful Timer</p>
+                <p class="text-[10px] text-cozy-secondary truncate mt-0.5">Start a calm countdown &amp; auto check-in</p>
+              </div>
+            </div>
+            <button type="button" onclick="expandDetailMindfulTimer('${habit.id}')"
+              class="px-3 py-1.5 rounded-xl accent-bg-soft accent-text text-[11px] font-bold flex-shrink-0">
+              Open
+            </button>
+          </div>
+        `;
+      }
+
+      const snap = getDetailTimerSnapshotForHabit(habit);
+      const isRunning = snap.status === 'running';
+      const isPaused = snap.status === 'paused';
+      const isCompleted = snap.status === 'completed';
+      const translateY = Math.round(84 - (snap.pct * 0.96));
+      const statusText = isRunning
+        ? 'Breathe & flow...'
+        : isPaused
+          ? 'Paused gently'
+          : isCompleted
+            ? 'Session complete ✨'
+            : (savedMins > 0 ? `${formatTimerDurationShort(savedMins)} saved ritual` : 'Custom session');
+
+      const playLabel = isRunning ? 'Pause' : (isPaused ? 'Resume' : (isCompleted ? 'Again' : 'Start'));
+      const playIcon = isRunning ? 'ph-pause' : 'ph-play';
+      const presets = [5, 10, 15, 25];
+      const presetsHtml = presets.map(m => {
+        const active = !isRunning && !isPaused && snap.mins === m;
+        return `<button type="button" onclick="setDetailTimerDuration('${habit.id}', ${m})"
+          class="px-2.5 py-1 rounded-xl text-[10px] font-bold transition ${active ? 'accent-bg text-white shadow-2xs' : 'bg-cozy-elevated border border-cozy text-cozy-secondary'}">${m}m</button>`;
+      }).join('');
+
+      return `
+        <div id="detail-timer-card" class="p-4 rounded-2xl bg-cozy-secondary/45 border border-cozy space-y-3.5">
+          <div class="flex items-center justify-between gap-2">
+            <div class="flex items-center gap-1.5">
+              <span class="text-xs leading-none">⏱️</span>
+              <span class="text-xs font-bold text-cozy-primary">Mindful Timer</span>
+            </div>
+            <span id="detail-timer-status" class="text-[10px] font-bold ${isRunning || isCompleted ? 'accent-text' : 'text-cozy-muted'}">${statusText}</span>
+          </div>
+
+          <!-- Liquid-Glass Countdown Orb -->
+          <div class="flex flex-col items-center justify-center py-0.5">
+            <div class="timer-orb-wrap ${isRunning ? 'is-running' : ''}">
+              ${isRunning ? '<div class="absolute inset-0 rounded-full accent-bg-soft breathing-ring"></div>' : ''}
+              <div class="timer-orb-ring"></div>
+              <div id="detail-timer-orb" class="timer-orb-shell">
+                <div class="liquid-orb-clip">
+                  <div id="detail-timer-wave" class="liquid-wave-carrier" style="transform: translateY(${translateY}%);">
+                    <div class="liquid-wave-layer liquid-wave-layer-back" style="top: 6%;"></div>
+                    <div class="liquid-wave-layer" style="top: 12%;"></div>
+                  </div>
+                </div>
+                <div class="relative z-10 flex flex-col items-center justify-center text-center pointer-events-none">
+                  <span id="detail-timer-display" class="timer-clock-text text-[26px] font-extrabold text-cozy-primary leading-none">${formatTimerClock(snap.remainingMs)}</span>
+                  <span class="text-[9.5px] font-bold uppercase tracking-[0.14em] text-cozy-secondary mt-1.5">${isRunning ? 'Flowing' : (isCompleted ? 'Complete' : formatTimerDurationShort(snap.mins))}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Controls Row: Reset | Start/Pause | +1m -->
+          <div class="flex items-center justify-center gap-2.5">
+            <button type="button" onclick="resetMindfulTimer('${habit.id}')" aria-label="Reset timer"
+              class="w-10 h-10 rounded-2xl glass-pill text-cozy-secondary hover:text-cozy-primary flex items-center justify-center">
+              <i class="ph-bold ph-arrow-counter-clockwise text-sm"></i>
+            </button>
+
+            <button type="button" onclick="toggleMindfulTimer('${habit.id}')"
+              class="timer-play-btn px-6 h-10 rounded-2xl ${isRunning ? 'glass-pill accent-text border-[var(--accent-medium)]' : 'accent-progress-gradient text-white shadow-sm'} font-bold text-xs inline-flex items-center justify-center gap-1.5 min-w-[116px]">
+              <i class="ph-fill ${playIcon} text-sm"></i>
+              <span>${playLabel}</span>
+            </button>
+
+            <button type="button" onclick="stepDetailTimerDuration('${habit.id}', 1)" aria-label="Add 1 minute"
+              class="w-10 h-10 rounded-2xl glass-pill text-cozy-secondary hover:text-cozy-primary text-[11px] font-extrabold flex items-center justify-center">
+              +1m
+            </button>
+          </div>
+
+          <!-- On-the-Fly Custom Duration Adjuster (Visible when idle or completed) -->
+          ${!isRunning && !isPaused ? `
+          <div class="flex items-center justify-center gap-1.5 flex-wrap pt-1 border-t border-subtle-cozy">
+            <button type="button" onclick="stepDetailTimerDuration('${habit.id}', -1)" aria-label="Subtract 1 minute"
+              class="w-7 h-6 rounded-lg bg-cozy-elevated border border-cozy text-[11px] font-bold text-cozy-secondary flex items-center justify-center">−</button>
+            ${presetsHtml}
+            <button type="button" onclick="stepDetailTimerDuration('${habit.id}', 5)" aria-label="Add 5 minutes"
+              class="px-2 py-1 rounded-xl bg-cozy-elevated border border-cozy text-[10px] font-bold text-cozy-secondary">+5m</button>
+          </div>` : ''}
+        </div>
+      `;
     }
 
     function renderHabitDetailContent(animateCalendar = false) {
@@ -5501,6 +6369,8 @@
           </div>
         </div>
 
+        ${!isArchived ? buildDetailMindfulTimerHtml(habit) : ''}
+
         <div>
           <p class="text-xs font-bold text-cozy-secondary mb-2">Last 7 Days (Tap to toggle)</p>
           <div class="grid grid-cols-7 gap-1.5">${miniWeekHtml}</div>
@@ -5553,6 +6423,386 @@
     document.getElementById('confirm-modal-backdrop')?.addEventListener('click', (e) => {
       if (e.target.id === 'confirm-modal-backdrop') closeResetConfirmModal();
     });
+
+    // ========================================================================
+    // INTERACTIVE SANCTUARY GARDEN (BOTANICAL COMPANION SCREEN)
+    // ========================================================================
+    const SANCTUARY_STAGES = [
+      { level: 0, minDays: 0, label: 'Seedling', icon: '🌰' },
+      { level: 1, minDays: 1, label: 'Sprouting', icon: '🌱' },
+      { level: 2, minDays: 5, label: 'Flourishing', icon: '🌿' },
+      { level: 3, minDays: 14, label: 'In Bloom', icon: '🌸' }
+    ];
+
+    const SANCTUARY_WHISPERS = {
+      0: [
+        'Tucked softly in warm soil—ready whenever you are.',
+        'One small check-in is all it takes to wake my first leaf.',
+        'No rush today. Gentle roots grow at their own pace.'
+      ],
+      1: [
+        'Fresh green leaves unfurling in the quiet light.',
+        'Thank you for returning—every gentle step nourishes me.',
+        'I can already feel your rhythm taking root.'
+      ],
+      2: [
+        'Growing lush and steady alongside your daily calm.',
+        'Your consistency feels like warm morning sun on my leaves.',
+        'Breathe deeply—look how beautifully our nook is thriving.'
+      ],
+      3: [
+        'In full harmony—glowing softly with everything you have built.',
+        'Every quiet check-in helped bring this sanctuary to bloom.',
+        'Rest in your glow today; you tended this garden with kindness.'
+      ]
+    };
+
+    let sanctuaryWhisperIndex = 0;
+
+    function getSanctuaryMetrics() {
+      const activeStreak = getGlobalActiveStreak();
+      const bestStreak = Math.max(activeStreak, getGlobalBestStreak());
+      const todayInfo = getDayCompletionInfo(getTodayKey());
+      let totalCheckins = 0;
+      let perfectDays = 0;
+
+      Object.keys(state.logs).forEach(dateKey => {
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(dateKey)) return;
+        const info = getDayCompletionInfo(dateKey);
+        totalCheckins += info.done;
+        if (info.total > 0 && info.done >= info.total) {
+          perfectDays++;
+        }
+      });
+
+      const stage = getCompanionGrowthStage(activeStreak);
+      let nextStage = null;
+      let daysToNext = 0;
+      let stageProgressPct = 100;
+
+      if (stage.level < 3) {
+        nextStage = SANCTUARY_STAGES[stage.level + 1];
+        const prevMin = SANCTUARY_STAGES[stage.level].minDays;
+        const span = Math.max(1, nextStage.minDays - prevMin);
+        daysToNext = Math.max(0, nextStage.minDays - activeStreak);
+        stageProgressPct = Math.min(100, Math.max(8, Math.round(((activeStreak - prevMin) / span) * 100)));
+      }
+
+      const badges = [
+        {
+          id: 'first_dew',
+          emoji: '💧',
+          title: 'First Dew',
+          unlocked: totalCheckins >= 1,
+          progress: `${Math.min(1, totalCheckins)}/1`,
+          desc: totalCheckins >= 1 ? 'Logged your first mindful check-in' : 'Log 1 check-in to unlock'
+        },
+        {
+          id: 'full_sun',
+          emoji: '☀️',
+          title: 'Full Sun',
+          unlocked: perfectDays >= 1,
+          progress: `${Math.min(1, perfectDays)}/1`,
+          desc: perfectDays >= 1 ? `Completed ${perfectDays} full 100% ${perfectDays === 1 ? 'day' : 'days'}` : 'Complete 100% of rituals in a day'
+        },
+        {
+          id: 'rooted',
+          emoji: '🌱',
+          title: 'Rooted',
+          unlocked: bestStreak >= 3,
+          progress: `${Math.min(3, bestStreak)}/3d`,
+          desc: bestStreak >= 3 ? 'Sustained a 3-day rhythm' : `${Math.max(0, 3 - bestStreak)} more days to a 3d streak`
+        },
+        {
+          id: 'steady_flow',
+          emoji: '🌿',
+          title: 'Steady Flow',
+          unlocked: bestStreak >= 7,
+          progress: `${Math.min(7, bestStreak)}/7d`,
+          desc: bestStreak >= 7 ? 'Carried a full 7-day flow' : `${Math.max(0, 7 - bestStreak)} more days to a 7d streak`
+        },
+        {
+          id: 'full_bloom',
+          emoji: '🌸',
+          title: 'Full Bloom',
+          unlocked: bestStreak >= 14,
+          progress: `${Math.min(14, bestStreak)}/14d`,
+          desc: bestStreak >= 14 ? 'Blossomed with a 14-day streak' : `${Math.max(0, 14 - bestStreak)} more days to Full Bloom`
+        },
+        {
+          id: 'garden_keeper',
+          emoji: '✨',
+          title: 'Keeper',
+          unlocked: totalCheckins >= 25,
+          progress: `${Math.min(25, totalCheckins)}/25`,
+          desc: totalCheckins >= 25 ? `${totalCheckins} mindful check-ins tended` : `${Math.max(0, 25 - totalCheckins)} more check-ins to reach 25`
+        }
+      ];
+
+      return {
+        activeStreak,
+        bestStreak,
+        totalCheckins,
+        perfectDays,
+        todayPct: todayInfo.pct,
+        stage,
+        nextStage,
+        daysToNext,
+        stageProgressPct,
+        badges
+      };
+    }
+
+    function openSanctuaryModal() {
+      renderSanctuaryModalContent(false);
+      const backdrop = document.getElementById('sanctuary-modal-backdrop');
+      const sheet = document.getElementById('sanctuary-modal-sheet');
+      if (backdrop && sheet) {
+        sheet.classList.remove('is-swiping');
+        sheet.style.transform = '';
+        backdrop.classList.remove('hidden');
+        requestAnimationFrame(() => {
+          backdrop.classList.remove('opacity-0');
+          sheet.classList.remove('translate-y-full', 'sm:translate-y-6', 'sm:scale-95');
+        });
+      }
+    }
+
+    function closeSanctuaryModal() {
+      const backdrop = document.getElementById('sanctuary-modal-backdrop');
+      const sheet = document.getElementById('sanctuary-modal-sheet');
+      if (!backdrop || !sheet) return;
+      backdrop.classList.add('opacity-0');
+      sheet.classList.add('translate-y-full', 'sm:translate-y-6', 'sm:scale-95');
+      setTimeout(() => {
+        backdrop.classList.add('hidden');
+      }, 300);
+    }
+
+    document.getElementById('sanctuary-modal-backdrop')?.addEventListener('click', (e) => {
+      if (e.target.id === 'sanctuary-modal-backdrop') closeSanctuaryModal();
+    });
+
+    function nurtureSanctuaryPlant() {
+      const dome = document.getElementById('sanctuary-terrarium-dome');
+      const plant = document.getElementById('sanctuary-plant-icon');
+      const whisperEl = document.getElementById('sanctuary-whisper-text');
+      const stage = getCompanionGrowthStage(getGlobalActiveStreak());
+
+      playCozySound('check');
+
+      if (dome) {
+        dome.classList.remove('welcome-dome-ripple');
+        void dome.offsetWidth;
+        dome.classList.add('welcome-dome-ripple');
+
+        // Spawn gentle dewdrop sparkles rising inside the glass dome
+        const offsets = [-26, -10, 12, 26];
+        offsets.forEach((sx, idx) => {
+          const sp = document.createElement('span');
+          sp.className = 'sanctuary-sparkle';
+          sp.style.left = `${44 + sx * 0.5}%`;
+          sp.style.bottom = `${30 + (idx % 2) * 14}%`;
+          sp.style.setProperty('--sx', `${sx}px`);
+          sp.style.animationDelay = `${idx * 55}ms`;
+          dome.appendChild(sp);
+          setTimeout(() => sp.remove(), 980);
+        });
+      }
+
+      if (plant) {
+        plant.classList.remove('companion-crest-pop');
+        void plant.offsetWidth;
+        plant.classList.add('companion-crest-pop');
+      }
+
+      if (whisperEl) {
+        const pool = SANCTUARY_WHISPERS[stage.level] || SANCTUARY_WHISPERS[0];
+        sanctuaryWhisperIndex = (sanctuaryWhisperIndex + 1) % pool.length;
+        whisperEl.style.opacity = '0';
+        setTimeout(() => {
+          whisperEl.textContent = `"${pool[sanctuaryWhisperIndex]}"`;
+          whisperEl.style.opacity = '1';
+        }, 120);
+      }
+    }
+
+    function selectSanctuaryCompanion(companionId) {
+      if (state.user.companion === companionId) {
+        nurtureSanctuaryPlant();
+        return;
+      }
+      state.user.companion = companionId;
+      saveState();
+      playCozySound('check');
+      renderHeader();
+      renderSettingsCompanions();
+      renderSanctuaryModalContent(true);
+    }
+
+    function inspectSanctuaryBadge(badgeId) {
+      const metrics = getSanctuaryMetrics();
+      const badge = metrics.badges.find(b => b.id === badgeId);
+      if (!badge) return;
+      showToast(`${badge.title} — ${badge.desc}`, badge.emoji);
+    }
+
+    function renderSanctuaryModalContent(animateCompanion = false) {
+      const container = document.getElementById('sanctuary-modal-content');
+      if (!container) return;
+
+      const comp = getCompanionObj(state.user.companion);
+      const metrics = getSanctuaryMetrics();
+      const { activeStreak, bestStreak, totalCheckins, perfectDays, todayPct, stage, nextStage, daysToNext, stageProgressPct, badges } = metrics;
+      const unlockedCount = badges.filter(b => b.unlocked).length;
+      const whisperPool = SANCTUARY_WHISPERS[stage.level] || SANCTUARY_WHISPERS[0];
+      const currentWhisper = whisperPool[sanctuaryWhisperIndex % whisperPool.length];
+
+      // Rise the terrarium mist subtly with today's completion progress (-122% at 0% up to -96% at 100%)
+      const mistBottomPct = Math.round(-122 + (todayPct * 0.26));
+      const showAmbientGlow = stage.level >= 2 || todayPct >= 100;
+
+      const stageNodesHtml = SANCTUARY_STAGES.map(st => {
+        const reached = stage.level >= st.level;
+        const current = stage.level === st.level;
+        return `
+          <div class="flex flex-col items-center gap-1 min-w-0">
+            <span class="sanctuary-stage-node ${reached ? 'is-reached' : ''} ${current ? 'is-current' : ''}">
+              ${st.icon}
+            </span>
+            <span class="text-[9.5px] font-bold ${current ? 'accent-text' : (reached ? 'text-cozy-primary' : 'text-cozy-muted')} truncate">${st.label}</span>
+            <span class="text-[9px] text-cozy-muted leading-none">${st.minDays}d</span>
+          </div>
+        `;
+      }).join('');
+
+      const companionDockHtml = BOTANICAL_COMPANIONS.map(item => {
+        const picked = item.id === comp.id;
+        return `
+          <button type="button" onclick="selectSanctuaryCompanion('${item.id}')"
+            class="welcome-companion-pill flex flex-col items-center gap-1 ${picked ? 'is-picked' : ''}">
+            <span class="${picked ? 'accent-text' : 'text-cozy-secondary'} flex items-center justify-center">${getCompanionSvg(item.id, stage.level, 'w-5 h-5')}</span>
+            <span class="text-[10px] font-bold ${picked ? 'accent-text' : 'text-cozy-primary'}">${item.label}</span>
+          </button>
+        `;
+      }).join('');
+
+      const badgesHtml = badges.map(b => `
+        <button type="button" onclick="inspectSanctuaryBadge('${b.id}')"
+          class="sanctuary-badge-card ${b.unlocked ? 'is-unlocked' : 'is-locked'}">
+          <div class="relative">
+            <span class="text-xl leading-none block">${b.emoji}</span>
+            ${b.unlocked ? '<span class="absolute -top-0.5 -right-1.5 w-2 h-2 rotate-45 rounded-[1.5px] accent-bg inline-block"></span>' : ''}
+          </div>
+          <span class="text-[10.5px] font-bold text-cozy-primary leading-tight truncate w-full">${escapeHtml(b.title)}</span>
+          <span class="text-[9px] font-semibold ${b.unlocked ? 'accent-text' : 'text-cozy-muted'} leading-none">${b.unlocked ? 'Unlocked' : b.progress}</span>
+        </button>
+      `).join('');
+
+      const growthHeadline = nextStage
+        ? `${daysToNext} more ${daysToNext === 1 ? 'day' : 'days'} to ${nextStage.label}`
+        : 'Peak harmony reached ✨';
+
+      container.innerHTML = `
+        <!-- Top Header -->
+        <div class="flex items-center justify-between gap-2">
+          <div>
+            <span class="text-[10px] font-bold uppercase tracking-[0.18em] accent-text block leading-none">Sanctuary Garden</span>
+            <h3 class="font-serif-cozy text-xl font-semibold text-cozy-primary mt-1 leading-tight">${escapeHtml(comp.label)} · ${stage.label}</h3>
+          </div>
+          <button type="button" onclick="closeSanctuaryModal()" class="cozy-icon-orb-btn !w-8 !h-8 !rounded-xl" aria-label="Close sanctuary">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 16 16" fill="none">
+              <path d="M4.5 4.5L11.5 11.5M11.5 4.5L4.5 11.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+              <circle cx="8" cy="8" r="1.1" fill="currentColor"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Interactive Liquid-Glass Terrarium Focal Stage -->
+        <div class="flex flex-col items-center text-center pt-1 pb-0.5 space-y-3">
+          <button type="button" onclick="nurtureSanctuaryPlant()" aria-label="Tap to nurture your botanical companion"
+            class="sanctuary-terrarium-btn welcome-terrarium-wrap">
+            <div class="absolute inset-0 rounded-full accent-bg-soft breathing-ring"></div>
+            <div class="welcome-terrarium-ring"></div>
+            <div id="sanctuary-terrarium-dome" class="welcome-terrarium-dome ${animateCompanion ? 'welcome-dome-ripple' : ''}">
+              <div class="welcome-terrarium-mist welcome-terrarium-mist-back" style="bottom: ${mistBottomPct + 3}%;"></div>
+              <div class="welcome-terrarium-mist" style="bottom: ${mistBottomPct}%;"></div>
+              ${showAmbientGlow ? `
+                <span class="sanctuary-ambient-dot" style="top: 24%; left: 24%; animation-delay: 0s;"></span>
+                <span class="sanctuary-ambient-dot" style="top: 32%; right: 22%; animation-delay: 1.1s;"></span>
+                <span class="sanctuary-ambient-dot" style="bottom: 30%; left: 28%; animation-delay: 2s;"></span>
+              ` : ''}
+              <div class="welcome-float-plant">
+                <span id="sanctuary-plant-icon" class="accent-text flex items-center justify-center ${animateCompanion ? 'companion-crest-pop' : ''}">
+                  ${getCompanionSvg(comp.id, stage.level, 'w-16 h-16')}
+                </span>
+              </div>
+            </div>
+          </button>
+
+          <div class="space-y-1 max-w-[300px]">
+            <p id="sanctuary-whisper-text" class="text-xs italic text-cozy-secondary leading-relaxed transition-opacity duration-200">
+              "${escapeHtml(currentWhisper)}"
+            </p>
+            <p class="text-[10px] font-semibold text-cozy-muted">Tap the glass dome to nurture · Today ${todayPct}%</p>
+          </div>
+        </div>
+
+        <!-- Growth Progress Card -->
+        <div class="p-3.5 rounded-2xl bg-cozy-secondary/50 border border-cozy space-y-3">
+          <div class="flex items-center justify-between gap-2">
+            <span class="text-xs font-bold text-cozy-primary">Growth Journey</span>
+            <span class="text-[11px] font-bold accent-text">${growthHeadline}</span>
+          </div>
+
+          <div class="w-full h-2 bg-cozy-secondary rounded-full overflow-hidden p-[1px]">
+            <div class="h-full accent-progress-gradient rounded-full transition-all duration-500" style="width: ${stageProgressPct}%"></div>
+          </div>
+
+          <div class="grid grid-cols-4 gap-1.5 pt-0.5">
+            ${stageNodesHtml}
+          </div>
+        </div>
+
+        <!-- 3 Compact Sanctuary Stats -->
+        <div class="grid grid-cols-3 gap-2">
+          <div class="p-2.5 rounded-2xl bg-cozy-secondary/50 border border-cozy text-center">
+            <p class="text-[10px] font-semibold text-cozy-muted">Active Streak</p>
+            <p class="text-sm font-extrabold text-cozy-primary mt-0.5">🌿 ${activeStreak}d</p>
+          </div>
+          <div class="p-2.5 rounded-2xl bg-cozy-secondary/50 border border-cozy text-center">
+            <p class="text-[10px] font-semibold text-cozy-muted">Full Days</p>
+            <p class="text-sm font-extrabold accent-text mt-0.5">✦ ${perfectDays}</p>
+          </div>
+          <div class="p-2.5 rounded-2xl bg-cozy-secondary/50 border border-cozy text-center">
+            <p class="text-[10px] font-semibold text-cozy-muted">Check-ins</p>
+            <p class="text-sm font-extrabold text-cozy-primary mt-0.5">✨ ${totalCheckins}</p>
+          </div>
+        </div>
+
+        <!-- Switch Companion Inline -->
+        <div class="space-y-1.5">
+          <div class="flex items-center justify-between px-0.5">
+            <span class="text-xs font-bold text-cozy-primary">Your Plants</span>
+            <span class="text-[10px] text-cozy-muted">Best streak: ${bestStreak}d</span>
+          </div>
+          <div class="welcome-companion-dock grid grid-cols-4 gap-1.5">
+            ${companionDockHtml}
+          </div>
+        </div>
+
+        <!-- Milestone Badges -->
+        <div class="space-y-2">
+          <div class="flex items-center justify-between px-0.5">
+            <span class="text-xs font-bold text-cozy-primary">Sanctuary Milestones</span>
+            <span class="text-[10px] font-bold accent-text">${unlockedCount} / ${badges.length} unlocked</span>
+          </div>
+          <div class="grid grid-cols-3 gap-2">
+            ${badgesHtml}
+          </div>
+        </div>
+      `;
+    }
 
     function scrollAccentCarousel(pageIdx) {
       const carousel = document.getElementById('accent-carousel');
@@ -5795,6 +7045,7 @@
         dropLabel.textContent = 'Drop / Edit';
       }
 
+      clearMindfulTimer(true);
       state.ui.lastDroppedHabit = null;
       clearTimeout(state.ui.undoTimer);
       const undoBar = document.getElementById('undo-bar');
@@ -5856,6 +7107,11 @@
           playSineNote(783.99, 659.25, 0.07, 0.22, 0.055); // G5 -> E5
           playSineNote(659.25, 523.25, 0.14, 0.28, 0.050); // E5 -> C5
           playSineNote(523.25, 440.00, 0.14, 0.28, 0.030); // Soft warm tail
+        } else if (type === 'timerDone') {
+          // Gentle singing-bowl harmonic chime when a mindful timer completes
+          playSineNote(440.00, 440.00, 0.00, 0.55, 0.075);
+          playSineNote(659.25, 659.25, 0.09, 0.55, 0.065);
+          playSineNote(880.00, 880.00, 0.18, 0.65, 0.070);
         } else if (type === 'uncheck') {
           playSineNote(420, 310, 0.00, 0.14, 0.05);
         } else if (type === 'tap') {
@@ -5878,8 +7134,10 @@
         btn.classList.contains('check-btn') ||
         btn.classList.contains('count-step-btn') ||
         btn.classList.contains('nav-tab') ||
+        btn.classList.contains('sanctuary-terrarium-btn') ||
+        btn.classList.contains('timer-play-btn') ||
         btn.id === 'rest-day-toggle-btn' ||
-        btn.closest('#onboarding-companions-grid, #onboarding-starters-grid')
+        btn.closest('#onboarding-companions-grid, #onboarding-starters-grid, #sanctuary-modal-content .welcome-companion-dock')
       ) return;
       playCozySound('tap');
     }, { passive: true });
@@ -6471,6 +7729,7 @@
       // 5. Swipe down to dismiss frosted bottom-sheet modals
       attachSheetSwipeDismiss(document.getElementById('habit-modal-sheet'), closeHabitModal);
       attachSheetSwipeDismiss(document.getElementById('habit-detail-sheet'), closeHabitDetailModal);
+      attachSheetSwipeDismiss(document.getElementById('sanctuary-modal-sheet'), closeSanctuaryModal);
     }
 
     // Boot Application
