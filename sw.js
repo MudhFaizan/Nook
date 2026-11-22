@@ -1,11 +1,11 @@
-const CACHE_VERSION = 'v27';
+const CACHE_VERSION = 'v29';
 const UPDATE_INFO = {
   version: CACHE_VERSION,
-  title: 'Habit Breakdown Quick Sort',
-  summary: 'Added a compact sort pill in Insights Habit Breakdown to cycle cleanly between Order, Rate %, and Streak.',
+  title: 'Anytime-First Sections & Unified Order',
+  summary: 'Anytime now sits at the top above Morning, Afternoon, and Evening—synced cleanly across Today, Drop / Edit, and Insights with a Settings toggle.',
   highlights: [
-    'Tap the top-right pill in Habit Breakdown to rank rituals by 30d Rate % or active Streak',
-    'Remembers your chosen sort mode automatically without changing your Today list'
+    'Unified Anytime → Morning → Afternoon → Evening order across Today, Drop / Edit, and Insights',
+    'New Time-of-Day Sections on/off switch in Settings plus drag-across-category support in Drop / Edit'
   ]
 };
 const APP_SHELL_CACHE = `nook-shell-${CACHE_VERSION}`;

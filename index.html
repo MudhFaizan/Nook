@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Nook v27 -->
+<!-- Nook v29 -->
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -1146,6 +1146,9 @@
       gap: 10px;
       padding: 6px 6px 2px;
       animation: calHeaderSlide 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+    .completed-divider-row.is-first-divider {
+      padding-top: 1px;
     }
     .completed-divider-line {
       flex: 1;
@@ -2653,6 +2656,20 @@
             </button>
           </div>
 
+          <!-- Time-of-Day Sections Toggle -->
+          <div class="flex items-center justify-between pt-2 border-t border-subtle-cozy">
+            <div>
+              <p class="text-xs font-semibold text-cozy-primary">Time-of-Day Sections</p>
+              <p class="text-[11px] text-cozy-secondary">Group rituals by Anytime, Morning, Afternoon &amp; Evening</p>
+            </div>
+            <button id="toggle-group-tod-btn" onclick="togglePreference('groupByTimeOfDay')"
+              class="cozy-switch-track">
+              <span id="toggle-group-tod-knob" class="cozy-switch-knob">
+                <i class="ph-fill ph-sun-horizon"></i>
+              </span>
+            </button>
+          </div>
+
           <!-- Completion Order Toggle -->
           <div class="flex items-center justify-between pt-2 border-t border-subtle-cozy">
             <div>
@@ -2987,6 +3004,17 @@
               class="w-full px-3.5 py-2 rounded-xl glass-input text-xs text-cozy-primary focus:outline-none focus:border-[var(--accent-primary)]" />
           </div>
 
+          <!-- Time of Day Category Selector (Optional) -->
+          <div>
+            <div class="flex items-center justify-between mb-1.5">
+              <label class="text-xs font-semibold text-cozy-secondary">Time of Day <span class="text-cozy-muted font-normal">(Optional)</span></label>
+              <span id="time-of-day-helper" class="text-[11px] font-semibold accent-text">Anytime</span>
+            </div>
+            <div id="time-of-day-picker" class="grid grid-cols-4 gap-1.5 p-1.5 rounded-2xl bg-cozy-secondary/60 border border-cozy">
+              <!-- Populated by JS (Anytime, Morning, Afternoon, Evening) -->
+            </div>
+          </div>
+
           <!-- Flexible Weekly Goal Selector -->
           <div>
             <div class="flex items-center justify-between mb-1.5">
@@ -3290,6 +3318,41 @@
       return RITUAL_COLOR_OPTIONS.some(c => c.id && c.id === mapped) ? mapped : '';
     }
 
+    // Optional Time-of-Day Rhythm Categories (Canonical Order: Anytime -> Morning -> Afternoon -> Evening)
+    const TIME_OF_DAY_ORDER = ['', 'morning', 'afternoon', 'evening'];
+    const TIME_OF_DAY_OPTIONS = [
+      { id: '', label: 'Anytime', icon: '✦', helper: 'No fixed time · Anytime' },
+      { id: 'morning', label: 'Morning', icon: '🌅', helper: 'Start your day gently' },
+      { id: 'afternoon', label: 'Afternoon', icon: '☀️', helper: 'Midday reset & focus' },
+      { id: 'evening', label: 'Evening', icon: '🌙', helper: 'Unwind before sleep' }
+    ];
+
+    function getHabitTimeOfDay(habit) {
+      const raw = habit && typeof habit.timeOfDay === 'string' ? habit.timeOfDay.trim().toLowerCase() : '';
+      return ['morning', 'afternoon', 'evening'].includes(raw) ? raw : '';
+    }
+
+    function getTimeOfDayMeta(todId) {
+      return TIME_OF_DAY_OPTIONS.find(o => o.id === todId) || TIME_OF_DAY_OPTIONS[0];
+    }
+
+    function isTimeOfDayGroupingEnabled() {
+      return state.user.groupByTimeOfDay !== false;
+    }
+
+    function getTimeOfDayRank(habit) {
+      const idx = TIME_OF_DAY_ORDER.indexOf(getHabitTimeOfDay(habit));
+      return idx === -1 ? 0 : idx;
+    }
+
+    function sortHabitsByCategoryOrder(list) {
+      if (!Array.isArray(list) || !isTimeOfDayGroupingEnabled()) return Array.isArray(list) ? [...list] : [];
+      return list
+        .map((h, i) => ({ h, i, rank: getTimeOfDayRank(h) }))
+        .sort((a, b) => (a.rank - b.rank) || (a.i - b.i))
+        .map(x => x.h);
+    }
+
     // Living Botanical Companions (Grow visually with your active streak)
     const BOTANICAL_COMPANIONS = [
       { id: 'fern', label: 'Fern', emoji: '🌿', whisper: 'Unfurls softly with every quiet daily check-in.' },
@@ -3353,7 +3416,9 @@
         soundEnabled: true,
         confettiEnabled: true,
         showQuotes: true,
-        autoSortCompleted: true,
+        groupByTimeOfDay: true,
+        autoSortCompleted: false,
+        migratedAutoSortDefaultV28: true,
         todayViewMode: 'list',
         insightsCalendarMode: 'calendar',
         insightsBreakdownSort: 'order',
@@ -3390,7 +3455,7 @@
         detailGridSlideDir: null,
         modalEmoji: '🍵',
         modalColor: '',
-        modalTimeOfDay: 'morning',
+        modalTimeOfDay: '',
         modalWeeklyGoal: 7,
         modalTargetCount: 1,
         modalUnit: '',
@@ -3508,7 +3573,9 @@
           soundEnabled: true,
           confettiEnabled: true,
           showQuotes: true,
-          autoSortCompleted: true,
+          groupByTimeOfDay: true,
+          autoSortCompleted: false,
+          migratedAutoSortDefaultV28: true,
           todayViewMode: 'list',
           insightsCalendarMode: 'calendar',
           insightsBreakdownSort: 'order',
@@ -3564,6 +3631,7 @@
         targetCount,
         unit,
         timerMinutes,
+        timeOfDay: getHabitTimeOfDay(habit),
         color: getHabitColorAccent(habit),
         createdAt: fallbackCreated,
         versions
@@ -3596,6 +3664,7 @@
             if (!['order', 'rate', 'streak'].includes(state.user.insightsBreakdownSort)) {
               state.user.insightsBreakdownSort = 'order';
             }
+            state.user.groupByTimeOfDay = state.user.groupByTimeOfDay !== false;
             state.logs = parsed.logs && typeof parsed.logs === 'object' ? parsed.logs : {};
             state.counts = parsed.counts && typeof parsed.counts === 'object' ? parsed.counts : {};
             state.restDays = parsed.restDays && typeof parsed.restDays === 'object' ? parsed.restDays : {};
@@ -3605,6 +3674,11 @@
             state.archivedHabits = rawArchived.map(h => normalizeHabitRecord(h, state.logs));
             if (!Array.isArray(parsed.user && parsed.user.unlockedBadges)) {
               state.user.unlockedBadges = null;
+            }
+            if (!parsed.user || !parsed.user.migratedAutoSortDefaultV28) {
+              state.user.autoSortCompleted = false;
+              state.user.migratedAutoSortDefaultV28 = true;
+              saveState();
             }
             return;
           }
@@ -4939,20 +5013,90 @@
         });
       }
 
-      // Compute completion metadata and optionally glide finished rituals beneath active ones
+      // Compute completion & time-of-day metadata
       const enriched = habitsToShow.map(habit => {
         const targetCount = getHabitTargetCount(habit);
         const isCountable = targetCount > 1;
         const currentCount = isCountable ? getHabitCountOn(habit.id, dateKey, habit) : (isHabitCompletedOn(habit.id, dateKey) ? 1 : 0);
         const done = isCountable ? currentCount >= targetCount : isHabitCompletedOn(habit.id, dateKey);
-        return { habit, targetCount, isCountable, currentCount, done };
+        const timeOfDay = getHabitTimeOfDay(habit);
+        return { habit, targetCount, isCountable, currentCount, done, timeOfDay };
       });
 
-      const autoSort = !inDropMode && state.user.autoSortCompleted !== false;
-      const pendingItems = enriched.filter(item => !item.done);
-      const completedItems = enriched.filter(item => item.done);
-      const orderedItems = autoSort ? [...pendingItems, ...completedItems] : enriched;
-      const showCompletedDivider = autoSort && pendingItems.length > 0 && completedItems.length > 0;
+      const autoSort = !inDropMode && Boolean(state.user.autoSortCompleted);
+      const groupByTod = isTimeOfDayGroupingEnabled();
+      const hasAnyCategory = groupByTod && enriched.some(item => item.timeOfDay !== '');
+
+      // Build ordered render plan with clean inline section dividers (Anytime -> Morning -> Afternoon -> Evening, plus optional Completed)
+      const renderEntries = [];
+      let dividerCount = 0;
+
+      const pushGroupedByTimeOfDay = (pool, showProgressFraction) => {
+        if (!hasAnyCategory) {
+          pool.forEach(item => renderEntries.push({ type: 'item', item }));
+          return;
+        }
+        TIME_OF_DAY_ORDER.forEach(todId => {
+          const group = pool.filter(item => item.timeOfDay === todId);
+          if (group.length === 0) return;
+          const meta = getTimeOfDayMeta(todId);
+          const doneInGroup = group.filter(item => item.done).length;
+          const allInGroupDone = showProgressFraction && doneInGroup === group.length;
+          const countLabel = showProgressFraction ? `${doneInGroup}/${group.length}` : `${group.length}`;
+          renderEntries.push({
+            type: 'divider',
+            todId,
+            icon: meta.icon,
+            label: meta.label,
+            countLabel,
+            highlight: allInGroupDone,
+            isFirst: dividerCount === 0 && renderEntries.length === 0
+          });
+          dividerCount++;
+          group.forEach(item => renderEntries.push({ type: 'item', item }));
+        });
+      };
+
+      if (inDropMode) {
+        // Mirror Today's exact category order & sections in Drop / Edit mode
+        pushGroupedByTimeOfDay(enriched, false);
+      } else if (autoSort) {
+        const pendingItems = enriched.filter(item => !item.done);
+        const completedItems = enriched.filter(item => item.done);
+
+        if (pendingItems.length > 0) {
+          pushGroupedByTimeOfDay(pendingItems, false);
+        }
+
+        if (completedItems.length > 0) {
+          if (pendingItems.length > 0) {
+            renderEntries.push({
+              type: 'divider',
+              todId: null,
+              icon: '✦',
+              label: 'Completed',
+              countLabel: String(completedItems.length),
+              highlight: true,
+              isFirst: false
+            });
+            dividerCount++;
+            if (hasAnyCategory) {
+              // Keep completed items ordered identically (Anytime -> Morning -> Afternoon -> Evening)
+              TIME_OF_DAY_ORDER.forEach(todId => {
+                completedItems
+                  .filter(item => item.timeOfDay === todId)
+                  .forEach(item => renderEntries.push({ type: 'item', item }));
+              });
+            } else {
+              completedItems.forEach(item => renderEntries.push({ type: 'item', item }));
+            }
+          } else {
+            pushGroupedByTimeOfDay(completedItems, true);
+          }
+        }
+      } else {
+        pushGroupedByTimeOfDay(enriched, true);
+      }
 
       // Lock height momentarily during DOM swap to prevent mobile scroll jump
       const lockedHeight = container.offsetHeight;
@@ -4960,23 +5104,30 @@
 
       const frag = document.createDocumentFragment();
       const renderedCards = [];
+      let itemIdx = 0;
 
-      orderedItems.forEach((item, idx) => {
-        const { habit, targetCount, isCountable, currentCount, done } = item;
-
-        if (showCompletedDivider && idx === pendingItems.length) {
+      renderEntries.forEach((entry) => {
+        if (entry.type === 'divider') {
           const divider = document.createElement('div');
-          divider.className = 'completed-divider-row';
+          divider.className = `completed-divider-row${entry.isFirst ? ' is-first-divider' : ''}`;
+          if (entry.todId !== null && entry.todId !== undefined) {
+            divider.setAttribute('data-tod-divider', entry.todId);
+          }
           divider.innerHTML = `
             <span class="completed-divider-line"></span>
-            <span class="text-[10px] font-bold uppercase tracking-[0.14em] text-cozy-muted inline-flex items-center gap-1 flex-shrink-0">
-              <span class="accent-text">✦</span>
-              <span>Completed · ${completedItems.length}</span>
+            <span class="text-[10px] font-bold uppercase tracking-[0.14em] ${entry.highlight ? 'accent-text' : 'text-cozy-muted'} inline-flex items-center gap-1 flex-shrink-0">
+              <span class="text-[11px] leading-none">${entry.icon}</span>
+              <span>${escapeHtml(entry.label)} · ${escapeHtml(entry.countLabel)}</span>
             </span>
             <span class="completed-divider-line"></span>
           `;
           frag.appendChild(divider);
+          return;
         }
+
+        const item = entry.item;
+        const idx = itemIdx++;
+        const { habit, targetCount, isCountable, currentCount, done } = item;
 
         const isGridMode = !inDropMode && state.user.todayViewMode === 'grid';
         const justDoneClass = done && justCompletedId === habit.id ? 'just-completed' : '';
@@ -5134,6 +5285,11 @@
              </button>`
           : '';
 
+        const todId = getHabitTimeOfDay(habit);
+        const dropTodPillHtml = inDropMode && todId
+          ? `<span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md text-[9.5px] font-bold bg-cozy-secondary text-cozy-secondary">${getTimeOfDayMeta(todId).icon} ${getTimeOfDayMeta(todId).label}</span>`
+          : '';
+
         const pastPillHtml = isArchivedPast
           ? `<span class="inline-flex items-center px-1.5 py-0.5 rounded-md text-[9px] font-bold bg-cozy-secondary text-cozy-muted">Past ritual</span>`
           : '';
@@ -5194,6 +5350,7 @@
                   🌿 ${streak}d
                 </span>
                 ${countPillHtml}
+                ${dropTodPillHtml}
                 ${timerPillHtml}
                 ${weeklyPillHtml}
                 ${pastPillHtml}
@@ -5668,28 +5825,30 @@
         const container = document.getElementById('habits-list-container');
         if (!container) return;
 
-        const siblings = Array.from(container.children).filter(el => el !== card);
+        const children = Array.from(container.children);
+        const cardIndex = children.indexOf(card);
+        if (cardIndex === -1) return;
+
         const cardRect = card.getBoundingClientRect();
         const cardMid = cardRect.top + cardRect.height / 2;
 
-        for (const sib of siblings) {
+        for (let i = 0; i < children.length; i++) {
+          const sib = children[i];
+          if (sib === card) continue;
+
+          // Keep the very first category divider pinned at the top of the list
+          const isDivider = sib.hasAttribute('data-tod-divider');
+          if (isDivider && i === 0) continue;
+
           const sibRect = sib.getBoundingClientRect();
           const sibMid = sibRect.top + sibRect.height / 2;
-          const sibId = sib.getAttribute('data-habit-id');
-          const fromIdx = state.habits.findIndex(h => h.id === habitId);
-          const toIdx = state.habits.findIndex(h => h.id === sibId);
-          if (fromIdx === -1 || toIdx === -1) continue;
 
-          if (fromIdx < toIdx && cardMid > sibMid) {
-            const [item] = state.habits.splice(fromIdx, 1);
-            state.habits.splice(toIdx, 0, item);
+          if (cardIndex < i && cardMid > sibMid) {
             container.insertBefore(card, sib.nextSibling);
             startY = e.clientY;
             card.style.transform = 'scale(1.02)';
             break;
-          } else if (fromIdx > toIdx && cardMid < sibMid) {
-            const [item] = state.habits.splice(fromIdx, 1);
-            state.habits.splice(toIdx, 0, item);
+          } else if (cardIndex > i && cardMid < sibMid) {
             container.insertBefore(card, sib);
             startY = e.clientY;
             card.style.transform = 'scale(1.02)';
@@ -5706,7 +5865,51 @@
         if (e && e.pointerId != null && card.hasPointerCapture(e.pointerId)) {
           card.releasePointerCapture(e.pointerId);
         }
+
+        const container = document.getElementById('habits-list-container');
+        let categoryChangedMeta = null;
+
+        if (container) {
+          // Sync state.habits order directly from the visual DOM sequence
+          const domIds = Array.from(container.querySelectorAll('[data-habit-id]'))
+            .map(el => el.getAttribute('data-habit-id'));
+          const byId = new Map(state.habits.map(h => [h.id, h]));
+          const reordered = [];
+          domIds.forEach(id => {
+            if (byId.has(id)) {
+              reordered.push(byId.get(id));
+              byId.delete(id);
+            }
+          });
+          byId.forEach(h => reordered.push(h));
+          state.habits = reordered;
+
+          // If Time-of-Day sections are active, check whether the dragged ritual crossed into another category
+          const hasDividers = Boolean(container.querySelector('[data-tod-divider]'));
+          if (isTimeOfDayGroupingEnabled() && hasDividers) {
+            let prev = card.previousElementSibling;
+            while (prev && !prev.hasAttribute('data-tod-divider')) {
+              prev = prev.previousElementSibling;
+            }
+            if (prev && prev.hasAttribute('data-tod-divider')) {
+              const targetTod = prev.getAttribute('data-tod-divider') || '';
+              const movedHabit = state.habits.find(h => h.id === habitId);
+              if (movedHabit && getHabitTimeOfDay(movedHabit) !== targetTod) {
+                movedHabit.timeOfDay = targetTod;
+                categoryChangedMeta = getTimeOfDayMeta(targetTod);
+              }
+            }
+          }
+        }
+
         saveState();
+        if (categoryChangedMeta) {
+          playCozySound('check');
+          showToast(`Moved to ${categoryChangedMeta.label}`, categoryChangedMeta.icon);
+          renderHabitsList(false);
+        } else if (isTimeOfDayGroupingEnabled()) {
+          renderHabitsList(false);
+        }
       };
 
       card.addEventListener('pointerup', endDrag);
@@ -6459,7 +6662,7 @@
       const dateKey = state.ui.heatmapSelectedDate || getTodayKey();
       const dt = parseDateKey(dateKey);
       const formatted = dt.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
-      const habitsForDay = getHabitsForDate(dateKey);
+      const habitsForDay = sortHabitsByCategoryOrder(getHabitsForDate(dateKey));
       const tracked = habitsForDay.filter(h => isHabitCompletedOn(h.id, dateKey));
       const notTracked = habitsForDay.filter(h => !isHabitCompletedOn(h.id, dateKey));
       const isOpen = state.ui.heatmapInspectorOpen;
@@ -6713,23 +6916,66 @@
         ? state.user.insightsBreakdownSort
         : 'order';
 
-      const items = state.habits.map((habit, originalIdx) => {
+      const orderedHabits = sortHabitsByCategoryOrder(state.habits);
+      const showCategoryDividers = sortMode === 'order' && isTimeOfDayGroupingEnabled() && orderedHabits.some(h => getHabitTimeOfDay(h) !== '');
+
+      const items = orderedHabits.map((habit, displayIdx) => {
         const rate = getHabit30DayConsistency(habit);
         const streak = getHabitStreak(habit);
         const goal = Math.min(7, Math.max(1, Number(habit.weeklyGoal) || 7));
         const goalText = goal < 7 ? `${goal}x/wk` : 'Daily';
         const momentum = getHabit4WeekMomentum(habit, rate);
-        return { habit, originalIdx, rate, streak, goal, goalText, momentum };
+        const timeOfDay = getHabitTimeOfDay(habit);
+        return { habit, displayIdx, rate, streak, goal, goalText, momentum, timeOfDay };
       });
 
       if (sortMode === 'rate') {
-        items.sort((a, b) => (b.rate - a.rate) || (b.streak - a.streak) || (a.originalIdx - b.originalIdx));
+        items.sort((a, b) => (b.rate - a.rate) || (b.streak - a.streak) || (a.displayIdx - b.displayIdx));
       } else if (sortMode === 'streak') {
-        items.sort((a, b) => (b.streak - a.streak) || (b.rate - a.rate) || (a.originalIdx - b.originalIdx));
+        items.sort((a, b) => (b.streak - a.streak) || (b.rate - a.rate) || (a.displayIdx - b.displayIdx));
+      }
+
+      const entries = [];
+      if (showCategoryDividers) {
+        let divCount = 0;
+        TIME_OF_DAY_ORDER.forEach(todId => {
+          const group = items.filter(it => it.timeOfDay === todId);
+          if (group.length === 0) return;
+          const meta = getTimeOfDayMeta(todId);
+          entries.push({
+            type: 'divider',
+            icon: meta.icon,
+            label: meta.label,
+            countLabel: String(group.length),
+            isFirst: divCount === 0
+          });
+          divCount++;
+          group.forEach(it => entries.push({ type: 'item', item: it }));
+        });
+      } else {
+        items.forEach(it => entries.push({ type: 'item', item: it }));
       }
 
       container.innerHTML = '';
-      items.forEach(({ habit, rate, streak, goalText, momentum }, idx) => {
+      let tileIdx = 0;
+      entries.forEach(entry => {
+        if (entry.type === 'divider') {
+          const divider = document.createElement('div');
+          divider.className = `completed-divider-row${entry.isFirst ? ' is-first-divider' : ''}`;
+          divider.innerHTML = `
+            <span class="completed-divider-line"></span>
+            <span class="text-[10px] font-bold uppercase tracking-[0.14em] text-cozy-muted inline-flex items-center gap-1 flex-shrink-0">
+              <span class="text-[11px] leading-none">${entry.icon}</span>
+              <span>${escapeHtml(entry.label)} · ${escapeHtml(entry.countLabel)}</span>
+            </span>
+            <span class="completed-divider-line"></span>
+          `;
+          container.appendChild(divider);
+          return;
+        }
+
+        const idx = tileIdx++;
+        const { habit, rate, streak, goalText, momentum } = entry.item;
         const translateY = Math.round(86 - (rate * 0.96));
         const gradId = `insight-ribbon-grad-${idx}`;
         const ribbonSvg = buildMomentumRibbonSvg(momentum.buckets, gradId);
@@ -6809,6 +7055,7 @@
         if (subInput) subInput.value = editing.subtitle || '';
         state.ui.modalEmoji = editing.emoji || '🍵';
         state.ui.modalColor = getHabitColorAccent(editing);
+        state.ui.modalTimeOfDay = getHabitTimeOfDay(editing);
         state.ui.modalWeeklyGoal = Math.min(7, Math.max(1, Number(editing.weeklyGoal) || 7));
         state.ui.modalTargetCount = getHabitTargetCount(editing);
         state.ui.modalUnit = editing.unit || '';
@@ -6822,6 +7069,7 @@
         if (subInput) subInput.value = '';
         state.ui.modalEmoji = '🍵';
         state.ui.modalColor = '';
+        state.ui.modalTimeOfDay = '';
         state.ui.modalWeeklyGoal = 7;
         state.ui.modalTargetCount = 1;
         state.ui.modalUnit = '';
@@ -6832,6 +7080,7 @@
 
       if (customEmojiInput) customEmojiInput.value = '';
       renderModalRecChips();
+      renderTimeOfDayPicker();
       renderWeeklyGoalPicker();
       renderModalDailyTargetUI();
       renderModalTimerUI();
@@ -6881,10 +7130,12 @@
           if (nameInput) nameInput.value = item.title;
           if (subInput) subInput.value = item.subtitle;
           state.ui.modalEmoji = item.emoji;
+          state.ui.modalTimeOfDay = getHabitTimeOfDay(item);
           state.ui.modalWeeklyGoal = item.weeklyGoal || 7;
           state.ui.modalTargetCount = Math.min(99, Math.max(1, Number(item.targetCount) || 1));
           state.ui.modalUnit = item.unit || '';
           state.ui.modalTimerMinutes = Math.min(180, Math.max(0, Math.round(Number(item.timerMinutes) || 0)));
+          renderTimeOfDayPicker();
           renderWeeklyGoalPicker();
           renderModalDailyTargetUI();
           renderModalTimerUI();
@@ -6893,6 +7144,35 @@
         btn.className = 'px-2.5 py-1.5 rounded-xl bg-cozy-elevated border border-cozy text-[11px] font-semibold text-cozy-primary whitespace-nowrap flex items-center gap-1';
         btn.innerHTML = `<span>${item.emoji}</span><span>${escapeHtml(item.title.split(' ').slice(0, 3).join(' '))}</span>`;
         container.appendChild(btn);
+      });
+    }
+
+    function renderTimeOfDayPicker() {
+      const picker = document.getElementById('time-of-day-picker');
+      const helper = document.getElementById('time-of-day-helper');
+      const current = getHabitTimeOfDay({ timeOfDay: state.ui.modalTimeOfDay });
+      const currentMeta = getTimeOfDayMeta(current);
+
+      if (helper) {
+        const baseText = current ? `${currentMeta.icon} ${currentMeta.label}` : 'Anytime (Optional)';
+        helper.textContent = isTimeOfDayGroupingEnabled() ? baseText : `${baseText} · Off in Settings`;
+      }
+      if (!picker) return;
+
+      picker.innerHTML = '';
+      TIME_OF_DAY_ORDER.forEach(id => {
+        const opt = getTimeOfDayMeta(id);
+        const active = id === current;
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.onclick = () => {
+          // Tapping an already-picked time-of-day gently toggles back to Anytime
+          state.ui.modalTimeOfDay = (active && id !== '') ? '' : id;
+          renderTimeOfDayPicker();
+        };
+        btn.className = `py-1.5 px-1 rounded-xl text-[10.5px] font-bold transition flex flex-col items-center justify-center gap-0.5 ${active ? 'accent-bg text-white shadow-xs' : 'text-cozy-secondary hover:bg-cozy-elevated'}`;
+        btn.innerHTML = `<span class="text-xs leading-none">${opt.icon}</span><span class="leading-none">${opt.label}</span>`;
+        picker.appendChild(btn);
       });
     }
 
@@ -7166,6 +7446,7 @@
       const todayKey = getTodayKey();
       const emoji = state.ui.modalEmoji || '🌿';
       const color = getHabitColorAccent({ color: state.ui.modalColor });
+      const timeOfDay = getHabitTimeOfDay({ timeOfDay: state.ui.modalTimeOfDay });
       const weeklyGoal = state.ui.modalWeeklyGoal || 7;
       const targetCount = Math.min(99, Math.max(1, Number(state.ui.modalTargetCount) || 1));
       const unit = targetCount > 1 ? (state.ui.modalUnit || '').trim() : '';
@@ -7228,6 +7509,7 @@
           existing.targetCount = targetCount;
           existing.unit = unit;
           existing.timerMinutes = timerMinutes;
+          existing.timeOfDay = timeOfDay;
           existing.color = color;
 
           // If an idle timer was loaded for this habit, sync or clear its duration
@@ -7258,7 +7540,7 @@
           title,
           subtitle,
           emoji,
-          timeOfDay: 'morning',
+          timeOfDay,
           weeklyGoal,
           targetCount,
           unit,
@@ -8156,8 +8438,9 @@
               ${escapeHtml(habit.emoji || '🌿')}
             </div>
             <div class="min-w-0">
-              <div class="flex items-center gap-1.5">
+              <div class="flex items-center gap-1.5 flex-wrap">
                 <h3 class="text-base font-bold text-cozy-primary truncate">${escapeHtml(habit.title)}</h3>
+                ${getHabitTimeOfDay(habit) ? `<span class="px-1.5 py-0.5 rounded-md accent-bg-soft accent-text text-[9.5px] font-bold flex-shrink-0">${getTimeOfDayMeta(getHabitTimeOfDay(habit)).icon} ${getTimeOfDayMeta(getHabitTimeOfDay(habit)).label}</span>` : ''}
                 ${isArchived ? '<span class="px-1.5 py-0.5 rounded-md bg-cozy-secondary text-[9px] font-bold text-cozy-muted flex-shrink-0">Past</span>' : ''}
               </div>
               <p class="text-xs text-cozy-secondary truncate">${escapeHtml(habit.subtitle || 'Mindful daily ritual')}${getHabitTargetCount(habit) > 1 ? ` · <span class="accent-text font-semibold">${escapeHtml(formatCountProgressText(getHabitCountOn(habit.id, todayKey, habit), getHabitTargetCount(habit), habit.unit))} today</span>` : ''}</p>
@@ -8777,8 +9060,12 @@
       state.user[key] = !state.user[key];
       saveState();
       renderSettingsView();
-      if (key === 'showQuotes' || key === 'autoSortCompleted') {
+      if (key === 'showQuotes' || key === 'autoSortCompleted' || key === 'groupByTimeOfDay') {
         renderTodayView(false);
+        if (key === 'groupByTimeOfDay') {
+          renderInsightsHabitBreakdown();
+          renderHeatmapDayInspector();
+        }
       }
     }
 
@@ -8822,6 +9109,7 @@
         { key: 'soundEnabled', btnId: 'toggle-sound-btn', knobId: 'toggle-sound-knob' },
         { key: 'confettiEnabled', btnId: 'toggle-confetti-btn', knobId: 'toggle-confetti-knob' },
         { key: 'showQuotes', btnId: 'toggle-quotes-btn', knobId: 'toggle-quotes-knob' },
+        { key: 'groupByTimeOfDay', btnId: 'toggle-group-tod-btn', knobId: 'toggle-group-tod-knob' },
         { key: 'autoSortCompleted', btnId: 'toggle-sort-completed-btn', knobId: 'toggle-sort-completed-knob' }
       ];
       prefBindings.forEach(({ key, btnId, knobId }) => {
@@ -8884,6 +9172,7 @@
             if (!['order', 'rate', 'streak'].includes(state.user.insightsBreakdownSort)) {
               state.user.insightsBreakdownSort = 'order';
             }
+            state.user.groupByTimeOfDay = state.user.groupByTimeOfDay !== false;
             state.logs = parsed.logs && typeof parsed.logs === 'object' ? parsed.logs : {};
             state.counts = parsed.counts && typeof parsed.counts === 'object' ? parsed.counts : {};
             state.restDays = parsed.restDays && typeof parsed.restDays === 'object' ? parsed.restDays : {};
@@ -8893,6 +9182,10 @@
               : [];
             if (!Array.isArray(parsed.user && parsed.user.unlockedBadges)) {
               syncUnlockedBadgesSilently(false);
+            }
+            state.user.migratedAutoSortDefaultV28 = true;
+            if (typeof (parsed.user && parsed.user.autoSortCompleted) !== 'boolean') {
+              state.user.autoSortCompleted = false;
             }
             saveState();
             applyThemeAndAccentToDOM();
