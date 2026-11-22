@@ -1,11 +1,11 @@
-const CACHE_VERSION = 'v26';
+const CACHE_VERSION = 'v27';
 const UPDATE_INFO = {
   version: CACHE_VERSION,
-  title: 'Mini Liquid Orbs & Momentum Ribbons',
-  summary: 'Replaced the flat 30-day progress bars in Insights with animated mini liquid-glass spheres and smooth 4-week momentum ribbons.',
+  title: 'Habit Breakdown Quick Sort',
+  summary: 'Added a compact sort pill in Insights Habit Breakdown to cycle cleanly between Order, Rate %, and Streak.',
   highlights: [
-    'Each ritual shows a glowing 4-week trend curve with Rising, Steady, or In flow cues',
-    'Paired with a mini liquid-filling % sphere tinted in each ritual’s custom color'
+    'Tap the top-right pill in Habit Breakdown to rank rituals by 30d Rate % or active Streak',
+    'Remembers your chosen sort mode automatically without changing your Today list'
   ]
 };
 const APP_SHELL_CACHE = `nook-shell-${CACHE_VERSION}`;

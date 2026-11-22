@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Nook v26 -->
+<!-- Nook v27 -->
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -1450,6 +1450,33 @@
       line-height: 1.25;
       flex-shrink: 0;
     }
+    .breakdown-sort-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4.5px;
+      padding: 5px 9px 5px 8px;
+      border-radius: 12px;
+      background: var(--bg-glass-elevated);
+      border: 1px solid var(--border-glass);
+      box-shadow: var(--shadow-glass);
+      color: var(--text-secondary);
+      line-height: 1;
+      transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1),
+                  background-color 0.25s ease,
+                  border-color 0.25s ease,
+                  color 0.22s ease,
+                  box-shadow 0.25s ease;
+    }
+    .breakdown-sort-pill:hover {
+      border-color: var(--accent-medium);
+      color: var(--text-primary);
+    }
+    .breakdown-sort-pill.is-sorted {
+      background: var(--accent-soft);
+      border-color: var(--accent-medium);
+      color: var(--accent-primary);
+      box-shadow: 0 4px 12px -5px var(--accent-glow), inset 0 1px 1px rgba(255, 255, 255, 0.45);
+    }
 
     /* Swipe-to-Check / Swipe-to-Step Habit Card Surface */
     .habit-swipe-slot {
@@ -2413,10 +2440,15 @@
         <!-- Per-Habit Streak & Consistency Breakdown -->
         <div class="cozy-card p-4">
           <div class="flex items-start justify-between gap-2 mb-3">
-            <div>
+            <div class="min-w-0">
               <h3 class="text-sm font-bold text-cozy-primary leading-tight">Habit Breakdown (Last 30 Days)</h3>
               <p class="text-[11px] text-cozy-secondary mt-0.5">4-week momentum ribbons &amp; goal spheres · Tap any ritual</p>
             </div>
+            <button type="button" id="insights-breakdown-sort-btn" onclick="cycleInsightsBreakdownSort()"
+              class="breakdown-sort-pill flex-shrink-0" title="Cycle sort: Order, Rate %, Streak" aria-label="Sort rituals by Order">
+              <i class="ph-bold ph-arrows-down-up text-[11px] accent-text"></i>
+              <span id="insights-breakdown-sort-label" class="text-[10.5px] font-bold leading-none">Order</span>
+            </button>
           </div>
           <div id="insights-habit-breakdown" class="space-y-2.5">
             <!-- Populated by JS -->
@@ -3324,6 +3356,7 @@
         autoSortCompleted: true,
         todayViewMode: 'list',
         insightsCalendarMode: 'calendar',
+        insightsBreakdownSort: 'order',
         detailCalendarMode: 'grid',
         timerSessions: 0,
         unlockedBadges: []
@@ -3478,6 +3511,7 @@
           autoSortCompleted: true,
           todayViewMode: 'list',
           insightsCalendarMode: 'calendar',
+          insightsBreakdownSort: 'order',
           detailCalendarMode: 'grid',
           timerSessions: 0,
           unlockedBadges: []
@@ -3558,6 +3592,9 @@
             }
             if (!['calendar', 'grid'].includes(state.user.detailCalendarMode)) {
               state.user.detailCalendarMode = 'grid';
+            }
+            if (!['order', 'rate', 'streak'].includes(state.user.insightsBreakdownSort)) {
+              state.user.insightsBreakdownSort = 'order';
             }
             state.logs = parsed.logs && typeof parsed.logs === 'object' ? parsed.logs : {};
             state.counts = parsed.counts && typeof parsed.counts === 'object' ? parsed.counts : {};
@@ -6621,22 +6658,78 @@
       `;
     }
 
+    const INSIGHTS_BREAKDOWN_SORTS = [
+      { id: 'order', label: 'Order' },
+      { id: 'rate', label: 'Rate %' },
+      { id: 'streak', label: 'Streak' }
+    ];
+
+    function updateInsightsBreakdownSortUI(animateLabel = false) {
+      const btn = document.getElementById('insights-breakdown-sort-btn');
+      const labelEl = document.getElementById('insights-breakdown-sort-label');
+      if (!btn || !labelEl) return;
+
+      const sortId = ['order', 'rate', 'streak'].includes(state.user.insightsBreakdownSort)
+        ? state.user.insightsBreakdownSort
+        : 'order';
+      const opt = INSIGHTS_BREAKDOWN_SORTS.find(s => s.id === sortId) || INSIGHTS_BREAKDOWN_SORTS[0];
+
+      btn.classList.toggle('hidden', state.habits.length === 0);
+      btn.classList.toggle('is-sorted', sortId !== 'order');
+      btn.setAttribute('aria-label', `Sort rituals: ${opt.label}. Tap to cycle.`);
+      labelEl.textContent = opt.label;
+
+      if (animateLabel) {
+        labelEl.classList.remove('cal-header-anim');
+        void labelEl.offsetWidth;
+        labelEl.classList.add('cal-header-anim');
+      }
+    }
+
+    function cycleInsightsBreakdownSort() {
+      const current = ['order', 'rate', 'streak'].includes(state.user.insightsBreakdownSort)
+        ? state.user.insightsBreakdownSort
+        : 'order';
+      const idx = INSIGHTS_BREAKDOWN_SORTS.findIndex(s => s.id === current);
+      const next = INSIGHTS_BREAKDOWN_SORTS[(idx + 1) % INSIGHTS_BREAKDOWN_SORTS.length];
+      state.user.insightsBreakdownSort = next.id;
+      saveState();
+      updateInsightsBreakdownSortUI(true);
+      renderInsightsHabitBreakdown();
+    }
+
     function renderInsightsHabitBreakdown() {
       const container = document.getElementById('insights-habit-breakdown');
       if (!container) return;
+
+      updateInsightsBreakdownSortUI(false);
 
       if (state.habits.length === 0) {
         container.innerHTML = '<p class="text-xs text-cozy-muted text-center py-3">Add rituals to see your 30-day rhythm here.</p>';
         return;
       }
 
-      container.innerHTML = '';
-      state.habits.forEach((habit, idx) => {
+      const sortMode = ['order', 'rate', 'streak'].includes(state.user.insightsBreakdownSort)
+        ? state.user.insightsBreakdownSort
+        : 'order';
+
+      const items = state.habits.map((habit, originalIdx) => {
         const rate = getHabit30DayConsistency(habit);
         const streak = getHabitStreak(habit);
         const goal = Math.min(7, Math.max(1, Number(habit.weeklyGoal) || 7));
         const goalText = goal < 7 ? `${goal}x/wk` : 'Daily';
         const momentum = getHabit4WeekMomentum(habit, rate);
+        return { habit, originalIdx, rate, streak, goal, goalText, momentum };
+      });
+
+      if (sortMode === 'rate') {
+        items.sort((a, b) => (b.rate - a.rate) || (b.streak - a.streak) || (a.originalIdx - b.originalIdx));
+      } else if (sortMode === 'streak') {
+        items.sort((a, b) => (b.streak - a.streak) || (b.rate - a.rate) || (a.originalIdx - b.originalIdx));
+      }
+
+      container.innerHTML = '';
+      items.forEach(({ habit, rate, streak, goalText, momentum }, idx) => {
         const translateY = Math.round(86 - (rate * 0.96));
         const gradId = `insight-ribbon-grad-${idx}`;
         const ribbonSvg = buildMomentumRibbonSvg(momentum.buckets, gradId);
@@ -8787,6 +8880,9 @@
             }
             if (!['calendar', 'grid'].includes(state.user.detailCalendarMode)) {
               state.user.detailCalendarMode = 'grid';
+            }
+            if (!['order', 'rate', 'streak'].includes(state.user.insightsBreakdownSort)) {
+              state.user.insightsBreakdownSort = 'order';
             }
             state.logs = parsed.logs && typeof parsed.logs === 'object' ? parsed.logs : {};
             state.counts = parsed.counts && typeof parsed.counts === 'object' ? parsed.counts : {};
