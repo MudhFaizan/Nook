@@ -1437,6 +1437,21 @@
       box-shadow: 0 3px 10px -3px var(--accent-glow);
     }
 
+    /* Top Drop-In PWA Update Sheet */
+    .pwa-update-sheet {
+      background: var(--bg-glass-modal);
+      backdrop-filter: blur(28px) saturate(195%);
+      -webkit-backdrop-filter: blur(28px) saturate(195%);
+      border-bottom: 1px solid var(--border-glass);
+      box-shadow: var(--shadow-float), 0 14px 36px -10px var(--accent-glow);
+      transition: transform 0.44s cubic-bezier(0.32, 1.18, 0.54, 1),
+                  opacity 0.28s ease;
+    }
+    .pwa-update-sheet.is-swiping {
+      transition: none !important;
+      user-select: none;
+    }
+
     /* Splash Zen Bloom Animation */
     .splash-bloom-orb {
       animation: splashOrbFloat 2.4s ease-in-out infinite alternate;
@@ -1452,14 +1467,16 @@
         #app-shell > header {
           padding-top: calc(1.25rem + env(safe-area-inset-top));
         }
+        #pwa-update-sheet {
+          padding-top: calc(1.1rem + env(safe-area-inset-top));
+        }
         #bottom-nav-dock {
           bottom: calc(0.75rem + env(safe-area-inset-bottom));
         }
         #fab-add-habit,
         #undo-bar,
         #floating-timer-bar,
-        #pwa-install-banner,
-        #pwa-update-banner {
+        #pwa-install-banner {
           bottom: calc(6rem + env(safe-area-inset-bottom));
         }
       }
@@ -2387,27 +2404,63 @@
     </div>
 
     <!-- ======================================================================
-         PWA UPDATE READY BANNER (1-Tap Refresh when a new version is published)
+         FULL TOP DROP-IN PWA UPDATE POP-UP (Release Summary + Update Now / Later)
          ====================================================================== -->
-    <div id="pwa-update-banner" class="fixed sm:absolute bottom-24 left-4 right-20 z-30 hidden opacity-0 translate-y-3 transition-all duration-300">
-      <div class="px-3.5 py-2.5 rounded-2xl bg-glass-modal border border-cozy shadow-float flex items-center justify-between gap-2.5">
-        <div class="flex items-center gap-2.5 min-w-0">
-          <span class="w-8 h-8 rounded-xl accent-bg-soft accent-text flex items-center justify-center flex-shrink-0 text-sm">✨</span>
-          <div class="min-w-0">
-            <p class="text-xs font-bold text-cozy-primary truncate">Update Ready</p>
-            <p class="text-[10px] text-cozy-secondary truncate">A fresh version of Nook is here</p>
+    <div id="pwa-update-banner" class="fixed sm:absolute inset-0 z-[55] hidden opacity-0 transition-opacity duration-300 flex items-start justify-center bg-black/35 backdrop-blur-[3px]" role="dialog" aria-modal="true" aria-labelledby="pwa-update-title">
+      <div id="pwa-update-sheet" class="pwa-update-sheet w-full rounded-b-[30px] px-5 pt-4 pb-3.5 transform -translate-y-full">
+        <!-- Top Header Row -->
+        <div class="flex items-start justify-between gap-3">
+          <div class="flex items-center gap-3 min-w-0">
+            <span class="w-10 h-10 rounded-2xl accent-progress-gradient text-white flex items-center justify-center flex-shrink-0 shadow-sm">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none">
+                <path d="M12 3.2C13.3 8.1 15.9 10.7 20.8 12C15.9 13.3 13.3 15.9 12 20.8C10.7 15.9 8.1 13.3 3.2 12C8.1 10.7 10.7 8.1 12 3.2Z" fill="currentColor"/>
+                <circle cx="18.2" cy="5.8" r="1.35" fill="currentColor" opacity="0.88"/>
+              </svg>
+            </span>
+            <div class="min-w-0">
+              <div class="flex items-center gap-1.5">
+                <span class="text-[10px] font-bold uppercase tracking-[0.16em] accent-text leading-none">New Update</span>
+                <span id="pwa-update-version" class="px-1.5 py-0.5 rounded-md accent-bg-soft accent-text text-[9.5px] font-extrabold leading-none">Latest</span>
+              </div>
+              <h3 id="pwa-update-title" class="font-serif-cozy text-[17px] font-semibold text-cozy-primary mt-1 leading-tight truncate">
+                A Fresh Nook Update Is Ready
+              </h3>
+            </div>
           </div>
-        </div>
-        <div class="flex items-center gap-1.5 flex-shrink-0">
-          <button type="button" onclick="applyPwaUpdate()"
-            class="px-3 py-1.5 rounded-xl accent-bg text-white font-bold text-[11px] shadow-2xs">
-            Refresh
-          </button>
-          <button type="button" onclick="dismissUpdateBanner()" aria-label="Dismiss update banner"
-            class="w-7 h-7 rounded-lg bg-cozy-secondary text-cozy-muted hover:text-cozy-primary flex items-center justify-center text-xs">
-            <i class="ph-bold ph-x"></i>
+
+          <button type="button" onclick="deferPwaUpdate()" class="cozy-icon-orb-btn !w-8 !h-8 !rounded-xl flex-shrink-0" aria-label="Remind me later">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 16 16" fill="none">
+              <path d="M4.5 4.5L11.5 11.5M11.5 4.5L4.5 11.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+              <circle cx="8" cy="8" r="1.1" fill="currentColor"/>
+            </svg>
           </button>
         </div>
+
+        <!-- Short What's New Summary Box -->
+        <div class="mt-3 p-3 rounded-2xl bg-cozy-secondary/55 border border-cozy space-y-2">
+          <p id="pwa-update-summary" class="text-xs font-medium text-cozy-primary leading-relaxed">
+            A new version of Nook is ready with fresh polish and improvements.
+          </p>
+          <ul id="pwa-update-highlights" class="space-y-1.5 hidden">
+            <!-- Populated dynamically from the incoming Service Worker -->
+          </ul>
+        </div>
+
+        <!-- Action Buttons: Later | Update Now -->
+        <div class="grid grid-cols-2 gap-2.5 mt-3.5">
+          <button type="button" id="pwa-update-later-btn" onclick="deferPwaUpdate()"
+            class="py-2.5 px-4 rounded-2xl glass-pill text-xs font-bold text-cozy-secondary hover:text-cozy-primary">
+            Later
+          </button>
+          <button type="button" id="pwa-update-now-btn" onclick="applyPwaUpdate()"
+            class="pwa-update-now-btn py-2.5 px-4 rounded-2xl accent-progress-gradient text-white text-xs font-bold shadow-sm inline-flex items-center justify-center gap-1.5">
+            <i class="ph-bold ph-sparkle text-sm"></i>
+            <span>Update Now</span>
+          </button>
+        </div>
+
+        <!-- Subtle Swipe-Up Handle -->
+        <div class="w-10 h-1 bg-cozy-secondary rounded-full mx-auto mt-3 sm:hidden" aria-hidden="true"></div>
       </div>
     </div>
 
@@ -3115,6 +3168,8 @@
             try { hasOnboarded = Boolean(localStorage.getItem(ONBOARDED_KEY)); } catch (e) {}
             if (!hasOnboarded) {
               openOnboardingScreen();
+            } else if (typeof flushPendingUpdateSheet === 'function') {
+              setTimeout(() => flushPendingUpdateSheet(), 220);
             }
           }
         }, 460);
@@ -7136,6 +7191,7 @@
         btn.classList.contains('nav-tab') ||
         btn.classList.contains('sanctuary-terrarium-btn') ||
         btn.classList.contains('timer-play-btn') ||
+        btn.classList.contains('pwa-update-now-btn') ||
         btn.id === 'rest-day-toggle-btn' ||
         btn.closest('#onboarding-companions-grid, #onboarding-starters-grid, #sanctuary-modal-content .welcome-companion-dock')
       ) return;
@@ -7325,34 +7381,203 @@
     }
 
     let waitingServiceWorker = null;
+    let pendingUpdateWorker = null;
+    let deferredUpdateWorker = null;
+    let updateDeferredUntilReopen = false;
+    let appWasHiddenSinceDefer = false;
     let isRefreshingForUpdate = false;
+    let activeSwRegistration = null;
 
-    function showUpdateBanner(worker) {
+    const DEFAULT_UPDATE_META = {
+      version: 'New',
+      title: 'A Fresh Nook Update Is Ready',
+      summary: 'A newer version of Nook is ready with fresh polish and improvements.',
+      highlights: []
+    };
+
+    function fetchWorkerUpdateInfo(worker) {
+      return new Promise((resolve) => {
+        if (!worker || typeof MessageChannel === 'undefined') {
+          resolve(DEFAULT_UPDATE_META);
+          return;
+        }
+        let settled = false;
+        const done = (info) => {
+          if (settled) return;
+          settled = true;
+          resolve(info && typeof info === 'object' ? { ...DEFAULT_UPDATE_META, ...info } : DEFAULT_UPDATE_META);
+        };
+        const timer = setTimeout(() => done(DEFAULT_UPDATE_META), 450);
+        try {
+          const channel = new MessageChannel();
+          channel.port1.onmessage = (event) => {
+            clearTimeout(timer);
+            done(event.data);
+          };
+          worker.postMessage({ type: 'GET_UPDATE_INFO' }, [channel.port2]);
+        } catch (err) {
+          clearTimeout(timer);
+          done(DEFAULT_UPDATE_META);
+        }
+      });
+    }
+
+    function populateUpdateSheetContent(info) {
+      const meta = { ...DEFAULT_UPDATE_META, ...(info || {}) };
+      const versionEl = document.getElementById('pwa-update-version');
+      const titleEl = document.getElementById('pwa-update-title');
+      const summaryEl = document.getElementById('pwa-update-summary');
+      const highlightsEl = document.getElementById('pwa-update-highlights');
+      const updateNowBtn = document.getElementById('pwa-update-now-btn');
+
+      if (versionEl) versionEl.textContent = meta.version || 'New';
+      if (titleEl) titleEl.textContent = meta.title || DEFAULT_UPDATE_META.title;
+      if (summaryEl) summaryEl.textContent = meta.summary || DEFAULT_UPDATE_META.summary;
+
+      if (highlightsEl) {
+        const items = Array.isArray(meta.highlights) ? meta.highlights.filter(Boolean).slice(0, 3) : [];
+        if (items.length > 0) {
+          highlightsEl.innerHTML = items.map(text => `
+            <li class="flex items-start gap-2 text-[11px] text-cozy-secondary leading-snug">
+              <span class="w-1.5 h-1.5 rotate-45 rounded-[1px] accent-bg mt-[5px] flex-shrink-0 inline-block"></span>
+              <span>${escapeHtml(text)}</span>
+            </li>
+          `).join('');
+          highlightsEl.classList.remove('hidden');
+        } else {
+          highlightsEl.innerHTML = '';
+          highlightsEl.classList.add('hidden');
+        }
+      }
+
+      if (updateNowBtn) {
+        updateNowBtn.disabled = false;
+        updateNowBtn.innerHTML = '<i class="ph-bold ph-sparkle text-sm"></i><span>Update Now</span>';
+      }
+    }
+
+    function isSplashCurrentlyVisible() {
+      const splash = document.getElementById('splash-screen');
+      return Boolean(splash && !splash.classList.contains('hidden'));
+    }
+
+    function flushPendingUpdateSheet() {
+      if (!pendingUpdateWorker) return;
+      const worker = pendingUpdateWorker;
+      pendingUpdateWorker = null;
+      showUpdateBanner(worker);
+    }
+
+    async function showUpdateBanner(worker) {
+      if (!worker) return;
       waitingServiceWorker = worker;
+
+      // Stay dismissed if the user chose "Later" for this update during the current open session
+      if (updateDeferredUntilReopen && deferredUpdateWorker === worker) {
+        return;
+      }
+
+      // If splash screen is still blooming, wait until it finishes so the top drop-in animation is visible
+      if (isSplashCurrentlyVisible()) {
+        pendingUpdateWorker = worker;
+        return;
+      }
+
       dismissInstallBanner();
-      const banner = document.getElementById('pwa-update-banner');
-      if (!banner) return;
-      banner.classList.remove('hidden');
+      const backdrop = document.getElementById('pwa-update-banner');
+      const sheet = document.getElementById('pwa-update-sheet');
+      if (!backdrop || !sheet) return;
+
+      const info = await fetchWorkerUpdateInfo(worker);
+
+      // Re-check in case the user dismissed or splash reopened while awaiting message reply
+      if (updateDeferredUntilReopen && deferredUpdateWorker === worker) return;
+
+      populateUpdateSheetContent(info);
+      sheet.classList.remove('is-swiping');
+      sheet.style.transform = '';
+      backdrop.classList.remove('hidden');
       requestAnimationFrame(() => {
-        banner.classList.remove('opacity-0', 'translate-y-3');
+        backdrop.classList.remove('opacity-0');
+        sheet.classList.remove('-translate-y-full');
       });
     }
 
     function dismissUpdateBanner() {
-      const banner = document.getElementById('pwa-update-banner');
-      if (banner) {
-        banner.classList.add('opacity-0', 'translate-y-3');
-        setTimeout(() => banner.classList.add('hidden'), 300);
-      }
+      const backdrop = document.getElementById('pwa-update-banner');
+      const sheet = document.getElementById('pwa-update-sheet');
+      if (!backdrop || !sheet) return;
+      backdrop.classList.add('opacity-0');
+      sheet.classList.add('-translate-y-full');
+      setTimeout(() => {
+        if (backdrop.classList.contains('opacity-0')) {
+          backdrop.classList.add('hidden');
+        }
+      }, 340);
+    }
+
+    function deferPwaUpdate() {
+      updateDeferredUntilReopen = true;
+      deferredUpdateWorker = waitingServiceWorker;
+      appWasHiddenSinceDefer = false;
+      pendingUpdateWorker = null;
+      dismissUpdateBanner();
+      showToast("We'll remind you next time you open Nook", '🌿');
     }
 
     function applyPwaUpdate() {
-      if (waitingServiceWorker) {
-        waitingServiceWorker.postMessage({ type: 'SKIP_WAITING' });
+      updateDeferredUntilReopen = false;
+      deferredUpdateWorker = null;
+      appWasHiddenSinceDefer = false;
+      pendingUpdateWorker = null;
+      playCozySound('check');
+
+      const updateNowBtn = document.getElementById('pwa-update-now-btn');
+      if (updateNowBtn) {
+        updateNowBtn.disabled = true;
+        updateNowBtn.innerHTML = '<i class="ph-bold ph-arrows-clockwise animate-spin text-sm"></i><span>Updating...</span>';
+      }
+
+      const worker = waitingServiceWorker || (activeSwRegistration && activeSwRegistration.waiting);
+      if (worker) {
+        worker.postMessage({ type: 'SKIP_WAITING' });
+        // Safety fallback in case controllerchange doesn't fire on certain WebViews
+        setTimeout(() => {
+          if (!isRefreshingForUpdate) {
+            isRefreshingForUpdate = true;
+            window.location.reload();
+          }
+        }, 2400);
       } else {
         window.location.reload();
       }
     }
+
+    function handleAppReopenUpdateReminder() {
+      if (updateDeferredUntilReopen && appWasHiddenSinceDefer) {
+        updateDeferredUntilReopen = false;
+        appWasHiddenSinceDefer = false;
+        deferredUpdateWorker = null;
+        const worker = waitingServiceWorker || (activeSwRegistration && activeSwRegistration.waiting);
+        if (worker && navigator.serviceWorker && navigator.serviceWorker.controller) {
+          setTimeout(() => showUpdateBanner(worker), 260);
+        }
+      }
+    }
+
+    document.getElementById('pwa-update-banner')?.addEventListener('click', (e) => {
+      if (e.target.id === 'pwa-update-banner') deferPwaUpdate();
+    });
+
+    window.addEventListener('pagehide', () => {
+      if (updateDeferredUntilReopen) appWasHiddenSinceDefer = true;
+    });
+
+    window.addEventListener('pageshow', (e) => {
+      if (e.persisted) {
+        handleAppReopenUpdateReminder();
+      }
+    });
 
     function registerServiceWorker() {
       if (!('serviceWorker' in navigator)) return;
@@ -7369,6 +7594,7 @@
       navigator.serviceWorker
         .register('./sw.js', { scope: './', updateViaCache: 'none' })
         .then((reg) => {
+          activeSwRegistration = reg;
           if (reg.waiting && navigator.serviceWorker.controller) {
             showUpdateBanner(reg.waiting);
           }
@@ -7383,9 +7609,12 @@
             });
           });
 
-          // Automatically check for new versions whenever the app returns to foreground
+          // Automatically check for new versions and re-prompt deferred updates when reopening the app
           document.addEventListener('visibilitychange', () => {
-            if (document.visibilityState === 'visible') {
+            if (document.visibilityState === 'hidden') {
+              if (updateDeferredUntilReopen) appWasHiddenSinceDefer = true;
+            } else if (document.visibilityState === 'visible') {
+              handleAppReopenUpdateReminder();
               reg.update().catch(() => {});
             }
           });
@@ -7696,6 +7925,73 @@
       sheetEl.addEventListener('touchcancel', finishSheetDrag, { passive: true });
     }
 
+    function attachTopSheetSwipeDismiss(sheetEl, closeFn) {
+      if (!sheetEl || typeof closeFn !== 'function') return;
+      let startY = 0;
+      let startX = 0;
+      let startTime = 0;
+      let dragging = false;
+      let lastDy = 0;
+
+      sheetEl.addEventListener('touchstart', (e) => {
+        if (!e.touches || e.touches.length !== 1) return;
+        if (e.target.closest('button')) return;
+        const t = e.touches[0];
+        startY = t.clientY;
+        startX = t.clientX;
+        startTime = Date.now();
+        dragging = false;
+        lastDy = 0;
+      }, { passive: true });
+
+      sheetEl.addEventListener('touchmove', (e) => {
+        if (!startTime || !e.touches || e.touches.length !== 1) return;
+        const t = e.touches[0];
+        const dy = t.clientY - startY;
+        const dx = t.clientX - startX;
+
+        if (!dragging) {
+          if (dy > -10) return;
+          if (Math.abs(dx) > Math.abs(dy) * 0.9) {
+            startTime = 0;
+            return;
+          }
+          dragging = true;
+          sheetEl.classList.add('is-swiping');
+        }
+
+        if (dragging && dy < 0) {
+          lastDy = dy;
+          sheetEl.style.transform = `translateY(${Math.round(dy)}px)`;
+          if (e.cancelable) e.preventDefault();
+        }
+      }, { passive: false });
+
+      const finishTopDrag = () => {
+        if (!dragging) {
+          startTime = 0;
+          return;
+        }
+        const elapsed = Math.max(1, Date.now() - startTime);
+        const velocity = Math.abs(lastDy) / elapsed;
+        const shouldClose = Math.abs(lastDy) > 54 || (Math.abs(lastDy) > 26 && velocity > 0.42);
+
+        dragging = false;
+        startTime = 0;
+        sheetEl.classList.remove('is-swiping');
+        void sheetEl.offsetWidth;
+        sheetEl.style.transform = '';
+
+        if (shouldClose) {
+          playCozySound('tap');
+          closeFn();
+        }
+      };
+
+      sheetEl.addEventListener('touchend', finishTopDrag, { passive: true });
+      sheetEl.addEventListener('touchcancel', finishTopDrag, { passive: true });
+    }
+
     function initSwipeGestures() {
       // 1. Today 7-day strip: swipe left/right to navigate weeks
       attachHorizontalSwipe(document.getElementById('week-strip-card'), {
@@ -7730,6 +8026,9 @@
       attachSheetSwipeDismiss(document.getElementById('habit-modal-sheet'), closeHabitModal);
       attachSheetSwipeDismiss(document.getElementById('habit-detail-sheet'), closeHabitDetailModal);
       attachSheetSwipeDismiss(document.getElementById('sanctuary-modal-sheet'), closeSanctuaryModal);
+
+      // 6. Swipe up to defer the top update drop-in sheet ("Later")
+      attachTopSheetSwipeDismiss(document.getElementById('pwa-update-sheet'), deferPwaUpdate);
     }
 
     // Boot Application

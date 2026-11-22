@@ -1,4 +1,13 @@
-const CACHE_VERSION = 'v7';
+const CACHE_VERSION = 'v8';
+const UPDATE_INFO = {
+  version: CACHE_VERSION,
+  title: 'Top Update Drop-In',
+  summary: 'Updates now pop down smoothly from the top with a short summary and Update Now or Later options.',
+  highlights: [
+    'Full top frosted-glass update sheet with release notes',
+    'Tap Later to dismiss — returns next time you open Nook'
+  ]
+};
 const APP_SHELL_CACHE = `nook-shell-${CACHE_VERSION}`;
 const RUNTIME_CACHE = `nook-runtime-${CACHE_VERSION}`;
 
@@ -56,8 +65,13 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('message', (event) => {
-  if (event.data && event.data.type === 'SKIP_WAITING') {
+  if (!event.data) return;
+  if (event.data.type === 'SKIP_WAITING') {
     self.skipWaiting();
+    return;
+  }
+  if (event.data.type === 'GET_UPDATE_INFO' && event.ports && event.ports[0]) {
+    event.ports[0].postMessage(UPDATE_INFO);
   }
 });
 
