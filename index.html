@@ -1447,11 +1447,6 @@
       transition: transform 0.44s cubic-bezier(0.32, 1.18, 0.54, 1),
                   opacity 0.28s ease;
     }
-    .pwa-update-sheet.is-swiping {
-      transition: none !important;
-      user-select: none;
-    }
-
     /* Sanctuary Milestone Unlock Celebration Toast */
     .milestone-toast-shell {
       background: var(--bg-glass-modal);
@@ -2426,7 +2421,7 @@
          FULL TOP DROP-IN PWA UPDATE POP-UP (Release Summary + Update Now / Later)
          ====================================================================== -->
     <div id="pwa-update-banner" class="fixed sm:absolute inset-0 z-[55] hidden opacity-0 transition-opacity duration-300 flex items-start justify-center bg-black/35 backdrop-blur-[3px]" role="dialog" aria-modal="true" aria-labelledby="pwa-update-title">
-      <div id="pwa-update-sheet" class="pwa-update-sheet w-full rounded-b-[30px] px-5 pt-4 pb-3.5 transform -translate-y-full">
+      <div id="pwa-update-sheet" class="pwa-update-sheet w-full rounded-b-[30px] px-5 pt-4 pb-5 transform -translate-y-full">
         <!-- Top Header Row -->
         <div class="flex items-start justify-between gap-3">
           <div class="flex items-center gap-3 min-w-0">
@@ -2478,8 +2473,6 @@
           </button>
         </div>
 
-        <!-- Subtle Swipe-Up Handle -->
-        <div class="w-10 h-1 bg-cozy-secondary rounded-full mx-auto mt-3 sm:hidden" aria-hidden="true"></div>
       </div>
     </div>
 
@@ -7748,8 +7741,6 @@
       if (updateDeferredUntilReopen && deferredUpdateWorker === worker) return;
 
       populateUpdateSheetContent(info);
-      sheet.classList.remove('is-swiping');
-      sheet.style.transform = '';
       backdrop.classList.remove('hidden');
       requestAnimationFrame(() => {
         backdrop.classList.remove('opacity-0');
@@ -7818,10 +7809,6 @@
         }
       }
     }
-
-    document.getElementById('pwa-update-banner')?.addEventListener('click', (e) => {
-      if (e.target.id === 'pwa-update-banner') deferPwaUpdate();
-    });
 
     window.addEventListener('pagehide', () => {
       if (updateDeferredUntilReopen) appWasHiddenSinceDefer = true;
@@ -8179,73 +8166,6 @@
       sheetEl.addEventListener('touchcancel', finishSheetDrag, { passive: true });
     }
 
-    function attachTopSheetSwipeDismiss(sheetEl, closeFn) {
-      if (!sheetEl || typeof closeFn !== 'function') return;
-      let startY = 0;
-      let startX = 0;
-      let startTime = 0;
-      let dragging = false;
-      let lastDy = 0;
-
-      sheetEl.addEventListener('touchstart', (e) => {
-        if (!e.touches || e.touches.length !== 1) return;
-        if (e.target.closest('button')) return;
-        const t = e.touches[0];
-        startY = t.clientY;
-        startX = t.clientX;
-        startTime = Date.now();
-        dragging = false;
-        lastDy = 0;
-      }, { passive: true });
-
-      sheetEl.addEventListener('touchmove', (e) => {
-        if (!startTime || !e.touches || e.touches.length !== 1) return;
-        const t = e.touches[0];
-        const dy = t.clientY - startY;
-        const dx = t.clientX - startX;
-
-        if (!dragging) {
-          if (dy > -10) return;
-          if (Math.abs(dx) > Math.abs(dy) * 0.9) {
-            startTime = 0;
-            return;
-          }
-          dragging = true;
-          sheetEl.classList.add('is-swiping');
-        }
-
-        if (dragging && dy < 0) {
-          lastDy = dy;
-          sheetEl.style.transform = `translateY(${Math.round(dy)}px)`;
-          if (e.cancelable) e.preventDefault();
-        }
-      }, { passive: false });
-
-      const finishTopDrag = () => {
-        if (!dragging) {
-          startTime = 0;
-          return;
-        }
-        const elapsed = Math.max(1, Date.now() - startTime);
-        const velocity = Math.abs(lastDy) / elapsed;
-        const shouldClose = Math.abs(lastDy) > 54 || (Math.abs(lastDy) > 26 && velocity > 0.42);
-
-        dragging = false;
-        startTime = 0;
-        sheetEl.classList.remove('is-swiping');
-        void sheetEl.offsetWidth;
-        sheetEl.style.transform = '';
-
-        if (shouldClose) {
-          playCozySound('tap');
-          closeFn();
-        }
-      };
-
-      sheetEl.addEventListener('touchend', finishTopDrag, { passive: true });
-      sheetEl.addEventListener('touchcancel', finishTopDrag, { passive: true });
-    }
-
     function initSwipeGestures() {
       // 1. Today 7-day strip: swipe left/right to navigate weeks
       attachHorizontalSwipe(document.getElementById('week-strip-card'), {
@@ -8280,9 +8200,6 @@
       attachSheetSwipeDismiss(document.getElementById('habit-modal-sheet'), closeHabitModal);
       attachSheetSwipeDismiss(document.getElementById('habit-detail-sheet'), closeHabitDetailModal);
       attachSheetSwipeDismiss(document.getElementById('sanctuary-modal-sheet'), closeSanctuaryModal);
-
-      // 6. Swipe up to defer the top update drop-in sheet ("Later")
-      attachTopSheetSwipeDismiss(document.getElementById('pwa-update-sheet'), deferPwaUpdate);
     }
 
     // Boot Application

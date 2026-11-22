@@ -1,11 +1,11 @@
-const CACHE_VERSION = 'v15';
+const CACHE_VERSION = 'v16';
 const UPDATE_INFO = {
   version: CACHE_VERSION,
-  title: 'Milestone Celebration Toasts',
-  summary: 'Unlocking any Sanctuary Milestone badge now triggers an automatic frosted celebration toast with chime and confetti.',
+  title: 'Cleaner Update Pop-Up',
+  summary: 'Disabled swipe-to-dismiss on the top update sheet so only the buttons control it.',
   highlights: [
-    'Drops in automatically when you earn a new badge',
-    'Tap the toast to jump straight into your Sanctuary Garden'
+    'Removed swipe-up gesture and drag handle on the update sheet',
+    'All other swipe gestures across Nook remain unchanged'
   ]
 };
 const APP_SHELL_CACHE = `nook-shell-${CACHE_VERSION}`;
