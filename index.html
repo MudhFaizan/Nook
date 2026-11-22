@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Nook v25 -->
+<!-- Nook v26 -->
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -1366,6 +1366,91 @@
       border-color: rgba(217, 155, 56, 0.45);
     }
 
+    /* Insights Habit Breakdown: Mini Liquid-Glass Orb + 4-Week Momentum Ribbon */
+    .insight-ribbon-tile {
+      position: relative;
+      padding: 11px 12px 10px;
+      border-radius: 20px;
+      background: var(--bg-glass-input);
+      border: 1px solid var(--border-subtle);
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.45);
+      transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1),
+                  border-color 0.25s ease,
+                  background-color 0.25s ease,
+                  box-shadow 0.25s ease;
+    }
+    .insight-ribbon-tile:hover {
+      transform: translateY(-1.5px);
+      border-color: var(--accent-medium);
+      background: var(--bg-glass-elevated);
+      box-shadow: 0 8px 18px -10px var(--accent-glow), inset 0 1px 1px rgba(255, 255, 255, 0.55);
+    }
+    .insight-ribbon-tile:active {
+      transform: scale(0.985);
+    }
+    .mini-liquid-orb {
+      width: 48px;
+      height: 48px;
+      flex-shrink: 0;
+    }
+    .mini-liquid-orb::before {
+      content: '';
+      position: absolute;
+      top: 5px;
+      left: 8px;
+      width: 15px;
+      height: 6px;
+      border-radius: 9999px;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0));
+      transform: rotate(-26deg);
+      pointer-events: none;
+      z-index: 3;
+    }
+    .mini-orb-label {
+      font-size: 11px;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+      text-shadow: 0 1px 6px rgba(255, 255, 255, 0.85), 0 0 2px rgba(255, 255, 255, 0.75);
+    }
+    [data-theme="dark"] .mini-orb-label {
+      color: #F7F5F0;
+      text-shadow: 0 1px 6px rgba(0, 0, 0, 0.75), 0 0 2px rgba(0, 0, 0, 0.65);
+    }
+    .momentum-ribbon-svg {
+      display: block;
+      width: 100%;
+      height: 30px;
+      overflow: visible;
+    }
+    .momentum-ribbon-line {
+      fill: none;
+      stroke: var(--accent-primary);
+      stroke-width: 2.25;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      filter: drop-shadow(0 2px 5px var(--accent-glow));
+      stroke-dasharray: 280;
+      stroke-dashoffset: 0;
+      animation: ribbonDrawIn 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+    @keyframes ribbonDrawIn {
+      0% { stroke-dashoffset: 280; opacity: 0.35; }
+      100% { stroke-dashoffset: 0; opacity: 1; }
+    }
+    .momentum-trend-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 2.5px;
+      padding: 1.5px 6px;
+      border-radius: 9999px;
+      font-size: 9px;
+      font-weight: 700;
+      line-height: 1.25;
+      flex-shrink: 0;
+    }
+
     /* Swipe-to-Check / Swipe-to-Step Habit Card Surface */
     .habit-swipe-slot {
       position: relative;
@@ -2327,8 +2412,13 @@
 
         <!-- Per-Habit Streak & Consistency Breakdown -->
         <div class="cozy-card p-4">
-          <h3 class="text-sm font-bold text-cozy-primary mb-3">Habit Breakdown (Last 30 Days)</h3>
-          <div id="insights-habit-breakdown" class="space-y-3.5">
+          <div class="flex items-start justify-between gap-2 mb-3">
+            <div>
+              <h3 class="text-sm font-bold text-cozy-primary leading-tight">Habit Breakdown (Last 30 Days)</h3>
+              <p class="text-[11px] text-cozy-secondary mt-0.5">4-week momentum ribbons &amp; goal spheres · Tap any ritual</p>
+            </div>
+          </div>
+          <div id="insights-habit-breakdown" class="space-y-2.5">
             <!-- Populated by JS -->
           </div>
         </div>
@@ -6419,6 +6509,118 @@
       `;
     }
 
+    function getHabit4WeekMomentum(habit, rate30) {
+      const todayKey = getTodayKey();
+      const goal = Math.min(7, Math.max(1, Number(habit.weeklyGoal) || 7));
+      const labels = ['4w', '3w', '2w', 'Now'];
+      const buckets = [];
+
+      // 4 consecutive 7-day rolling buckets ending today: [-27..-21], [-20..-14], [-13..-7], [-6..0]
+      for (let w = 0; w < 4; w++) {
+        const startOffset = -27 + (w * 7);
+        let done = 0;
+        let activeDays = 0;
+        for (let d = 0; d < 7; d++) {
+          const key = addDays(todayKey, startOffset + d);
+          if (isHabitActiveOnDate(habit, key)) {
+            if (isHabitCompletedOn(habit.id, key)) {
+              activeDays++;
+              done++;
+            } else if (!isRestDay(key)) {
+              activeDays++;
+            }
+          }
+        }
+        const wasActive = activeDays > 0;
+        const expected = Math.max(1, Math.round((goal / 7) * Math.max(1, activeDays)));
+        const pct = wasActive ? Math.min(100, Math.round((done / expected) * 100)) : 0;
+        buckets.push({ label: labels[w], pct, done, wasActive });
+      }
+
+      const activeBuckets = buckets.filter(b => b.wasActive);
+      const currentPct = buckets[3].pct;
+      let trend = { label: 'Steady', icon: '→', bg: 'var(--bg-secondary)', color: 'var(--text-secondary)' };
+
+      if (activeBuckets.length <= 1) {
+        if (rate30 >= 80) {
+          trend = { label: 'In flow', icon: '✦', bg: 'var(--accent-soft)', color: 'var(--accent-primary)' };
+        } else if (rate30 > 0) {
+          trend = { label: 'Sprouting', icon: '↗', bg: 'var(--accent-soft)', color: 'var(--accent-primary)' };
+        } else {
+          trend = { label: 'Resting', icon: '·', bg: 'var(--bg-secondary)', color: 'var(--text-muted)' };
+        }
+      } else {
+        const earlier = activeBuckets.slice(0, -1);
+        const earlierAvg = earlier.reduce((acc, b) => acc + b.pct, 0) / earlier.length;
+        const diff = currentPct - earlierAvg;
+
+        if (rate30 >= 90 && currentPct >= 85) {
+          trend = { label: 'In flow', icon: '✦', bg: 'var(--accent-soft)', color: 'var(--accent-primary)' };
+        } else if (diff >= 12) {
+          trend = { label: 'Rising', icon: '↗', bg: 'var(--accent-soft)', color: 'var(--accent-primary)' };
+        } else if (diff <= -15) {
+          trend = { label: 'Easing', icon: '↘', bg: 'var(--accent-secondary-soft)', color: 'var(--accent-secondary)' };
+        } else if (rate30 === 0) {
+          trend = { label: 'Resting', icon: '·', bg: 'var(--bg-secondary)', color: 'var(--text-muted)' };
+        } else {
+          trend = { label: 'Steady', icon: '→', bg: 'var(--bg-secondary)', color: 'var(--text-secondary)' };
+        }
+      }
+
+      return { buckets, trend };
+    }
+
+    function buildMomentumRibbonSvg(buckets, gradId) {
+      const xs = [8, 68, 128, 190];
+      const topY = 5;
+      const bottomY = 26;
+      const pts = buckets.map((b, i) => ({
+        x: xs[i],
+        y: Number((bottomY - ((b.pct / 100) * (bottomY - topY))).toFixed(1)),
+        pct: b.pct,
+        wasActive: b.wasActive
+      }));
+
+      // Smooth cubic Bézier spline through the 4 weekly points
+      let linePath = `M ${pts[0].x} ${pts[0].y}`;
+      for (let i = 0; i < pts.length - 1; i++) {
+        const p0 = pts[i];
+        const p1 = pts[i + 1];
+        const cpX = Number(((p0.x + p1.x) / 2).toFixed(1));
+        linePath += ` C ${cpX} ${p0.y}, ${cpX} ${p1.y}, ${p1.x} ${p1.y}`;
+      }
+      const areaPath = `${linePath} L ${pts[3].x} ${bottomY + 3} L ${pts[0].x} ${bottomY + 3} Z`;
+
+      const nodesHtml = pts.map((p, i) => {
+        const isNow = i === pts.length - 1;
+        if (isNow) {
+          return `
+            <circle cx="${p.x}" cy="${p.y}" r="5.2" fill="var(--accent-soft)" />
+            <circle cx="${p.x}" cy="${p.y}" r="2.7" fill="var(--accent-primary)" stroke="var(--bg-base)" stroke-width="1.2" />
+          `;
+        }
+        if (!p.wasActive) {
+          return `<circle cx="${p.x}" cy="${p.y}" r="1.7" fill="var(--text-muted)" opacity="0.35" />`;
+        }
+        return `<circle cx="${p.x}" cy="${p.y}" r="2" fill="var(--bg-base)" stroke="var(--accent-primary)" stroke-width="1.5" opacity="0.85" />`;
+      }).join('');
+
+      return `
+        <svg class="momentum-ribbon-svg" viewBox="0 0 198 30" preserveAspectRatio="none" aria-hidden="true">
+          <defs>
+            <linearGradient id="${gradId}" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="var(--accent-primary)" stop-opacity="0.32" />
+              <stop offset="100%" stop-color="var(--accent-primary)" stop-opacity="0.01" />
+            </linearGradient>
+          </defs>
+          <line x1="6" y1="${bottomY}" x2="192" y2="${bottomY}" stroke="var(--border-subtle)" stroke-width="1" stroke-dasharray="2.5 3" />
+          <path d="${areaPath}" fill="url(#${gradId})" />
+          <path d="${linePath}" class="momentum-ribbon-line" />
+          ${nodesHtml}
+        </svg>
+      `;
+    }
+
     function renderInsightsHabitBreakdown() {
       const container = document.getElementById('insights-habit-breakdown');
       if (!container) return;
@@ -6429,31 +6631,62 @@
       }
 
       container.innerHTML = '';
-      state.habits.forEach(habit => {
+      state.habits.forEach((habit, idx) => {
         const rate = getHabit30DayConsistency(habit);
         const streak = getHabitStreak(habit);
         const goal = Math.min(7, Math.max(1, Number(habit.weeklyGoal) || 7));
         const goalText = goal < 7 ? `${goal}x/wk` : 'Daily';
+        const momentum = getHabit4WeekMomentum(habit, rate);
+        const translateY = Math.round(86 - (rate * 0.96));
+        const gradId = `insight-ribbon-grad-${idx}`;
+        const ribbonSvg = buildMomentumRibbonSvg(momentum.buckets, gradId);
 
         const row = document.createElement('div');
         const rowAccent = getHabitColorAccent(habit);
         if (rowAccent) row.setAttribute('data-accent', rowAccent);
-        row.className = 'space-y-1.5 cursor-pointer';
+        row.className = 'insight-ribbon-tile flex items-center gap-3 cursor-pointer cascade-item';
+        row.style.animationDelay = `${Math.min(idx * 40, 240)}ms`;
         row.onclick = () => openHabitDetailModal(habit.id);
+
         row.innerHTML = `
-          <div class="flex items-center justify-between gap-2">
+          <div class="flex-1 min-w-0 space-y-1.5">
             <div class="flex items-center gap-2 min-w-0">
-              <span class="text-base">${escapeHtml(habit.emoji || '🌿')}</span>
-              <span class="text-xs font-bold text-cozy-primary truncate">${escapeHtml(habit.title)}</span>
-              <span class="px-1.5 py-0.5 rounded-md bg-cozy-secondary text-[9px] font-bold text-cozy-secondary flex-shrink-0">${goalText}</span>
+              <span class="w-8 h-8 rounded-xl bg-cozy-elevated border border-cozy flex items-center justify-center text-base flex-shrink-0 shadow-2xs">
+                ${escapeHtml(habit.emoji || '🌿')}
+              </span>
+              <div class="min-w-0 flex-1">
+                <p class="text-xs font-bold text-cozy-primary truncate leading-tight">${escapeHtml(habit.title)}</p>
+                <div class="flex items-center gap-1.5 mt-0.5 flex-wrap">
+                  <span class="text-[10px] font-bold ${streak > 0 ? 'accent-text' : 'text-cozy-muted'} leading-none">🌿 ${streak}d</span>
+                  <span class="px-1.5 py-0.5 rounded-md bg-cozy-secondary text-[9px] font-bold text-cozy-secondary leading-none">${goalText}</span>
+                  <span class="momentum-trend-pill" style="background: ${momentum.trend.bg}; color: ${momentum.trend.color};">
+                    <span>${momentum.trend.icon}</span>
+                    <span>${momentum.trend.label}</span>
+                  </span>
+                </div>
+              </div>
             </div>
-            <div class="flex items-center gap-2 flex-shrink-0">
-              <span class="text-[10px] font-bold text-cozy-muted">🌿 ${streak}d</span>
-              <span class="text-xs font-extrabold accent-text">${rate}%</span>
+
+            <div class="pt-0.5">
+              ${ribbonSvg}
+              <div class="flex items-center justify-between text-[8.5px] font-bold text-cozy-muted px-0.5 mt-0.5 leading-none">
+                <span>4w</span>
+                <span>3w</span>
+                <span>2w</span>
+                <span class="accent-text">Now</span>
+              </div>
             </div>
           </div>
-          <div class="w-full h-2 bg-cozy-secondary rounded-full overflow-hidden p-[1px]">
-            <div class="h-full accent-progress-gradient rounded-full transition-all duration-500" style="width: ${rate}%"></div>
+
+          <!-- Mini Liquid-Glass Goal Sphere -->
+          <div class="mini-liquid-orb liquid-orb-shell flex items-center justify-center" title="${rate}% 30-day goal rate">
+            <div class="liquid-orb-clip">
+              <div class="liquid-wave-carrier" style="transform: translateY(${translateY}%);">
+                <div class="liquid-wave-layer liquid-wave-layer-back" style="top: 6%;"></div>
+                <div class="liquid-wave-layer" style="top: 12%;"></div>
+              </div>
+            </div>
+            <span class="mini-orb-label relative z-10 pointer-events-none">${rate}%</span>
           </div>
         `;
         container.appendChild(row);

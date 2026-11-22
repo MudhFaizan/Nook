@@ -1,11 +1,11 @@
-const CACHE_VERSION = 'v25';
+const CACHE_VERSION = 'v26';
 const UPDATE_INFO = {
   version: CACHE_VERSION,
-  title: '3-by-3 Quarter Grid Paging',
-  summary: 'Swiping or tapping the arrows on any 3-month dot-grid now jumps cleanly by 3 months at a time with a smooth directional slide.',
+  title: 'Mini Liquid Orbs & Momentum Ribbons',
+  summary: 'Replaced the flat 30-day progress bars in Insights with animated mini liquid-glass spheres and smooth 4-week momentum ribbons.',
   highlights: [
-    'Insights Overall Rhythm and Ritual Detail 3-month grids now page 3 months at once',
-    'Added subtle left/right directional slide motion when paging between 3-month views'
+    'Each ritual shows a glowing 4-week trend curve with Rising, Steady, or In flow cues',
+    'Paired with a mini liquid-filling % sphere tinted in each ritual’s custom color'
   ]
 };
 const APP_SHELL_CACHE = `nook-shell-${CACHE_VERSION}`;
