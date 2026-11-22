@@ -1,11 +1,11 @@
-const CACHE_VERSION = 'v16';
+const CACHE_VERSION = 'v21';
 const UPDATE_INFO = {
   version: CACHE_VERSION,
-  title: 'Cleaner Update Pop-Up',
-  summary: 'Disabled swipe-to-dismiss on the top update sheet so only the buttons control it.',
+  title: 'Custom Per-Ritual Colors',
+  summary: 'Give any ritual its own cozy accent color—or leave it on App Theme—to light up its dot grid, buttons, timer, and confetti.',
   highlights: [
-    'Removed swipe-up gesture and drag handle on the update sheet',
-    'All other swipe gestures across Nook remain unchanged'
+    'New 8-palette Card Color swatch row in Add / Edit Ritual',
+    'Colors flow across Today List & Grid, Habit Detail, and Insights'
   ]
 };
 const APP_SHELL_CACHE = `nook-shell-${CACHE_VERSION}`;

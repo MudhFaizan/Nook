@@ -109,7 +109,27 @@
       --shadow-float: 0 20px 44px -8px rgba(0, 0, 0, 0.65), inset 0 1px 1px rgba(255, 255, 255, 0.16);
     }
 
-    /* Cozy Accent Theme Overrides */
+    /* Cozy Accent Theme Overrides (Global App Theme & Per-Ritual Swatches) */
+    [data-accent="sage"] {
+      --accent-primary: #5E8C76;
+      --accent-primary-hover: #4D7763;
+      --accent-grad-start: #7BA892;
+      --accent-grad-end: #4A7862;
+      --accent-soft: rgba(94, 140, 118, 0.16);
+      --accent-medium: rgba(94, 140, 118, 0.38);
+      --accent-glow: rgba(94, 140, 118, 0.35);
+    }
+    [data-theme="dark"][data-accent="sage"],
+    [data-theme="dark"] [data-accent="sage"] {
+      --accent-primary: #7FA990;
+      --accent-primary-hover: #93BA9F;
+      --accent-grad-start: #9CC2AB;
+      --accent-grad-end: #638F75;
+      --accent-soft: rgba(127, 169, 144, 0.18);
+      --accent-medium: rgba(127, 169, 144, 0.42);
+      --accent-glow: rgba(127, 169, 144, 0.35);
+    }
+
     [data-accent="terracotta"] {
       --accent-primary: #D96B4E;
       --accent-primary-hover: #C2593D;
@@ -119,13 +139,15 @@
       --accent-medium: rgba(217, 107, 78, 0.42);
       --accent-glow: rgba(217, 107, 78, 0.35);
     }
-    [data-theme="dark"][data-accent="terracotta"] {
+    [data-theme="dark"][data-accent="terracotta"],
+    [data-theme="dark"] [data-accent="terracotta"] {
       --accent-primary: #E58C72;
       --accent-primary-hover: #F09E86;
       --accent-grad-start: #F3A891;
       --accent-grad-end: #CC7258;
       --accent-soft: rgba(229, 140, 114, 0.18);
       --accent-medium: rgba(229, 140, 114, 0.45);
+      --accent-glow: rgba(229, 140, 114, 0.36);
     }
 
     [data-accent="lavender"] {
@@ -137,13 +159,15 @@
       --accent-medium: rgba(130, 111, 163, 0.42);
       --accent-glow: rgba(130, 111, 163, 0.35);
     }
-    [data-theme="dark"][data-accent="lavender"] {
+    [data-theme="dark"][data-accent="lavender"],
+    [data-theme="dark"] [data-accent="lavender"] {
       --accent-primary: #A694C7;
       --accent-primary-hover: #B7A7D6;
       --accent-grad-start: #C0B0DF;
       --accent-grad-end: #8B78AD;
       --accent-soft: rgba(166, 148, 199, 0.18);
       --accent-medium: rgba(166, 148, 199, 0.45);
+      --accent-glow: rgba(166, 148, 199, 0.36);
     }
 
     [data-accent="ocean"] {
@@ -155,13 +179,15 @@
       --accent-medium: rgba(77, 134, 156, 0.42);
       --accent-glow: rgba(77, 134, 156, 0.35);
     }
-    [data-theme="dark"][data-accent="ocean"] {
+    [data-theme="dark"][data-accent="ocean"],
+    [data-theme="dark"] [data-accent="ocean"] {
       --accent-primary: #7AB2B2;
       --accent-primary-hover: #8EC3C3;
       --accent-grad-start: #98CCCC;
       --accent-grad-end: #5E9696;
       --accent-soft: rgba(122, 178, 178, 0.18);
       --accent-medium: rgba(122, 178, 178, 0.45);
+      --accent-glow: rgba(122, 178, 178, 0.36);
     }
 
     [data-accent="rose"] {
@@ -173,13 +199,15 @@
       --accent-medium: rgba(200, 116, 135, 0.42);
       --accent-glow: rgba(200, 116, 135, 0.35);
     }
-    [data-theme="dark"][data-accent="rose"] {
+    [data-theme="dark"][data-accent="rose"],
+    [data-theme="dark"] [data-accent="rose"] {
       --accent-primary: #E096A7;
       --accent-primary-hover: #ECAAB9;
       --accent-grad-start: #F0B1C0;
       --accent-grad-end: #C47A8B;
       --accent-soft: rgba(224, 150, 167, 0.18);
       --accent-medium: rgba(224, 150, 167, 0.45);
+      --accent-glow: rgba(224, 150, 167, 0.36);
     }
 
     [data-accent="amber"] {
@@ -191,13 +219,15 @@
       --accent-medium: rgba(201, 138, 58, 0.42);
       --accent-glow: rgba(201, 138, 58, 0.35);
     }
-    [data-theme="dark"][data-accent="amber"] {
+    [data-theme="dark"][data-accent="amber"],
+    [data-theme="dark"] [data-accent="amber"] {
       --accent-primary: #E3AA5F;
       --accent-primary-hover: #EEB974;
       --accent-grad-start: #F2C280;
       --accent-grad-end: #C78E44;
       --accent-soft: rgba(227, 170, 95, 0.18);
       --accent-medium: rgba(227, 170, 95, 0.45);
+      --accent-glow: rgba(227, 170, 95, 0.36);
     }
 
     [data-accent="matcha"] {
@@ -209,13 +239,15 @@
       --accent-medium: rgba(109, 153, 90, 0.42);
       --accent-glow: rgba(109, 153, 90, 0.35);
     }
-    [data-theme="dark"][data-accent="matcha"] {
+    [data-theme="dark"][data-accent="matcha"],
+    [data-theme="dark"] [data-accent="matcha"] {
       --accent-primary: #90BC7C;
       --accent-primary-hover: #A2CA90;
       --accent-grad-start: #ACD49A;
       --accent-grad-end: #74A160;
       --accent-soft: rgba(144, 188, 124, 0.18);
       --accent-medium: rgba(144, 188, 124, 0.45);
+      --accent-glow: rgba(144, 188, 124, 0.36);
     }
 
     [data-accent="blue"],
@@ -229,13 +261,37 @@
       --accent-glow: rgba(59, 118, 216, 0.35);
     }
     [data-theme="dark"][data-accent="blue"],
-    [data-theme="dark"][data-accent="berry"] {
+    [data-theme="dark"] [data-accent="blue"],
+    [data-theme="dark"][data-accent="berry"],
+    [data-theme="dark"] [data-accent="berry"] {
       --accent-primary: #669DF6;
       --accent-primary-hover: #82B1FA;
       --accent-grad-start: #8EB8FA;
       --accent-grad-end: #477CD6;
       --accent-soft: rgba(102, 157, 246, 0.18);
       --accent-medium: rgba(102, 157, 246, 0.45);
+      --accent-glow: rgba(102, 157, 246, 0.36);
+    }
+
+    /* Per-Ritual Color Swatch Dots (Add / Edit Modal) */
+    .ritual-color-swatch {
+      position: relative;
+      width: 28px;
+      height: 28px;
+      border-radius: 9999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1.5px solid rgba(255, 255, 255, 0.55);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.10), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+      transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1),
+                  box-shadow 0.25s ease,
+                  border-color 0.25s ease;
+    }
+    .ritual-color-swatch.is-selected {
+      transform: scale(1.14);
+      border-color: var(--bg-base);
+      box-shadow: 0 0 0 2px var(--accent-primary), 0 4px 12px -2px var(--accent-glow);
     }
 
     /* Base Resets & Typography */
@@ -1096,6 +1152,98 @@
       background: linear-gradient(90deg, transparent, var(--border-subtle), transparent);
     }
 
+    /* Today View Switcher (List / Grid Segmented Pill) */
+    .view-mode-switcher {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      padding: 2.5px;
+      border-radius: 12px;
+      background: var(--bg-glass-card);
+      backdrop-filter: blur(16px) saturate(160%);
+      -webkit-backdrop-filter: blur(16px) saturate(160%);
+      border: 1px solid var(--border-glass);
+      box-shadow: var(--shadow-glass);
+      transition: opacity 0.25s ease;
+    }
+    .view-mode-btn {
+      width: 26px;
+      height: 24px;
+      border-radius: 9px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      transition: all 0.26s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .view-mode-btn.is-active {
+      background: var(--accent-soft);
+      color: var(--accent-primary);
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.5);
+    }
+
+    /* Atomic-Inspired Frosted Dot-Grid Habit Card (Grid Mode) */
+    .cozy-card.habit-grid-card {
+      padding: 14px;
+    }
+    .cozy-card.habit-grid-card.habit-card-completed {
+      background: var(--bg-glass-card);
+      border-color: var(--border-glass);
+    }
+    .habit-dot-grid {
+      display: grid;
+      grid-template-rows: repeat(7, minmax(0, 1fr));
+      grid-auto-flow: column;
+      grid-template-columns: repeat(14, minmax(0, 1fr));
+      gap: 4px;
+      padding: 8px;
+      border-radius: 16px;
+      background: var(--bg-glass-input);
+      border: 1px solid var(--border-subtle);
+    }
+    .habit-dot-cell {
+      aspect-ratio: 1 / 1;
+      border-radius: 4.5px;
+      background: rgba(163, 155, 143, 0.28);
+      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+                  background-color 0.25s ease,
+                  opacity 0.25s ease;
+    }
+    [data-theme="dark"] .habit-dot-cell {
+      background: rgba(255, 255, 255, 0.12);
+    }
+    .habit-dot-cell.is-done {
+      background: var(--accent-primary);
+      box-shadow: 0 1px 4px -1px var(--accent-glow);
+    }
+    .habit-dot-cell.is-partial {
+      background: var(--accent-primary);
+    }
+    .habit-dot-cell.is-rest {
+      background: var(--accent-honey-soft);
+      box-shadow: inset 0 0 0 1px rgba(217, 155, 56, 0.4);
+    }
+    .habit-dot-cell.is-future {
+      opacity: 0.45;
+    }
+    .habit-dot-cell.is-selected-day {
+      box-shadow: 0 0 0 1.5px var(--text-primary);
+      transform: scale(1.06);
+      position: relative;
+      z-index: 1;
+    }
+    .habit-dot-cell.is-done.is-selected-day {
+      box-shadow: 0 0 0 1.5px var(--text-primary), 0 0 8px var(--accent-glow);
+    }
+    .grid-action-btn.just-completed {
+      animation: gridPillPop 0.44s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    @keyframes gridPillPop {
+      0% { transform: scale(0.95); }
+      50% { transform: scale(1.03); }
+      100% { transform: scale(1); }
+    }
+
     /* Swipe-to-Check / Swipe-to-Step Habit Card Surface */
     .habit-swipe-slot {
       position: relative;
@@ -1839,18 +1987,31 @@
               </button>
             </div>
 
-            <!-- Drop / Edit Mode Toggle Button on the Right -->
-            <button type="button" id="manage-drop-btn" onclick="toggleDropMode()"
-              class="px-2.5 py-1.5 rounded-xl glass-pill text-[11px] font-semibold text-cozy-secondary hover:text-cozy-primary flex items-center gap-1 transition">
-              <span id="manage-drop-icon">
-                <svg class="w-3.5 h-3.5" viewBox="0 0 16 16" fill="none">
-                  <path d="M3 5H13M3 11H13" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
-                  <circle cx="6" cy="5" r="1.8" fill="currentColor"/>
-                  <circle cx="10" cy="11" r="1.8" fill="currentColor"/>
-                </svg>
-              </span>
-              <span id="manage-drop-label">Drop / Edit</span>
-            </button>
+            <!-- Right Controls: List / Grid View Switcher + Drop / Edit -->
+            <div class="flex items-center gap-1.5 flex-shrink-0">
+              <div id="today-view-switcher" class="view-mode-switcher" role="group" aria-label="Ritual layout view">
+                <button type="button" id="view-mode-list-btn" onclick="setTodayViewMode('list')"
+                  class="view-mode-btn is-active" title="Compact list view" aria-label="Compact list view" aria-pressed="true">
+                  <i class="ph-bold ph-rows text-[13px]"></i>
+                </button>
+                <button type="button" id="view-mode-grid-btn" onclick="setTodayViewMode('grid')"
+                  class="view-mode-btn" title="Dot-grid card view" aria-label="Dot-grid card view" aria-pressed="false">
+                  <i class="ph-bold ph-squares-four text-[13px]"></i>
+                </button>
+              </div>
+
+              <button type="button" id="manage-drop-btn" onclick="toggleDropMode()"
+                class="px-2 py-1.5 rounded-xl glass-pill text-[11px] font-semibold text-cozy-secondary hover:text-cozy-primary flex items-center gap-1 transition">
+                <span id="manage-drop-icon">
+                  <svg class="w-3.5 h-3.5" viewBox="0 0 16 16" fill="none">
+                    <path d="M3 5H13M3 11H13" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+                    <circle cx="6" cy="5" r="1.8" fill="currentColor"/>
+                    <circle cx="10" cy="11" r="1.8" fill="currentColor"/>
+                  </svg>
+                </span>
+                <span id="manage-drop-label">Drop / Edit</span>
+              </button>
+            </div>
           </div>
 
           <!-- Smooth Spring-Animated Collapsible Recommendations Drawer -->
@@ -2651,6 +2812,17 @@
             </div>
           </div>
 
+          <!-- Optional Per-Ritual Color Swatch Picker -->
+          <div>
+            <div class="flex items-center justify-between mb-1.5">
+              <label class="text-xs font-semibold text-cozy-secondary">Card Color</label>
+              <span id="modal-color-helper" class="text-[11px] font-semibold accent-text">App Theme</span>
+            </div>
+            <div id="modal-color-picker" class="flex items-center justify-between gap-1 px-2.5 py-2 rounded-2xl bg-cozy-secondary/60 border border-cozy">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+
           <!-- Categorized Rich Emoji Picker + Custom Emoji Input -->
           <div>
             <div class="flex items-center justify-between mb-1.5">
@@ -2824,6 +2996,26 @@
       { id: 'st_read', shortTitle: 'Evening Read', title: 'Read 15 mins before sleep', subtitle: 'Unwind with a cozy book', emoji: '📖', timeOfDay: 'evening', weeklyGoal: 4, timerMinutes: 15, selected: true }
     ];
 
+    // Optional Per-Ritual Color Swatches (Nook's 8 Cozy Palettes + App Theme Default)
+    const RITUAL_COLOR_OPTIONS = [
+      { id: '', label: 'App Theme', grad: null },
+      { id: 'sage', label: 'Sage', grad: 'linear-gradient(135deg, #7BA892, #4A7862)' },
+      { id: 'terracotta', label: 'Clay', grad: 'linear-gradient(135deg, #EB8A6F, #C2573B)' },
+      { id: 'lavender', label: 'Dusk', grad: 'linear-gradient(135deg, #9E8BC0, #6B588C)' },
+      { id: 'ocean', label: 'Ocean', grad: 'linear-gradient(135deg, #6BA3B8, #396F84)' },
+      { id: 'rose', label: 'Blossom', grad: 'linear-gradient(135deg, #DF91A3, #B05D70)' },
+      { id: 'amber', label: 'Honey', grad: 'linear-gradient(135deg, #E2A659, #B07327)' },
+      { id: 'matcha', label: 'Matcha', grad: 'linear-gradient(135deg, #8AB577, #578046)' },
+      { id: 'blue', label: 'Azure', grad: 'linear-gradient(135deg, #6499F0, #2959B0)' }
+    ];
+
+    function getHabitColorAccent(habit) {
+      const raw = habit && typeof habit.color === 'string' ? habit.color.trim() : '';
+      if (!raw) return '';
+      const mapped = raw === 'berry' ? 'blue' : raw;
+      return RITUAL_COLOR_OPTIONS.some(c => c.id && c.id === mapped) ? mapped : '';
+    }
+
     // Living Botanical Companions (Grow visually with your active streak)
     const BOTANICAL_COMPANIONS = [
       { id: 'fern', label: 'Fern', emoji: '🌿', whisper: 'Unfurls softly with every quiet daily check-in.' },
@@ -2888,6 +3080,7 @@
         confettiEnabled: true,
         showQuotes: true,
         autoSortCompleted: true,
+        todayViewMode: 'list',
         timerSessions: 0,
         unlockedBadges: []
       },
@@ -2915,6 +3108,7 @@
         detailMonth: new Date().getMonth(),
         detailYear: new Date().getFullYear(),
         modalEmoji: '🍵',
+        modalColor: '',
         modalTimeOfDay: 'morning',
         modalWeeklyGoal: 7,
         modalTargetCount: 1,
@@ -3034,6 +3228,7 @@
           confettiEnabled: true,
           showQuotes: true,
           autoSortCompleted: true,
+          todayViewMode: 'list',
           timerSessions: 0,
           unlockedBadges: []
         },
@@ -3085,6 +3280,7 @@
         targetCount,
         unit,
         timerMinutes,
+        color: getHabitColorAccent(habit),
         createdAt: fallbackCreated,
         versions
       };
@@ -3103,6 +3299,9 @@
             }
             if (state.user.accent === 'berry') {
               state.user.accent = 'blue';
+            }
+            if (!['list', 'grid'].includes(state.user.todayViewMode)) {
+              state.user.todayViewMode = 'list';
             }
             state.logs = parsed.logs && typeof parsed.logs === 'object' ? parsed.logs : {};
             state.counts = parsed.counts && typeof parsed.counts === 'object' ? parsed.counts : {};
@@ -3674,6 +3873,75 @@
       return { done, goal, met: done >= goal };
     }
 
+    function getHabitTotalCompletions(habitId, archivedAt = null) {
+      const todayKey = getTodayKey();
+      let count = 0;
+      Object.keys(state.logs).forEach(dateKey => {
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(dateKey)) return;
+        if (dateKey > todayKey) return;
+        if (archivedAt && dateKey >= archivedAt) return;
+        if (Array.isArray(state.logs[dateKey]) && state.logs[dateKey].includes(habitId)) {
+          count++;
+        }
+      });
+      return count;
+    }
+
+    function getHabitBestStreak(habit) {
+      const todayKey = getTodayKey();
+      const activeDates = Object.keys(state.logs)
+        .filter(k => /^\d{4}-\d{2}-\d{2}$/.test(k) && k <= todayKey && (!habit.archivedAt || k < habit.archivedAt) && isHabitCompletedOn(habit.id, k))
+        .sort();
+      const currentStreak = getHabitStreak(habit);
+      if (activeDates.length === 0) return currentStreak;
+
+      const goal = Math.min(7, Math.max(1, Number(habit.weeklyGoal) || 7));
+      if (goal >= 7) {
+        let best = 1;
+        let running = 1;
+        for (let i = 1; i < activeDates.length; i++) {
+          let gapCursor = addDays(activeDates[i - 1], 1);
+          let bridged = true;
+          while (gapCursor < activeDates[i]) {
+            if (!isRestDay(gapCursor)) {
+              bridged = false;
+              break;
+            }
+            gapCursor = addDays(gapCursor, 1);
+          }
+          if (bridged) {
+            running++;
+            if (running > best) best = running;
+          } else {
+            running = 1;
+          }
+        }
+        return Math.max(best, currentStreak);
+      }
+
+      const allowedMissesPerWeek = 7 - goal;
+      const endKey = habit.archivedAt && habit.archivedAt <= todayKey ? addDays(habit.archivedAt, -1) : todayKey;
+      let best = 0;
+      let running = 0;
+      let missesByWeek = {};
+      let cursor = activeDates[0];
+      for (let i = 0; i < 3650 && cursor <= endKey; i++) {
+        if (isHabitCompletedOn(habit.id, cursor)) {
+          running++;
+          if (running > best) best = running;
+        } else if (!isRestDay(cursor)) {
+          const wk = getWeekStartKey(cursor);
+          missesByWeek[wk] = (missesByWeek[wk] || 0) + 1;
+          if (missesByWeek[wk] > allowedMissesPerWeek) {
+            running = 0;
+            missesByWeek = {};
+          }
+        }
+        cursor = addDays(cursor, 1);
+      }
+      return Math.max(best, currentStreak);
+    }
+
     function getHabitStreak(habit) {
       const todayKey = getTodayKey();
       const refEndKey = habit.archivedAt && habit.archivedAt <= todayKey
@@ -4204,6 +4472,117 @@
       `;
     }
 
+    function updateTodayViewSwitcherUI() {
+      const mode = state.user.todayViewMode === 'grid' ? 'grid' : 'list';
+      const switcher = document.getElementById('today-view-switcher');
+      const listBtn = document.getElementById('view-mode-list-btn');
+      const gridBtn = document.getElementById('view-mode-grid-btn');
+      if (switcher) {
+        switcher.classList.toggle('opacity-45', state.ui.dropMode);
+        switcher.classList.toggle('pointer-events-none', state.ui.dropMode);
+      }
+      if (listBtn) {
+        listBtn.classList.toggle('is-active', mode === 'list');
+        listBtn.setAttribute('aria-pressed', String(mode === 'list'));
+      }
+      if (gridBtn) {
+        gridBtn.classList.toggle('is-active', mode === 'grid');
+        gridBtn.setAttribute('aria-pressed', String(mode === 'grid'));
+      }
+    }
+
+    function setTodayViewMode(mode) {
+      const next = mode === 'grid' ? 'grid' : 'list';
+      if (state.user.todayViewMode === next) return;
+      state.user.todayViewMode = next;
+      saveState();
+      updateTodayViewSwitcherUI();
+      renderHabitsList(true);
+    }
+
+    function getHabitGridOriginDate(habit) {
+      const isValidDate = (d) => typeof d === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(d) && d >= '2000-01-01';
+      let origin = isValidDate(habit && habit.createdAt) ? habit.createdAt : null;
+
+      if (habit && Array.isArray(habit.versions)) {
+        habit.versions.forEach(v => {
+          if (isValidDate(v && v.effectiveFrom) && (!origin || v.effectiveFrom < origin)) {
+            origin = v.effectiveFrom;
+          }
+        });
+      }
+
+      if (habit && habit.id) {
+        Object.keys(state.logs || {}).forEach(dateKey => {
+          if (!isValidDate(dateKey)) return;
+          if (Array.isArray(state.logs[dateKey]) && state.logs[dateKey].includes(habit.id)) {
+            if (!origin || dateKey < origin) origin = dateKey;
+          }
+        });
+
+        Object.keys(state.counts || {}).forEach(dateKey => {
+          if (!isValidDate(dateKey)) return;
+          const dayCounts = state.counts[dateKey];
+          if (dayCounts && typeof dayCounts[habit.id] === 'number' && dayCounts[habit.id] > 0) {
+            if (!origin || dateKey < origin) origin = dateKey;
+          }
+        });
+      }
+
+      return origin || getTodayKey();
+    }
+
+    function buildHabitDotGridHtml(habit, anchorDateKey) {
+      const todayKey = getTodayKey();
+      const targetCount = getHabitTargetCount(habit);
+      const isCountable = targetCount > 1;
+      const originKey = getHabitGridOriginDate(habit);
+      const diffFromOrigin = Math.round((parseDateKey(anchorDateKey) - parseDateKey(originKey)) / 86400000);
+
+      // Start directly from Dot 1 (the habit's Day 1), rolling forward in 7-day columns once past 98 days
+      let startKey = originKey;
+      if (diffFromOrigin < 0) {
+        startKey = anchorDateKey;
+      } else if (diffFromOrigin >= 98) {
+        const overflowWeeks = Math.floor((diffFromOrigin - 91) / 7);
+        startKey = addDays(originKey, overflowWeeks * 7);
+      }
+
+      let cells = '';
+
+      for (let i = 0; i < 98; i++) {
+        const key = addDays(startKey, i);
+        const isFuture = key > todayKey;
+        const isSelected = key === anchorDateKey;
+        const completed = !isFuture && isHabitCompletedOn(habit.id, key);
+        const resting = !isFuture && !completed && isRestDay(key);
+        let cls = 'habit-dot-cell';
+        let inlineStyle = '';
+
+        if (isFuture) {
+          cls += ' is-future';
+        } else if (completed) {
+          cls += ' is-done';
+        } else if (isCountable) {
+          const partialCount = getHabitCountOn(habit.id, key, habit);
+          if (partialCount > 0) {
+            const ratio = Math.min(0.76, Math.max(0.28, partialCount / targetCount));
+            cls += ' is-partial';
+            inlineStyle = ` style="opacity: ${ratio.toFixed(2)};"`;
+          } else if (resting) {
+            cls += ' is-rest';
+          }
+        } else if (resting) {
+          cls += ' is-rest';
+        }
+
+        if (isSelected) cls += ' is-selected-day';
+        cells += `<span class="${cls}"${inlineStyle}></span>`;
+      }
+
+      return `<div class="habit-dot-grid" aria-hidden="true">${cells}</div>`;
+    }
+
     function renderHabitsList(animateCascade = false, justCompletedId = null, animateFlip = false) {
       const container = document.getElementById('habits-list-container');
       if (!container) return;
@@ -4289,12 +4668,120 @@
           frag.appendChild(divider);
         }
 
+        const isGridMode = !inDropMode && state.user.todayViewMode === 'grid';
         const justDoneClass = done && justCompletedId === habit.id ? 'just-completed' : '';
         const countPct = isCountable ? Math.min(100, Math.round((currentCount / targetCount) * 100)) : 0;
         const streak = getHabitStreak(habit);
         const weekly = getWeeklyProgressForHabit(habit, dateKey);
         const isArchivedPast = Boolean(habit.archivedAt);
         const dimmedClass = done && !inDropMode ? 'habit-card-completed' : '';
+
+        if (isGridMode) {
+          const totalDone = getHabitTotalCompletions(habit.id, habit.archivedAt || null);
+          const bestStreak = getHabitBestStreak(habit);
+          const rate30 = getHabit30DayConsistency(habit);
+          const weeklyPillHtml = weekly.goal < 7
+            ? `<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[10px] font-bold ${weekly.met ? 'accent-bg text-white' : 'accent-bg-soft accent-text'}">${weekly.met ? '✦' : '🎯'} ${weekly.done}/${weekly.goal} wk</span>`
+            : '';
+          const timerMins = getHabitTimerMinutes(habit);
+          const isTimerLiveForHabit = mindfulTimer.habitId === habit.id && (mindfulTimer.status === 'running' || mindfulTimer.status === 'paused');
+          const timerPillHtml = !isArchivedPast && (timerMins > 0 || isTimerLiveForHabit)
+            ? `<button type="button" onclick="openHabitTimer('${habit.id}', event)" data-live-timer-badge="${habit.id}"
+                 class="habit-timer-chip inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[10px] font-bold ${isTimerLiveForHabit ? 'is-live' : 'bg-cozy-secondary text-cozy-secondary hover:text-cozy-primary'}">
+                 <span>⏱</span>
+                 <span class="timer-clock-text">${isTimerLiveForHabit ? formatTimerClock(getCurrentTimerRemainingMs()) : formatTimerDurationShort(timerMins)}</span>
+               </button>`
+            : '';
+          const pastPillHtml = isArchivedPast
+            ? `<span class="inline-flex items-center px-1.5 py-0.5 rounded-md text-[9px] font-bold bg-cozy-secondary text-cozy-muted">Past ritual</span>`
+            : '';
+
+          const dotGridHtml = buildHabitDotGridHtml(habit, dateKey);
+          const gridActionHtml = isCountable
+            ? `
+              <div class="flex items-center gap-2">
+                <button type="button" onclick="adjustHabitCount('${habit.id}', -1, event)" ${currentCount <= 0 ? 'disabled' : ''}
+                  aria-label="Decrease ${escapeHtml(habit.title)}"
+                  class="count-step-btn w-11 h-10 rounded-2xl border border-cozy bg-cozy-elevated text-cozy-secondary font-extrabold text-sm flex items-center justify-center flex-shrink-0 ${currentCount <= 0 ? 'opacity-35 cursor-default' : 'hover:text-cozy-primary'}">
+                  −
+                </button>
+                <button type="button" onclick="adjustHabitCount('${habit.id}', 1, event)"
+                  aria-label="Add one to ${escapeHtml(habit.title)}"
+                  class="grid-action-btn relative overflow-hidden flex-1 h-10 px-4 rounded-2xl text-xs font-extrabold flex items-center justify-center gap-1.5 ${done ? 'accent-bg-soft accent-text border border-[var(--accent-medium)]' : 'accent-progress-gradient text-white shadow-sm'} ${justDoneClass}">
+                  ${done
+                    ? `<i class="ph-bold ph-check text-sm"></i><span>Completed · ${escapeHtml(formatCountProgressText(currentCount, targetCount, habit.unit))}</span>`
+                    : `<span>+1</span><span class="opacity-65">·</span><span>${escapeHtml(formatCountProgressText(currentCount, targetCount, habit.unit))}</span>`
+                  }
+                </button>
+              </div>
+            `
+            : `
+              <button type="button" onclick="toggleHabitCompletion('${habit.id}', event)"
+                aria-label="Toggle ${escapeHtml(habit.title)}"
+                class="grid-action-btn w-full h-10 px-4 rounded-2xl text-xs font-extrabold flex items-center justify-center gap-1.5 ${done ? 'accent-bg-soft accent-text border border-[var(--accent-medium)]' : 'accent-progress-gradient text-white shadow-sm'} ${justDoneClass}">
+                ${done
+                  ? '<i class="ph-bold ph-check text-sm"></i><span>Completed</span>'
+                  : '<span>Complete</span>'
+                }
+              </button>
+            `;
+
+          const habitAccent = getHabitColorAccent(habit);
+          const gridCard = document.createElement('div');
+          gridCard.setAttribute('data-habit-id', habit.id);
+          if (habitAccent) gridCard.setAttribute('data-accent', habitAccent);
+          gridCard.className = `cozy-card habit-grid-card space-y-3 cursor-pointer ${dimmedClass} ${animateCascade ? 'cascade-item' : ''}`;
+          if (animateCascade) {
+            gridCard.style.animationDelay = `${Math.min(idx * 40, 260)}ms`;
+          }
+          gridCard.onclick = (e) => {
+            if (e.target.closest('.grid-action-btn') || e.target.closest('.count-step-btn') || e.target.closest('.habit-timer-chip')) return;
+            openHabitDetailModal(habit.id);
+          };
+
+          gridCard.innerHTML = `
+            <div class="flex items-center justify-between gap-2.5">
+              <div class="flex items-center gap-2.5 min-w-0 flex-1">
+                <div class="emoji-pebble-well w-10 h-10 bg-cozy-elevated border border-cozy flex items-center justify-center text-xl flex-shrink-0">
+                  ${escapeHtml(habit.emoji || '🌿')}
+                </div>
+                <div class="min-w-0 flex-1">
+                  <p class="text-[14px] font-bold text-cozy-primary truncate leading-snug ${done ? 'line-through decoration-[var(--accent-primary)]/55 opacity-75' : ''}">
+                    ${escapeHtml(habit.title)}
+                  </p>
+                  <div class="flex items-center flex-wrap gap-2 mt-0.5">
+                    <span class="inline-flex items-center gap-0.5 text-[10.5px] font-extrabold accent-text" title="All-time completions">
+                      <span>${totalDone}</span>
+                      <i class="ph-bold ph-check text-[10px]"></i>
+                    </span>
+                    <span class="inline-flex items-center gap-0.5 text-[10.5px] font-bold ${streak > 0 ? 'terracotta-text' : 'text-cozy-muted'}" title="Current streak">
+                      <span>${streak}</span>
+                      <span class="text-[10px] leading-none">🌿</span>
+                    </span>
+                    <span class="text-[10px] font-semibold text-cozy-muted" title="Best streak">Best ${bestStreak}d</span>
+                    ${weeklyPillHtml}
+                    ${pastPillHtml}
+                  </div>
+                </div>
+              </div>
+              <div class="flex items-center gap-1.5 flex-shrink-0">
+                ${timerPillHtml}
+                <div class="px-2.5 py-1 rounded-xl accent-bg-soft flex flex-col items-end leading-none" title="Last 30 days goal consistency">
+                  <span class="text-xs font-extrabold accent-text">${rate30}%</span>
+                  <span class="text-[8.5px] font-bold uppercase tracking-wider text-cozy-muted mt-0.5">30d</span>
+                </div>
+              </div>
+            </div>
+
+            ${dotGridHtml}
+
+            ${gridActionHtml}
+          `;
+
+          frag.appendChild(gridCard);
+          renderedCards.push({ id: habit.id, el: gridCard });
+          return;
+        }
 
         const card = document.createElement('div');
         card.className = `cozy-card p-3.5 flex items-center justify-between gap-3 ${inDropMode ? 'drop-mode-card' : 'habit-swipe-card cursor-pointer'} ${dimmedClass} ${inDropMode && animateCascade ? 'cascade-item' : ''}`;
@@ -4407,13 +4894,16 @@
           ${rightControlHtml}
         `;
 
+        const listHabitAccent = getHabitColorAccent(habit);
         if (inDropMode) {
+          if (listHabitAccent) card.setAttribute('data-accent', listHabitAccent);
           attachDragReorderHandlers(card, habit.id);
           frag.appendChild(card);
           renderedCards.push({ id: habit.id, el: card });
         } else {
           const slot = document.createElement('div');
           slot.setAttribute('data-habit-id', habit.id);
+          if (listHabitAccent) slot.setAttribute('data-accent', listHabitAccent);
           slot.className = `habit-swipe-slot ${animateCascade ? 'cascade-item' : ''}`;
           if (animateCascade) {
             slot.style.animationDelay = `${Math.min(idx * 35, 240)}ms`;
@@ -4541,13 +5031,13 @@
       if (nowCompleted && state.user.confettiEnabled) {
         let x = window.innerWidth / 2;
         let y = window.innerHeight / 2;
-        const originEl = (event && event.currentTarget) || document.querySelector(`[data-habit-id="${habitId}"] .check-btn`);
+        const originEl = (event && event.currentTarget) || document.querySelector(`[data-habit-id="${habitId}"] .check-btn, [data-habit-id="${habitId}"] .grid-action-btn`);
         if (originEl) {
           const rect = originEl.getBoundingClientRect();
           x = rect.left + rect.width / 2;
           y = rect.top + rect.height / 2;
         }
-        spawnConfettiBurst(x, y);
+        spawnConfettiBurst(x, y, originEl);
       }
 
       renderHeader();
@@ -4601,13 +5091,13 @@
       if (!wasHabitDone && isHabitDone && state.user.confettiEnabled) {
         let x = window.innerWidth / 2;
         let y = window.innerHeight / 2;
-        const originEl = (event && event.currentTarget) || document.querySelector(`[data-habit-id="${habitId}"] .check-btn`);
+        const originEl = (event && event.currentTarget) || document.querySelector(`[data-habit-id="${habitId}"] .check-btn, [data-habit-id="${habitId}"] .grid-action-btn`);
         if (originEl) {
           const rect = originEl.getBoundingClientRect();
           x = rect.left + rect.width / 2;
           y = rect.top + rect.height / 2;
         }
-        spawnConfettiBurst(x, y);
+        spawnConfettiBurst(x, y, originEl);
       }
 
       renderHeader();
@@ -4645,6 +5135,7 @@
       if (quoteBanner) quoteBanner.classList.toggle('hidden', !state.user.showQuotes);
       if (quoteText) quoteText.textContent = `"${MINDFUL_QUOTES[state.ui.quoteIndex]}"`;
 
+      updateTodayViewSwitcherUI();
       renderWeekStrip(animateCalendar);
       renderDailyProgress();
       renderHabitsList(animateCalendar);
@@ -4755,6 +5246,7 @@
         btn.classList.toggle('text-cozy-secondary', !state.ui.dropMode);
         label.textContent = state.ui.dropMode ? 'Done' : 'Drop / Edit';
       }
+      updateTodayViewSwitcherUI();
       renderHabitsList(false, null, true);
     }
 
@@ -5337,6 +5829,8 @@
         const goalText = goal < 7 ? `${goal}x/wk` : 'Daily';
 
         const row = document.createElement('div');
+        const rowAccent = getHabitColorAccent(habit);
+        if (rowAccent) row.setAttribute('data-accent', rowAccent);
         row.className = 'space-y-1.5 cursor-pointer';
         row.onclick = () => openHabitDetailModal(habit.id);
         row.innerHTML = `
@@ -5381,6 +5875,7 @@
         if (nameInput) nameInput.value = editing.title;
         if (subInput) subInput.value = editing.subtitle || '';
         state.ui.modalEmoji = editing.emoji || '🍵';
+        state.ui.modalColor = getHabitColorAccent(editing);
         state.ui.modalWeeklyGoal = Math.min(7, Math.max(1, Number(editing.weeklyGoal) || 7));
         state.ui.modalTargetCount = getHabitTargetCount(editing);
         state.ui.modalUnit = editing.unit || '';
@@ -5393,6 +5888,7 @@
         if (nameInput) nameInput.value = '';
         if (subInput) subInput.value = '';
         state.ui.modalEmoji = '🍵';
+        state.ui.modalColor = '';
         state.ui.modalWeeklyGoal = 7;
         state.ui.modalTargetCount = 1;
         state.ui.modalUnit = '';
@@ -5406,6 +5902,7 @@
       renderWeeklyGoalPicker();
       renderModalDailyTargetUI();
       renderModalTimerUI();
+      renderModalColorPicker();
       renderEmojiGrid();
 
       if (backdrop && sheet) {
@@ -5626,6 +6123,54 @@
       updateModalTimerHelper();
     }
 
+    function setModalRitualColor(colorId) {
+      state.ui.modalColor = RITUAL_COLOR_OPTIONS.some(c => c.id === colorId) ? colorId : '';
+      renderModalColorPicker();
+    }
+
+    function renderModalColorPicker() {
+      const container = document.getElementById('modal-color-picker');
+      const helper = document.getElementById('modal-color-helper');
+      const selectedId = state.ui.modalColor || '';
+      const selectedOpt = RITUAL_COLOR_OPTIONS.find(c => c.id === selectedId) || RITUAL_COLOR_OPTIONS[0];
+
+      if (helper) {
+        helper.textContent = selectedOpt.label;
+        if (selectedId) {
+          helper.setAttribute('data-accent', selectedId);
+        } else {
+          helper.removeAttribute('data-accent');
+        }
+      }
+      if (!container) return;
+
+      container.innerHTML = '';
+      RITUAL_COLOR_OPTIONS.forEach(opt => {
+        const picked = opt.id === selectedId;
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.onclick = () => setModalRitualColor(opt.id);
+        btn.title = opt.id ? opt.label : 'Follow App Theme';
+        btn.setAttribute('aria-label', opt.id ? `${opt.label} color` : 'Use App Theme color');
+        btn.setAttribute('aria-pressed', String(picked));
+        if (opt.id) btn.setAttribute('data-accent', opt.id);
+        btn.className = `ritual-color-swatch ${picked ? 'is-selected' : ''}`;
+
+        if (opt.grad) {
+          btn.style.background = opt.grad;
+          btn.innerHTML = picked
+            ? '<i class="ph-bold ph-check text-white text-[11px] drop-shadow-xs"></i>'
+            : '';
+        } else {
+          btn.style.background = 'linear-gradient(135deg, var(--accent-grad-start), var(--accent-grad-end))';
+          btn.innerHTML = picked
+            ? '<i class="ph-bold ph-sparkle text-white text-[11px] drop-shadow-xs"></i>'
+            : '<i class="ph-bold ph-sparkle text-white/85 text-[10px]"></i>';
+        }
+        container.appendChild(btn);
+      });
+    }
+
     function setEmojiTab(tab) {
       state.ui.emojiTab = tab;
       renderEmojiGrid();
@@ -5687,6 +6232,7 @@
 
       const todayKey = getTodayKey();
       const emoji = state.ui.modalEmoji || '🌿';
+      const color = getHabitColorAccent({ color: state.ui.modalColor });
       const weeklyGoal = state.ui.modalWeeklyGoal || 7;
       const targetCount = Math.min(99, Math.max(1, Number(state.ui.modalTargetCount) || 1));
       const unit = targetCount > 1 ? (state.ui.modalUnit || '').trim() : '';
@@ -5749,6 +6295,7 @@
           existing.targetCount = targetCount;
           existing.unit = unit;
           existing.timerMinutes = timerMinutes;
+          existing.color = color;
 
           // If an idle timer was loaded for this habit, sync or clear its duration
           if (mindfulTimer.habitId === existing.id && mindfulTimer.status === 'idle') {
@@ -5783,6 +6330,7 @@
           targetCount,
           unit,
           timerMinutes,
+          color,
           createdAt: todayKey,
           versions: [{
             effectiveFrom: todayKey,
@@ -6075,6 +6623,9 @@
         clearMindfulTimer(true);
         return;
       }
+      const timerAccent = getHabitColorAccent(habit);
+      if (timerAccent) bar.setAttribute('data-accent', timerAccent);
+      else bar.removeAttribute('data-accent');
 
       const emojiEl = document.getElementById('floating-timer-emoji');
       const titleEl = document.getElementById('floating-timer-title');
@@ -6152,7 +6703,7 @@
           x = r.left + r.width / 2;
           y = r.top + r.height / 2;
         }
-        spawnConfettiBurst(x, y);
+        spawnConfettiBurst(x, y, orbEl);
       }
 
       if (habit) {
@@ -6377,6 +6928,10 @@
       const container = document.getElementById('habit-detail-content');
       const habit = getAllKnownHabits().find(h => h.id === state.ui.detailHabitId);
       if (!container || !habit) return;
+
+      const detailAccent = getHabitColorAccent(habit);
+      if (detailAccent) container.setAttribute('data-accent', detailAccent);
+      else container.removeAttribute('data-accent');
 
       const todayKey = getTodayKey();
       const now = new Date();
@@ -7136,6 +7691,9 @@
             if (state.user.accent === 'berry') {
               state.user.accent = 'blue';
             }
+            if (!['list', 'grid'].includes(state.user.todayViewMode)) {
+              state.user.todayViewMode = 'list';
+            }
             state.logs = parsed.logs && typeof parsed.logs === 'object' ? parsed.logs : {};
             state.counts = parsed.counts && typeof parsed.counts === 'object' ? parsed.counts : {};
             state.restDays = parsed.restDays && typeof parsed.restDays === 'object' ? parsed.restDays : {};
@@ -7304,6 +7862,7 @@
       if (!btn || btn.disabled) return;
       if (
         btn.classList.contains('check-btn') ||
+        btn.classList.contains('grid-action-btn') ||
         btn.classList.contains('count-step-btn') ||
         btn.classList.contains('nav-tab') ||
         btn.classList.contains('sanctuary-terrarium-btn') ||
@@ -7315,14 +7874,14 @@
       playCozySound('tap');
     }, { passive: true });
 
-    function spawnConfettiBurst(x, y) {
+    function spawnConfettiBurst(x, y, sourceEl = null) {
       const canvas = document.getElementById('confetti-canvas');
       if (!canvas) return;
       const ctx = canvas.getContext('2d');
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
 
-      const styles = getComputedStyle(document.documentElement);
+      const styles = getComputedStyle(sourceEl || document.documentElement);
       const colors = [
         styles.getPropertyValue('--accent-primary').trim() || '#5E8C76',
         styles.getPropertyValue('--accent-grad-start').trim() || '#7BA892',
