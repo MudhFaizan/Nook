@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- Nook v25 -->
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -1182,24 +1183,24 @@
       box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.5);
     }
 
-    /* Atomic-Inspired Frosted Dot-Grid Habit Card (Grid Mode) */
+    /* Compact 1-Month Frosted Dot-Grid Habit Card (Today Grid Mode) */
     .cozy-card.habit-grid-card {
-      padding: 14px;
+      padding: 13px 14px;
     }
     .cozy-card.habit-grid-card.habit-card-completed {
       background: var(--bg-glass-card);
       border-color: var(--border-glass);
     }
-    .habit-dot-grid {
-      display: grid;
-      grid-template-rows: repeat(7, minmax(0, 1fr));
-      grid-auto-flow: column;
-      grid-template-columns: repeat(14, minmax(0, 1fr));
-      gap: 4px;
-      padding: 8px;
-      border-radius: 16px;
+    .habit-dot-tray {
+      padding: 7px 8px 8px;
+      border-radius: 15px;
       background: var(--bg-glass-input);
       border: 1px solid var(--border-subtle);
+    }
+    .habit-dot-grid {
+      display: grid;
+      grid-template-columns: repeat(16, minmax(0, 1fr));
+      gap: 3.5px;
     }
     .habit-dot-cell {
       aspect-ratio: 1 / 1;
@@ -1223,17 +1224,23 @@
       background: var(--accent-honey-soft);
       box-shadow: inset 0 0 0 1px rgba(217, 155, 56, 0.4);
     }
+    .habit-dot-cell.is-before-origin {
+      opacity: 0.52;
+    }
     .habit-dot-cell.is-future {
-      opacity: 0.45;
+      opacity: 0.34;
+    }
+    .habit-dot-cell.is-today {
+      box-shadow: inset 0 0 0 1.4px var(--accent-primary);
     }
     .habit-dot-cell.is-selected-day {
-      box-shadow: 0 0 0 1.5px var(--text-primary);
-      transform: scale(1.06);
+      box-shadow: 0 0 0 1.6px var(--text-primary);
+      transform: scale(1.08);
       position: relative;
       z-index: 1;
     }
     .habit-dot-cell.is-done.is-selected-day {
-      box-shadow: 0 0 0 1.5px var(--text-primary), 0 0 8px var(--accent-glow);
+      box-shadow: 0 0 0 1.6px var(--text-primary), 0 0 8px var(--accent-glow);
     }
     .grid-action-btn.just-completed {
       animation: gridPillPop 0.44s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -1242,6 +1249,121 @@
       0% { transform: scale(0.95); }
       50% { transform: scale(1.03); }
       100% { transform: scale(1); }
+    }
+
+    /* Insights Overall 3-Month Interactive Dot-Grid Heatmap */
+    .overall-dot-tray {
+      padding: 8px 7px;
+      border-radius: 16px;
+      background: var(--bg-glass-input);
+      border: 1px solid var(--border-subtle);
+    }
+    @keyframes gridPageSlideFromLeft {
+      0% { opacity: 0.45; transform: translateX(-18px); }
+      100% { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes gridPageSlideFromRight {
+      0% { opacity: 0.45; transform: translateX(18px); }
+      100% { opacity: 1; transform: translateX(0); }
+    }
+    .grid-page-from-left {
+      animation: gridPageSlideFromLeft 0.34s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+    .grid-page-from-right {
+      animation: gridPageSlideFromRight 0.34s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+    .overall-dot-months {
+      display: grid;
+      column-gap: 3px;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+    .overall-dot-month-label {
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--text-secondary);
+      line-height: 1;
+      letter-spacing: 0.01em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .overall-dot-month-label.is-current-month {
+      color: var(--accent-primary);
+    }
+    .overall-dot-grid {
+      display: grid;
+      grid-template-rows: repeat(7, minmax(0, 1fr));
+      gap: 3px;
+      align-items: center;
+    }
+    .overall-dot-weekday {
+      font-size: 8.5px;
+      font-weight: 700;
+      color: var(--text-muted);
+      line-height: 1;
+      text-align: left;
+      user-select: none;
+    }
+    .overall-dot-divider {
+      width: 1px;
+      height: 100%;
+      background: var(--border-subtle);
+      border-radius: 9999px;
+      justify-self: center;
+      pointer-events: none;
+    }
+    .overall-dot-cell {
+      aspect-ratio: 1 / 1;
+      border-radius: 4px;
+      border: 1px solid transparent;
+      background: rgba(163, 155, 143, 0.28);
+      padding: 0;
+      display: block;
+      width: 100%;
+      cursor: pointer;
+      transition: transform 0.24s cubic-bezier(0.34, 1.56, 0.64, 1),
+                  box-shadow 0.22s ease,
+                  background-color 0.25s ease,
+                  border-color 0.25s ease,
+                  opacity 0.25s ease;
+    }
+    [data-theme="dark"] .overall-dot-cell {
+      background: rgba(255, 255, 255, 0.12);
+    }
+    .overall-dot-cell:hover:not(:disabled) {
+      transform: scale(1.18);
+      z-index: 2;
+      position: relative;
+    }
+    .overall-dot-cell.is-future {
+      opacity: 0.36;
+      cursor: default;
+    }
+    .overall-dot-cell.is-before-origin {
+      opacity: 0.55;
+    }
+    .overall-dot-cell.is-today {
+      box-shadow: inset 0 0 0 1.4px var(--accent-primary);
+    }
+    .overall-dot-cell.is-selected {
+      box-shadow: 0 0 0 1.75px var(--text-primary), 0 0 8px var(--accent-glow);
+      transform: scale(1.14);
+      position: relative;
+      z-index: 2;
+    }
+    .overall-dot-cell.is-habit-done {
+      background: var(--accent-primary);
+      border-color: var(--accent-primary);
+      box-shadow: 0 1px 4px -1px var(--accent-glow);
+    }
+    .overall-dot-cell.is-habit-partial {
+      background: var(--accent-primary);
+      border-color: transparent;
+    }
+    .overall-dot-cell.is-habit-rest {
+      background: var(--accent-honey-soft);
+      border-color: rgba(217, 155, 56, 0.45);
     }
 
     /* Swipe-to-Check / Swipe-to-Step Habit Card Surface */
@@ -2098,14 +2220,30 @@
           </div>
         </div>
 
-        <!-- Monthly Consistency Heatmap Card -->
+        <!-- Monthly & Overall Consistency Heatmap Card -->
         <div id="heatmap-card" class="cozy-card swipe-surface p-4">
-          <div class="flex items-center justify-between mb-3">
-            <div>
-              <h3 class="text-sm font-bold text-cozy-primary">Monthly Rhythm</h3>
-              <p class="text-[11px] text-cozy-secondary">Deeper shade means more rituals completed</p>
+          <!-- Row 1: Title + Calendar / Dot-Grid Mode Switcher -->
+          <div class="flex items-start justify-between gap-2 mb-2.5">
+            <div class="min-w-0">
+              <h3 id="heatmap-card-title" class="text-sm font-bold text-cozy-primary leading-tight">Monthly Rhythm</h3>
+              <p id="heatmap-card-subtitle" class="text-[11px] text-cozy-secondary mt-0.5 truncate">Deeper shade means more rituals completed</p>
             </div>
-            <div class="flex items-center gap-1.5">
+            <div id="insights-calendar-switcher" class="view-mode-switcher flex-shrink-0" role="group" aria-label="Insights calendar view">
+              <button type="button" id="insights-cal-mode-calendar-btn" onclick="setInsightsCalendarMode('calendar')"
+                class="view-mode-btn is-active" title="Monthly calendar view" aria-label="Monthly calendar view" aria-pressed="true">
+                <i class="ph-bold ph-calendar-blank text-[13px]"></i>
+              </button>
+              <button type="button" id="insights-cal-mode-grid-btn" onclick="setInsightsCalendarMode('grid')"
+                class="view-mode-btn" title="Overall dot-grid view" aria-label="Overall dot-grid view" aria-pressed="false">
+                <i class="ph-bold ph-squares-four text-[13px]"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Row 2: Period Span Label + Auto-fading Today Pill + Prev/Next Arrows -->
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <div class="flex items-center gap-1.5 min-w-0">
+              <span id="heatmap-month-label" class="text-xs font-bold text-cozy-primary truncate">Month</span>
               <!-- Auto-fading Return to Current Month/Today Pill -->
               <button id="heatmap-return-today-btn" type="button" onclick="returnHeatmapToToday()"
                 class="return-today-pill" title="Back to current date">
@@ -2115,15 +2253,16 @@
                 </svg>
                 <span>Today</span>
               </button>
+            </div>
 
-              <button type="button" onclick="changeHeatmapMonth(-1)" class="cozy-icon-orb-btn" aria-label="Previous month">
+            <div class="flex items-center gap-1 flex-shrink-0">
+              <button id="heatmap-prev-btn" type="button" onclick="changeHeatmapMonth(-1)" class="cozy-icon-orb-btn" aria-label="Previous period">
                 <svg class="w-3.5 h-3.5" viewBox="0 0 16 16" fill="none">
                   <circle cx="11.2" cy="8" r="1.2" fill="currentColor" opacity="0.75"/>
                   <path d="M9.25 4.25L5.5 8L9.25 11.75" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
               </button>
-              <span id="heatmap-month-label" class="text-xs font-bold text-cozy-primary min-w-[76px] text-center">Month</span>
-              <button type="button" onclick="changeHeatmapMonth(1)" class="cozy-icon-orb-btn" aria-label="Next month">
+              <button id="heatmap-next-btn" type="button" onclick="changeHeatmapMonth(1)" class="cozy-icon-orb-btn" aria-label="Next period">
                 <svg class="w-3.5 h-3.5" viewBox="0 0 16 16" fill="none">
                   <circle cx="4.8" cy="8" r="1.2" fill="currentColor" opacity="0.75"/>
                   <path d="M6.75 4.25L10.5 8L6.75 11.75" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
@@ -2132,25 +2271,38 @@
             </div>
           </div>
 
-          <!-- Selected Month Streak Summary Strip & History Archive Toggle -->
+          <!-- Selected Month / Overall Window Streak Summary Strip -->
           <div id="heatmap-month-streak-bar" class="mb-3 p-2.5 rounded-2xl bg-cozy-secondary/55 border border-cozy">
-            <!-- Populated dynamically by JS for the viewed month -->
+            <!-- Populated dynamically by JS -->
           </div>
 
-          <!-- Weekday Headers -->
-          <div class="grid grid-cols-7 gap-1.5 text-center mb-1.5">
-            <span class="text-[10px] font-semibold text-cozy-muted">M</span>
-            <span class="text-[10px] font-semibold text-cozy-muted">T</span>
-            <span class="text-[10px] font-semibold text-cozy-muted">W</span>
-            <span class="text-[10px] font-semibold text-cozy-muted">T</span>
-            <span class="text-[10px] font-semibold text-cozy-muted">F</span>
-            <span class="text-[10px] font-semibold text-cozy-muted">S</span>
-            <span class="text-[10px] font-semibold text-cozy-muted">S</span>
+          <!-- Calendar Mode: Weekday Headers + Numbered Month Grid -->
+          <div id="heatmap-calendar-section">
+            <div class="grid grid-cols-7 gap-1.5 text-center mb-1.5">
+              <span class="text-[10px] font-semibold text-cozy-muted">M</span>
+              <span class="text-[10px] font-semibold text-cozy-muted">T</span>
+              <span class="text-[10px] font-semibold text-cozy-muted">W</span>
+              <span class="text-[10px] font-semibold text-cozy-muted">T</span>
+              <span class="text-[10px] font-semibold text-cozy-muted">F</span>
+              <span class="text-[10px] font-semibold text-cozy-muted">S</span>
+              <span class="text-[10px] font-semibold text-cozy-muted">S</span>
+            </div>
+
+            <div id="heatmap-grid" class="grid grid-cols-7 gap-1.5">
+              <!-- Populated by JS -->
+            </div>
           </div>
 
-          <!-- Calendar Heatmap Cells -->
-          <div id="heatmap-grid" class="grid grid-cols-7 gap-1.5">
-            <!-- Populated by JS -->
+          <!-- Overall Dot-Grid Mode: 3-Month Labeled Interactive Dot Matrix -->
+          <div id="heatmap-overall-grid-section" class="hidden">
+            <div id="heatmap-overall-tray" class="overall-dot-tray">
+              <div id="heatmap-overall-months" class="overall-dot-months" aria-hidden="true">
+                <!-- Populated by JS -->
+              </div>
+              <div id="heatmap-overall-grid" class="overall-dot-grid">
+                <!-- Populated by JS -->
+              </div>
+            </div>
           </div>
 
           <!-- Heatmap Legend -->
@@ -3081,6 +3233,8 @@
         showQuotes: true,
         autoSortCompleted: true,
         todayViewMode: 'list',
+        insightsCalendarMode: 'calendar',
+        detailCalendarMode: 'grid',
         timerSessions: 0,
         unlockedBadges: []
       },
@@ -3101,12 +3255,16 @@
         emojiTab: 'cozy',
         heatmapMonth: new Date().getMonth(),
         heatmapYear: new Date().getFullYear(),
+        heatmapGridShiftMonths: 0,
+        heatmapGridSlideDir: null,
         heatmapSelectedDate: getTodayKey(),
         heatmapInspectorOpen: false,
         monthHistoryOpen: false,
         detailHabitId: null,
         detailMonth: new Date().getMonth(),
         detailYear: new Date().getFullYear(),
+        detailGridShiftMonths: 0,
+        detailGridSlideDir: null,
         modalEmoji: '🍵',
         modalColor: '',
         modalTimeOfDay: 'morning',
@@ -3229,6 +3387,8 @@
           showQuotes: true,
           autoSortCompleted: true,
           todayViewMode: 'list',
+          insightsCalendarMode: 'calendar',
+          detailCalendarMode: 'grid',
           timerSessions: 0,
           unlockedBadges: []
         },
@@ -3302,6 +3462,12 @@
             }
             if (!['list', 'grid'].includes(state.user.todayViewMode)) {
               state.user.todayViewMode = 'list';
+            }
+            if (!['calendar', 'grid'].includes(state.user.insightsCalendarMode)) {
+              state.user.insightsCalendarMode = 'calendar';
+            }
+            if (!['calendar', 'grid'].includes(state.user.detailCalendarMode)) {
+              state.user.detailCalendarMode = 'grid';
             }
             state.logs = parsed.logs && typeof parsed.logs === 'object' ? parsed.logs : {};
             state.counts = parsed.counts && typeof parsed.counts === 'object' ? parsed.counts : {};
@@ -4537,27 +4703,31 @@
       const targetCount = getHabitTargetCount(habit);
       const isCountable = targetCount > 1;
       const originKey = getHabitGridOriginDate(habit);
-      const diffFromOrigin = Math.round((parseDateKey(anchorDateKey) - parseDateKey(originKey)) / 86400000);
 
-      // Start directly from Dot 1 (the habit's Day 1), rolling forward in 7-day columns once past 98 days
-      let startKey = originKey;
-      if (diffFromOrigin < 0) {
-        startKey = anchorDateKey;
-      } else if (diffFromOrigin >= 98) {
-        const overflowWeeks = Math.floor((diffFromOrigin - 91) / 7);
-        startKey = addDays(originKey, overflowWeeks * 7);
-      }
+      const anchorDt = parseDateKey(anchorDateKey);
+      const year = anchorDt.getFullYear();
+      const month = anchorDt.getMonth();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const currentYear = parseDateKey(todayKey).getFullYear();
+      const monthTitle = year !== currentYear
+        ? anchorDt.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
+        : anchorDt.toLocaleDateString('en-US', { month: 'long' });
 
       let cells = '';
+      let monthDoneCount = 0;
 
-      for (let i = 0; i < 98; i++) {
-        const key = addDays(startKey, i);
+      for (let d = 1; d <= daysInMonth; d++) {
+        const key = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
         const isFuture = key > todayKey;
         const isSelected = key === anchorDateKey;
+        const isToday = key === todayKey;
+        const isBeforeOrigin = key < originKey;
         const completed = !isFuture && isHabitCompletedOn(habit.id, key);
         const resting = !isFuture && !completed && isRestDay(key);
         let cls = 'habit-dot-cell';
         let inlineStyle = '';
+
+        if (completed) monthDoneCount++;
 
         if (isFuture) {
           cls += ' is-future';
@@ -4571,16 +4741,29 @@
             inlineStyle = ` style="opacity: ${ratio.toFixed(2)};"`;
           } else if (resting) {
             cls += ' is-rest';
+          } else if (isBeforeOrigin) {
+            cls += ' is-before-origin';
           }
         } else if (resting) {
           cls += ' is-rest';
+        } else if (isBeforeOrigin) {
+          cls += ' is-before-origin';
         }
 
+        if (isToday && !isSelected) cls += ' is-today';
         if (isSelected) cls += ' is-selected-day';
         cells += `<span class="${cls}"${inlineStyle}></span>`;
       }
 
-      return `<div class="habit-dot-grid" aria-hidden="true">${cells}</div>`;
+      return `
+        <div class="habit-dot-tray space-y-1.5" aria-hidden="true">
+          <div class="flex items-center justify-between px-0.5 leading-none">
+            <span class="text-[10px] font-extrabold text-cozy-secondary">${escapeHtml(monthTitle)}</span>
+            <span class="text-[9.5px] font-bold text-cozy-muted">${monthDoneCount}/${daysInMonth} days</span>
+          </div>
+          <div class="habit-dot-grid">${cells}</div>
+        </div>
+      `;
     }
 
     function renderHabitsList(animateCascade = false, justCompletedId = null, animateFlip = false) {
@@ -5505,7 +5688,197 @@
       renderInsightsHabitBreakdown();
     }
 
+    function getOverallGridOriginDate() {
+      const isValidDate = (d) => typeof d === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(d) && d >= '2000-01-01';
+      let origin = null;
+      const consider = (d) => {
+        if (isValidDate(d) && (!origin || d < origin)) origin = d;
+      };
+
+      getAllKnownHabits().forEach(h => {
+        consider(h && h.createdAt);
+        if (h && Array.isArray(h.versions)) {
+          h.versions.forEach(v => consider(v && v.effectiveFrom));
+        }
+      });
+
+      Object.keys(state.logs || {}).forEach(dateKey => {
+        if (Array.isArray(state.logs[dateKey]) && state.logs[dateKey].length > 0) consider(dateKey);
+      });
+
+      Object.keys(state.counts || {}).forEach(dateKey => {
+        const dayCounts = state.counts[dateKey];
+        if (dayCounts && Object.values(dayCounts).some(v => typeof v === 'number' && v > 0)) {
+          consider(dateKey);
+        }
+      });
+
+      Object.keys(state.restDays || {}).forEach(dateKey => {
+        if (state.restDays[dateKey]) consider(dateKey);
+      });
+
+      return origin || getTodayKey();
+    }
+
+    function getOverallGridWindow() {
+      const todayKey = getTodayKey();
+      const originKey = getOverallGridOriginDate();
+      const todayDt = parseDateKey(todayKey);
+      const originDt = parseDateKey(originKey);
+      const todayYM = todayDt.getFullYear() * 12 + todayDt.getMonth();
+      const originYM = originDt.getFullYear() * 12 + originDt.getMonth();
+      const monthsSinceOrigin = Math.max(0, todayYM - originYM);
+
+      // Start directly from your Day-1 month while within your first 3 months, then show the latest 3 months
+      const defaultStartYM = monthsSinceOrigin <= 2 ? originYM : (todayYM - 2);
+      if (state.ui.heatmapGridShiftMonths > 0) {
+        state.ui.heatmapGridShiftMonths = 0;
+      }
+      const startYM = defaultStartYM + (state.ui.heatmapGridShiftMonths || 0);
+
+      const months = [];
+      for (let mOffset = 0; mOffset < 3; mOffset++) {
+        const ym = startYM + mOffset;
+        const year = Math.floor(ym / 12);
+        const month = ym % 12;
+        const firstDt = new Date(year, month, 1);
+        const startPad = (firstDt.getDay() + 6) % 7; // Mon=0..Sun=6
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        const cols = Math.ceil((startPad + daysInMonth) / 7);
+        const shortName = firstDt.toLocaleDateString('en-US', { month: 'short' });
+        months.push({
+          year,
+          month,
+          ym,
+          startPad,
+          daysInMonth,
+          cols,
+          shortName,
+          isCurrentMonth: year === todayDt.getFullYear() && month === todayDt.getMonth()
+        });
+      }
+
+      const firstM = months[0];
+      const lastM = months[months.length - 1];
+      const startKey = `${firstM.year}-${String(firstM.month + 1).padStart(2, '0')}-01`;
+      const endKey = `${lastM.year}-${String(lastM.month + 1).padStart(2, '0')}-${String(lastM.daysInMonth).padStart(2, '0')}`;
+
+      return {
+        todayKey,
+        originKey,
+        months,
+        startKey,
+        endKey,
+        canGoPrev: true,
+        canGoNext: (state.ui.heatmapGridShiftMonths || 0) < 0
+      };
+    }
+
+    function getDateRangeStreakStats(startKey, endKey, minActiveStartKey = null) {
+      const todayKey = getTodayKey();
+      const effectiveStart = (minActiveStartKey && minActiveStartKey > startKey && minActiveStartKey <= endKey)
+        ? minActiveStartKey
+        : startKey;
+      const cappedEnd = endKey > todayKey ? todayKey : endKey;
+      let bestStreak = 0;
+      let running = 0;
+      let activeDays = 0;
+      let fullDays = 0;
+      let elapsedDays = 0;
+
+      if (effectiveStart <= cappedEnd) {
+        const totalSpan = Math.round((parseDateKey(cappedEnd) - parseDateKey(effectiveStart)) / 86400000) + 1;
+        elapsedDays = Math.min(100, Math.max(0, totalSpan));
+        for (let i = 0; i < elapsedDays; i++) {
+          const key = addDays(effectiveStart, i);
+          const info = getDayCompletionInfo(key);
+          if (info.done > 0) {
+            activeDays++;
+            running++;
+            if (running > bestStreak) bestStreak = running;
+            if (info.total > 0 && info.done >= info.total) fullDays++;
+          } else if (!isRestDay(key)) {
+            running = 0;
+          }
+        }
+      }
+
+      return {
+        bestStreak,
+        activeDays,
+        fullDays,
+        elapsedDays,
+        vibe: getStreakVibe(bestStreak, activeDays, elapsedDays)
+      };
+    }
+
+    function formatOverallWindowSpanLabel(startKey, endKey) {
+      const sDt = parseDateKey(startKey);
+      const eDt = parseDateKey(endKey);
+      const sMon = sDt.toLocaleDateString('en-US', { month: 'short' });
+      const eMon = eDt.toLocaleDateString('en-US', { month: 'short' });
+      const sYear = sDt.getFullYear();
+      const eYear = eDt.getFullYear();
+      if (sYear !== eYear) {
+        return `${sMon} ${sYear} – ${eMon} ${eYear}`;
+      }
+      if (sMon === eMon) {
+        return `${sMon} ${eYear}`;
+      }
+      return `${sMon} – ${eMon} ${eYear}`;
+    }
+
+    function updateInsightsCalendarSwitcherUI() {
+      const mode = state.user.insightsCalendarMode === 'grid' ? 'grid' : 'calendar';
+      const calBtn = document.getElementById('insights-cal-mode-calendar-btn');
+      const gridBtn = document.getElementById('insights-cal-mode-grid-btn');
+      const titleEl = document.getElementById('heatmap-card-title');
+      const subtitleEl = document.getElementById('heatmap-card-subtitle');
+      const calSec = document.getElementById('heatmap-calendar-section');
+      const gridSec = document.getElementById('heatmap-overall-grid-section');
+
+      if (calBtn) {
+        calBtn.classList.toggle('is-active', mode === 'calendar');
+        calBtn.setAttribute('aria-pressed', String(mode === 'calendar'));
+      }
+      if (gridBtn) {
+        gridBtn.classList.toggle('is-active', mode === 'grid');
+        gridBtn.setAttribute('aria-pressed', String(mode === 'grid'));
+      }
+      if (titleEl) {
+        titleEl.textContent = mode === 'grid' ? 'Overall Rhythm' : 'Monthly Rhythm';
+      }
+      if (subtitleEl) {
+        subtitleEl.textContent = mode === 'grid'
+          ? '3-month dot map · Swipe or use arrows to jump 3 months'
+          : 'Deeper shade means more rituals completed';
+      }
+      if (calSec) calSec.classList.toggle('hidden', mode !== 'calendar');
+      if (gridSec) gridSec.classList.toggle('hidden', mode !== 'grid');
+    }
+
+    function setInsightsCalendarMode(mode) {
+      const next = mode === 'grid' ? 'grid' : 'calendar';
+      if (state.user.insightsCalendarMode === next) return;
+      state.user.insightsCalendarMode = next;
+      saveState();
+      renderHeatmap(true);
+    }
+
     function changeHeatmapMonth(delta) {
+      if (state.user.insightsCalendarMode === 'grid') {
+        const step = delta < 0 ? -3 : 3;
+        const nextShift = Math.min(0, (state.ui.heatmapGridShiftMonths || 0) + step);
+        if (nextShift === (state.ui.heatmapGridShiftMonths || 0)) {
+          triggerSwipeBump(document.getElementById('heatmap-card'), delta > 0 ? 'left' : 'right');
+          return;
+        }
+        state.ui.heatmapGridShiftMonths = nextShift;
+        state.ui.heatmapGridSlideDir = delta < 0 ? 'left' : 'right';
+        renderHeatmap(true);
+        return;
+      }
+
       const dt = new Date(state.ui.heatmapYear, state.ui.heatmapMonth + delta, 1);
       state.ui.heatmapYear = dt.getFullYear();
       state.ui.heatmapMonth = dt.getMonth();
@@ -5514,8 +5887,11 @@
 
     function returnHeatmapToToday() {
       const now = new Date();
+      const wasShifted = (state.ui.heatmapGridShiftMonths || 0) < 0;
       state.ui.heatmapYear = now.getFullYear();
       state.ui.heatmapMonth = now.getMonth();
+      state.ui.heatmapGridShiftMonths = 0;
+      state.ui.heatmapGridSlideDir = wasShifted ? 'right' : null;
       state.ui.heatmapSelectedDate = getTodayKey();
       renderHeatmap(true);
     }
@@ -5531,9 +5907,33 @@
       renderHeatmap(true);
     }
 
-    function renderHeatmapMonthStreakBar() {
+    function renderHeatmapMonthStreakBar(overallWindow = null) {
       const container = document.getElementById('heatmap-month-streak-bar');
       if (!container) return;
+
+      if (state.user.insightsCalendarMode === 'grid') {
+        const win = overallWindow || getOverallGridWindow();
+        const stats = getDateRangeStreakStats(win.startKey, win.endKey, win.originKey);
+        const originLabel = win.originKey === win.todayKey
+          ? 'Day 1 · Today'
+          : `Day 1 · ${parseDateKey(win.originKey).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
+
+        container.innerHTML = `
+          <div class="flex items-center justify-between gap-2 flex-wrap">
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <span class="px-2 py-0.5 rounded-lg text-[10px] font-bold" style="background: ${stats.vibe.bg}; color: ${stats.vibe.color};">
+                ${stats.vibe.label}
+              </span>
+              <span class="text-[11px] font-bold text-cozy-primary">🌿 ${stats.bestStreak}d Best</span>
+              <span class="text-[10px] text-cozy-muted">· ${stats.activeDays}/${stats.elapsedDays} active · ✦ ${stats.fullDays} full</span>
+            </div>
+            <span class="px-2 py-0.5 rounded-lg bg-cozy-elevated/80 border border-cozy text-[10px] font-semibold text-cozy-secondary">
+              ${originLabel}
+            </span>
+          </div>
+        `;
+        return;
+      }
 
       const year = state.ui.heatmapYear;
       const month = state.ui.heatmapMonth;
@@ -5608,11 +6008,210 @@
       `;
     }
 
+    function renderHeatmapOverallDotGrid(animate = false) {
+      const monthsRow = document.getElementById('heatmap-overall-months');
+      const grid = document.getElementById('heatmap-overall-grid');
+      const monthLabel = document.getElementById('heatmap-month-label');
+      const returnBtn = document.getElementById('heatmap-return-today-btn');
+      const prevBtn = document.getElementById('heatmap-prev-btn');
+      const nextBtn = document.getElementById('heatmap-next-btn');
+      if (!grid) return;
+
+      const win = getOverallGridWindow();
+
+      if (monthLabel) {
+        monthLabel.textContent = formatOverallWindowSpanLabel(win.startKey, win.endKey);
+        if (animate) {
+          monthLabel.classList.remove('cal-header-anim');
+          void monthLabel.offsetWidth;
+          monthLabel.classList.add('cal-header-anim');
+        }
+      }
+
+      if (returnBtn) {
+        const isAway = (state.ui.heatmapGridShiftMonths || 0) < 0 || state.ui.heatmapSelectedDate !== win.todayKey;
+        returnBtn.classList.toggle('is-visible', isAway);
+      }
+
+      if (prevBtn) {
+        prevBtn.disabled = !win.canGoPrev;
+        prevBtn.classList.toggle('opacity-35', !win.canGoPrev);
+        prevBtn.setAttribute('aria-label', 'Previous 3 months');
+        prevBtn.title = 'Previous 3 months';
+      }
+      if (nextBtn) {
+        nextBtn.disabled = !win.canGoNext;
+        nextBtn.classList.toggle('opacity-35', !win.canGoNext);
+        nextBtn.setAttribute('aria-label', 'Next 3 months');
+        nextBtn.title = 'Next 3 months';
+      }
+
+      const overallTray = document.getElementById('heatmap-overall-tray');
+      const slideDir = state.ui.heatmapGridSlideDir;
+      state.ui.heatmapGridSlideDir = null;
+      if (overallTray) {
+        overallTray.classList.remove('grid-page-from-left', 'grid-page-from-right');
+        if (animate && slideDir) {
+          void overallTray.offsetWidth;
+          overallTray.classList.add(slideDir === 'left' ? 'grid-page-from-left' : 'grid-page-from-right');
+        }
+      }
+
+      renderHeatmapMonthStreakBar(win);
+
+      // Shared CSS grid template so all 3 months have identical dot sizes, crisp hairlines, and exact aligned labels
+      const [m0, m1, m2] = win.months;
+      const trackTemplate = `11px repeat(${m0.cols}, minmax(0, 1fr)) 1px repeat(${m1.cols}, minmax(0, 1fr)) 1px repeat(${m2.cols}, minmax(0, 1fr))`;
+
+      if (monthsRow) {
+        monthsRow.style.gridTemplateColumns = trackTemplate;
+        monthsRow.innerHTML = '';
+        let colStart = 2;
+        const firstYear = m0.year;
+        win.months.forEach((m) => {
+          const span = document.createElement('span');
+          span.className = `overall-dot-month-label ${m.isCurrentMonth ? 'is-current-month' : ''}`;
+          span.style.gridColumn = `${colStart} / span ${m.cols}`;
+          span.textContent = m.year !== firstYear
+            ? `${m.shortName} '${String(m.year).slice(-2)}`
+            : m.shortName;
+          monthsRow.appendChild(span);
+          colStart += m.cols + 1; // +1 for the divider track
+        });
+      }
+
+      // Build the 3 separated Mon-Sun month dot blocks
+      grid.style.gridTemplateColumns = trackTemplate;
+      grid.innerHTML = '';
+      const frag = document.createDocumentFragment();
+
+      // Subtle left weekday guides (M, W, F, S)
+      [
+        { row: 1, label: 'M' },
+        { row: 3, label: 'W' },
+        { row: 5, label: 'F' },
+        { row: 7, label: 'S' }
+      ].forEach(({ row, label }) => {
+        const wd = document.createElement('span');
+        wd.className = 'overall-dot-weekday';
+        wd.style.gridColumn = '1';
+        wd.style.gridRow = String(row);
+        wd.textContent = label;
+        frag.appendChild(wd);
+      });
+
+      let baseCol = 2;
+      win.months.forEach((m, mIdx) => {
+        for (let d = 1; d <= m.daysInMonth; d++) {
+          const key = `${m.year}-${String(m.month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+          const offset = m.startPad + d - 1;
+          const localCol = Math.floor(offset / 7);
+          const row = (offset % 7) + 1;
+          const gridCol = baseCol + localCol;
+
+          const isFuture = key > win.todayKey;
+          const isToday = key === win.todayKey;
+          const isSelected = key === state.ui.heatmapSelectedDate;
+          const isBeforeOrigin = key < win.originKey;
+
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.disabled = isFuture;
+          btn.setAttribute('data-overall-day', key);
+          btn.style.gridColumn = String(gridCol);
+          btn.style.gridRow = String(row);
+
+          let cls = 'overall-dot-cell';
+          if (animate) cls += ' cal-cell-bloom';
+
+          if (isFuture) {
+            cls += ' is-future';
+            btn.setAttribute('aria-label', `${key} (upcoming)`);
+          } else {
+            const info = getDayCompletionInfo(key);
+            let level = 0;
+            if (info.done > 0) {
+              if (info.total > 0 && info.done >= info.total) level = 4;
+              else if (info.pct >= 65) level = 3;
+              else if (info.pct >= 35) level = 2;
+              else level = 1;
+            }
+
+            const resting = isRestDay(key);
+            if (resting && level === 0) {
+              btn.style.backgroundColor = 'var(--accent-honey-soft)';
+              btn.style.borderColor = 'rgba(217, 155, 56, 0.5)';
+            } else if (level > 0) {
+              const st = getHeatCellStyle(level);
+              btn.style.backgroundColor = st.bg;
+              btn.style.borderColor = st.border;
+            } else if (isBeforeOrigin) {
+              cls += ' is-before-origin';
+            }
+
+            if (isToday) cls += ' is-today';
+            if (isSelected) cls += ' is-selected';
+
+            const dtLabel = `${m.shortName} ${d}`;
+            btn.title = resting
+              ? `${dtLabel} · Rest Day (${info.done}/${info.total})`
+              : `${dtLabel} · ${info.done}/${info.total} done`;
+            btn.setAttribute('aria-label', btn.title);
+            btn.onclick = () => selectHeatmapDate(key, btn);
+          }
+
+          if (animate) {
+            btn.style.animationDelay = `${Math.min((gridCol + row) * 9, 200)}ms`;
+          }
+
+          btn.className = cls;
+          frag.appendChild(btn);
+        }
+
+        // Subtle vertical divider between months
+        if (mIdx < win.months.length - 1) {
+          const divider = document.createElement('span');
+          divider.className = 'overall-dot-divider';
+          divider.setAttribute('aria-hidden', 'true');
+          divider.style.gridColumn = String(baseCol + m.cols);
+          divider.style.gridRow = '1 / 8';
+          frag.appendChild(divider);
+        }
+
+        baseCol += m.cols + 1;
+      });
+
+      grid.appendChild(frag);
+      renderHeatmapDayInspector();
+    }
+
     function renderHeatmap(animate = false) {
+      updateInsightsCalendarSwitcherUI();
+
+      if (state.user.insightsCalendarMode === 'grid') {
+        renderHeatmapOverallDotGrid(animate);
+        return;
+      }
+
       const grid = document.getElementById('heatmap-grid');
       const monthLabel = document.getElementById('heatmap-month-label');
       const returnBtn = document.getElementById('heatmap-return-today-btn');
+      const prevBtn = document.getElementById('heatmap-prev-btn');
+      const nextBtn = document.getElementById('heatmap-next-btn');
       if (!grid) return;
+
+      if (prevBtn) {
+        prevBtn.disabled = false;
+        prevBtn.classList.remove('opacity-35');
+        prevBtn.setAttribute('aria-label', 'Previous month');
+        prevBtn.title = 'Previous month';
+      }
+      if (nextBtn) {
+        nextBtn.disabled = false;
+        nextBtn.classList.remove('opacity-35');
+        nextBtn.setAttribute('aria-label', 'Next month');
+        nextBtn.title = 'Next month';
+      }
 
       const year = state.ui.heatmapYear;
       const month = state.ui.heatmapMonth;
@@ -5695,11 +6294,19 @@
     function selectHeatmapDate(dateKey, btnEl) {
       state.ui.heatmapSelectedDate = dateKey;
       state.ui.heatmapInspectorOpen = true;
+      if (state.user.insightsCalendarMode === 'grid') {
+        const dt = parseDateKey(dateKey);
+        state.ui.heatmapYear = dt.getFullYear();
+        state.ui.heatmapMonth = dt.getMonth();
+      }
       renderHeatmap(false);
-      if (btnEl) {
-        btnEl.classList.remove('cal-select-pop');
-        void btnEl.offsetWidth;
-        btnEl.classList.add('cal-select-pop');
+      const targetEl = state.user.insightsCalendarMode === 'grid'
+        ? document.querySelector(`[data-overall-day="${dateKey}"]`)
+        : btnEl;
+      if (targetEl) {
+        targetEl.classList.remove('cal-select-pop');
+        void targetEl.offsetWidth;
+        targetEl.classList.add('cal-select-pop');
       }
     }
 
@@ -6736,6 +7343,8 @@
       state.ui.detailHabitId = habitId;
       state.ui.detailMonth = now.getMonth();
       state.ui.detailYear = now.getFullYear();
+      state.ui.detailGridShiftMonths = 0;
+      state.ui.detailGridSlideDir = null;
       state.ui.detailTimerExpanded = Boolean(
         expandTimer ||
         getHabitTimerMinutes(habit) > 0 ||
@@ -6771,7 +7380,217 @@
       }, 300);
     }
 
+    function setDetailCalendarMode(mode) {
+      const next = mode === 'calendar' ? 'calendar' : 'grid';
+      if (state.user.detailCalendarMode === next) return;
+      state.user.detailCalendarMode = next;
+      saveState();
+      renderHabitDetailContent(true);
+    }
+
+    function getSingleHabitGridWindow(habit) {
+      const todayKey = getTodayKey();
+      const originKey = getHabitGridOriginDate(habit);
+      const todayDt = parseDateKey(todayKey);
+      const originDt = parseDateKey(originKey);
+      const todayYM = todayDt.getFullYear() * 12 + todayDt.getMonth();
+      const originYM = originDt.getFullYear() * 12 + originDt.getMonth();
+      const monthsSinceOrigin = Math.max(0, todayYM - originYM);
+
+      const defaultStartYM = monthsSinceOrigin <= 2 ? originYM : (todayYM - 2);
+      if (state.ui.detailGridShiftMonths > 0) {
+        state.ui.detailGridShiftMonths = 0;
+      }
+      const startYM = defaultStartYM + (state.ui.detailGridShiftMonths || 0);
+
+      const months = [];
+      for (let mOffset = 0; mOffset < 3; mOffset++) {
+        const ym = startYM + mOffset;
+        const year = Math.floor(ym / 12);
+        const month = ym % 12;
+        const firstDt = new Date(year, month, 1);
+        const startPad = (firstDt.getDay() + 6) % 7;
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        const cols = Math.ceil((startPad + daysInMonth) / 7);
+        const shortName = firstDt.toLocaleDateString('en-US', { month: 'short' });
+        months.push({
+          year,
+          month,
+          ym,
+          startPad,
+          daysInMonth,
+          cols,
+          shortName,
+          isCurrentMonth: year === todayDt.getFullYear() && month === todayDt.getMonth()
+        });
+      }
+
+      const firstM = months[0];
+      const lastM = months[months.length - 1];
+      const startKey = `${firstM.year}-${String(firstM.month + 1).padStart(2, '0')}-01`;
+      const endKey = `${lastM.year}-${String(lastM.month + 1).padStart(2, '0')}-${String(lastM.daysInMonth).padStart(2, '0')}`;
+
+      return {
+        todayKey,
+        originKey,
+        months,
+        startKey,
+        endKey,
+        canGoPrev: true,
+        canGoNext: (state.ui.detailGridShiftMonths || 0) < 0
+      };
+    }
+
+    function getSingleHabitRangeStats(habit, startKey, endKey, minActiveStartKey = null) {
+      const todayKey = getTodayKey();
+      const effectiveStart = (minActiveStartKey && minActiveStartKey > startKey && minActiveStartKey <= endKey)
+        ? minActiveStartKey
+        : startKey;
+      const archEnd = habit.archivedAt && habit.archivedAt <= todayKey ? addDays(habit.archivedAt, -1) : todayKey;
+      const maxEnd = archEnd < todayKey ? archEnd : todayKey;
+      const cappedEnd = endKey > maxEnd ? maxEnd : endKey;
+
+      let bestStreak = 0;
+      let running = 0;
+      let doneDays = 0;
+      let elapsedDays = 0;
+
+      if (effectiveStart <= cappedEnd) {
+        const totalSpan = Math.round((parseDateKey(cappedEnd) - parseDateKey(effectiveStart)) / 86400000) + 1;
+        elapsedDays = Math.min(100, Math.max(0, totalSpan));
+        for (let i = 0; i < elapsedDays; i++) {
+          const key = addDays(effectiveStart, i);
+          if (isHabitCompletedOn(habit.id, key)) {
+            doneDays++;
+            running++;
+            if (running > bestStreak) bestStreak = running;
+          } else if (!isRestDay(key)) {
+            running = 0;
+          }
+        }
+      }
+
+      return {
+        bestStreak,
+        doneDays,
+        elapsedDays,
+        vibe: getStreakVibe(bestStreak, doneDays, elapsedDays)
+      };
+    }
+
+    function buildSingleHabit3MonthGridHtml(habit, win, animate = false) {
+      const [m0, m1, m2] = win.months;
+      const trackTemplate = `11px repeat(${m0.cols}, minmax(0, 1fr)) 1px repeat(${m1.cols}, minmax(0, 1fr)) 1px repeat(${m2.cols}, minmax(0, 1fr))`;
+      const targetCount = getHabitTargetCount(habit);
+      const isCountable = targetCount > 1;
+
+      let monthsHtml = '';
+      let colStart = 2;
+      const firstYear = m0.year;
+      win.months.forEach(m => {
+        const label = m.year !== firstYear
+          ? `${m.shortName} '${String(m.year).slice(-2)}`
+          : m.shortName;
+        monthsHtml += `<span class="overall-dot-month-label ${m.isCurrentMonth ? 'is-current-month' : ''}" style="grid-column: ${colStart} / span ${m.cols};">${escapeHtml(label)}</span>`;
+        colStart += m.cols + 1;
+      });
+
+      let gridHtml = '';
+      [
+        { row: 1, label: 'M' },
+        { row: 3, label: 'W' },
+        { row: 5, label: 'F' },
+        { row: 7, label: 'S' }
+      ].forEach(({ row, label }) => {
+        gridHtml += `<span class="overall-dot-weekday" style="grid-column: 1; grid-row: ${row};">${label}</span>`;
+      });
+
+      let baseCol = 2;
+      win.months.forEach((m, mIdx) => {
+        for (let d = 1; d <= m.daysInMonth; d++) {
+          const key = `${m.year}-${String(m.month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+          const offset = m.startPad + d - 1;
+          const localCol = Math.floor(offset / 7);
+          const row = (offset % 7) + 1;
+          const gridCol = baseCol + localCol;
+
+          const isFuture = key > win.todayKey;
+          const isArchivedDay = Boolean(habit.archivedAt && key >= habit.archivedAt);
+          const isDisabled = isFuture || isArchivedDay;
+          const isToday = key === win.todayKey;
+          const isBeforeOrigin = key < win.originKey;
+          const done = !isDisabled && isHabitCompletedOn(habit.id, key);
+          const resting = !isDisabled && !done && isRestDay(key);
+
+          let cls = 'overall-dot-cell';
+          let extraStyle = '';
+
+          if (animate) cls += ' cal-cell-bloom';
+
+          if (isDisabled) {
+            cls += ' is-future';
+          } else if (done) {
+            cls += ' is-habit-done';
+          } else if (isCountable) {
+            const partialCount = getHabitCountOn(habit.id, key, habit);
+            if (partialCount > 0) {
+              const ratio = Math.min(0.76, Math.max(0.28, partialCount / targetCount));
+              cls += ' is-habit-partial';
+              extraStyle = ` opacity: ${ratio.toFixed(2)};`;
+            } else if (resting) {
+              cls += ' is-habit-rest';
+            } else if (isBeforeOrigin) {
+              cls += ' is-before-origin';
+            }
+          } else if (resting) {
+            cls += ' is-habit-rest';
+          } else if (isBeforeOrigin) {
+            cls += ' is-before-origin';
+          }
+
+          if (isToday && !isDisabled) cls += ' is-today';
+
+          const delayStyle = animate ? ` animation-delay: ${Math.min((gridCol + row) * 9, 200)}ms;` : '';
+          const titleText = isDisabled
+            ? `${m.shortName} ${d}`
+            : `${m.shortName} ${d} · ${done ? 'Completed' : (resting ? 'Rest Day' : 'Not logged')}`;
+
+          gridHtml += `<button type="button" ${isDisabled ? 'disabled' : `onclick="toggleHabitFromDetail('${habit.id}', '${key}')"`} title="${escapeHtml(titleText)}" aria-label="${escapeHtml(titleText)}" class="${cls}" style="grid-column: ${gridCol}; grid-row: ${row};${extraStyle}${delayStyle}"></button>`;
+        }
+
+        if (mIdx < win.months.length - 1) {
+          gridHtml += `<span class="overall-dot-divider" aria-hidden="true" style="grid-column: ${baseCol + m.cols}; grid-row: 1 / 8;"></span>`;
+        }
+        baseCol += m.cols + 1;
+      });
+
+      const detailSlideDir = state.ui.detailGridSlideDir;
+      state.ui.detailGridSlideDir = null;
+      const slideClass = animate && detailSlideDir
+        ? (detailSlideDir === 'left' ? ' grid-page-from-left' : ' grid-page-from-right')
+        : '';
+
+      return `
+        <div class="overall-dot-tray${slideClass}">
+          <div class="overall-dot-months" style="grid-template-columns: ${trackTemplate};" aria-hidden="true">${monthsHtml}</div>
+          <div class="overall-dot-grid" style="grid-template-columns: ${trackTemplate};">${gridHtml}</div>
+        </div>
+      `;
+    }
+
     function changeDetailMonth(delta) {
+      if (state.user.detailCalendarMode !== 'calendar') {
+        const step = delta < 0 ? -3 : 3;
+        const nextShift = Math.min(0, (state.ui.detailGridShiftMonths || 0) + step);
+        if (nextShift === (state.ui.detailGridShiftMonths || 0)) {
+          triggerSwipeBump(document.getElementById('detail-monthly-history-box'), delta > 0 ? 'left' : 'right');
+          return;
+        }
+        state.ui.detailGridShiftMonths = nextShift;
+        state.ui.detailGridSlideDir = delta < 0 ? 'left' : 'right';
+        renderHabitDetailContent(true);
+        return;
+      }
       const dt = new Date(state.ui.detailYear, state.ui.detailMonth + delta, 1);
       state.ui.detailYear = dt.getFullYear();
       state.ui.detailMonth = dt.getMonth();
@@ -6780,8 +7599,11 @@
 
     function returnDetailToCurrentMonth() {
       const now = new Date();
+      const wasShifted = (state.ui.detailGridShiftMonths || 0) < 0;
       state.ui.detailYear = now.getFullYear();
       state.ui.detailMonth = now.getMonth();
+      state.ui.detailGridShiftMonths = 0;
+      state.ui.detailGridSlideDir = wasShifted ? 'right' : null;
       renderHabitDetailContent(true);
     }
 
@@ -6940,9 +7762,21 @@
       const weekly = getWeeklyProgressForHabit(habit, todayKey);
       const monthStats = getSingleHabitMonthStats(habit, state.ui.detailYear, state.ui.detailMonth);
 
+      const detailMode = state.user.detailCalendarMode === 'calendar' ? 'calendar' : 'grid';
+      const isGridDetail = detailMode === 'grid';
+      const detailWin = isGridDetail ? getSingleHabitGridWindow(habit) : null;
+      const rangeStats = isGridDetail
+        ? getSingleHabitRangeStats(habit, detailWin.startKey, detailWin.endKey, detailWin.originKey)
+        : monthStats;
+
       const monthDt = new Date(state.ui.detailYear, state.ui.detailMonth, 1);
-      const monthName = monthDt.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
-      const isAway = state.ui.detailYear !== now.getFullYear() || state.ui.detailMonth !== now.getMonth();
+      const periodLabel = isGridDetail
+        ? formatOverallWindowSpanLabel(detailWin.startKey, detailWin.endKey)
+        : monthDt.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+      const isAway = isGridDetail
+        ? (state.ui.detailGridShiftMonths || 0) < 0
+        : (state.ui.detailYear !== now.getFullYear() || state.ui.detailMonth !== now.getMonth());
+      const canGoNextDetail = isGridDetail ? detailWin.canGoNext : true;
       const isArchived = Boolean(habit.archivedAt);
 
       // Build 7-day strip
@@ -7042,26 +7876,43 @@
         </div>
 
         <div id="detail-monthly-history-box" class="swipe-surface p-3.5 rounded-2xl bg-cozy-secondary/40 border border-cozy space-y-2.5">
-          <div class="flex items-center justify-between gap-2">
-            <div>
-              <p class="text-xs font-bold text-cozy-primary">Monthly History</p>
-              <div class="flex items-center gap-1.5 mt-0.5">
-                <span class="px-1.5 py-0.5 rounded-md text-[9px] font-bold" style="background: ${monthStats.vibe.bg}; color: ${monthStats.vibe.color};">${monthStats.vibe.label}</span>
-                <span class="text-[10px] font-semibold text-cozy-secondary">🌿 ${monthStats.bestStreak}d best · ${monthStats.doneDays} done</span>
+          <!-- Row 1: Title + Calendar / 3-Month Dot-Grid Switcher -->
+          <div class="flex items-start justify-between gap-2">
+            <div class="min-w-0">
+              <p class="text-xs font-bold text-cozy-primary leading-tight">${isGridDetail ? '3-Month Rhythm' : 'Monthly History'}</p>
+              <div class="flex items-center gap-1.5 mt-1 flex-wrap">
+                <span class="px-1.5 py-0.5 rounded-md text-[9px] font-bold" style="background: ${rangeStats.vibe.bg}; color: ${rangeStats.vibe.color};">${rangeStats.vibe.label}</span>
+                <span class="text-[10px] font-semibold text-cozy-secondary">🌿 ${rangeStats.bestStreak}d best · ${rangeStats.doneDays} done</span>
               </div>
             </div>
-            <div class="flex items-center gap-1">
+            <div class="view-mode-switcher flex-shrink-0" role="group" aria-label="Ritual history view">
+              <button type="button" onclick="setDetailCalendarMode('calendar')"
+                class="view-mode-btn ${!isGridDetail ? 'is-active' : ''}" title="Monthly calendar view" aria-label="Monthly calendar view" aria-pressed="${String(!isGridDetail)}">
+                <i class="ph-bold ph-calendar-blank text-[13px]"></i>
+              </button>
+              <button type="button" onclick="setDetailCalendarMode('grid')"
+                class="view-mode-btn ${isGridDetail ? 'is-active' : ''}" title="3-month dot-grid view" aria-label="3-month dot-grid view" aria-pressed="${String(isGridDetail)}">
+                <i class="ph-bold ph-squares-four text-[13px]"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Row 2: Period Span Label + Auto-fading Current Pill + Prev/Next Arrows -->
+          <div class="flex items-center justify-between gap-2">
+            <div class="flex items-center gap-1.5 min-w-0">
+              <span class="text-[11px] font-bold text-cozy-primary truncate ${animateCalendar ? 'cal-header-anim' : ''}">${periodLabel}</span>
               <button type="button" onclick="returnDetailToCurrentMonth()" class="return-today-pill ${isAway ? 'is-visible' : ''}">
                 <span>Current</span>
               </button>
-              <button type="button" onclick="changeDetailMonth(-1)" class="cozy-icon-orb-btn !w-7 !h-7" aria-label="Previous month">
+            </div>
+            <div class="flex items-center gap-1 flex-shrink-0">
+              <button type="button" onclick="changeDetailMonth(-1)" class="cozy-icon-orb-btn !w-7 !h-7" title="${isGridDetail ? 'Previous 3 months' : 'Previous month'}" aria-label="${isGridDetail ? 'Previous 3 months' : 'Previous month'}">
                 <svg class="w-3 h-3" viewBox="0 0 16 16" fill="none">
                   <circle cx="11.2" cy="8" r="1.2" fill="currentColor" opacity="0.75"/>
                   <path d="M9.25 4.25L5.5 8L9.25 11.75" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
               </button>
-              <span class="text-[11px] font-bold text-cozy-primary min-w-[64px] text-center">${monthName}</span>
-              <button type="button" onclick="changeDetailMonth(1)" class="cozy-icon-orb-btn !w-7 !h-7" aria-label="Next month">
+              <button type="button" ${!canGoNextDetail ? 'disabled' : ''} onclick="changeDetailMonth(1)" class="cozy-icon-orb-btn !w-7 !h-7 ${!canGoNextDetail ? 'opacity-35' : ''}" title="${isGridDetail ? 'Next 3 months' : 'Next month'}" aria-label="${isGridDetail ? 'Next 3 months' : 'Next month'}">
                 <svg class="w-3 h-3" viewBox="0 0 16 16" fill="none">
                   <circle cx="4.8" cy="8" r="1.2" fill="currentColor" opacity="0.75"/>
                   <path d="M6.75 4.25L10.5 8L6.75 11.75" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
@@ -7070,10 +7921,14 @@
             </div>
           </div>
 
-          <div class="grid grid-cols-7 gap-1 text-center text-[9px] font-semibold text-cozy-muted">
-            <span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span>
-          </div>
-          <div class="grid grid-cols-7 gap-1.5">${monthGridHtml}</div>
+          ${isGridDetail
+            ? `${buildSingleHabit3MonthGridHtml(habit, detailWin, animateCalendar)}
+               <p class="text-[10px] text-cozy-muted text-center pt-0.5">Tap any dot to toggle · Swipe left/right to jump 3 months</p>`
+            : `<div class="grid grid-cols-7 gap-1 text-center text-[9px] font-semibold text-cozy-muted">
+                 <span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span>
+               </div>
+               <div class="grid grid-cols-7 gap-1.5">${monthGridHtml}</div>`
+          }
         </div>
       `;
     }
@@ -7694,6 +8549,12 @@
             if (!['list', 'grid'].includes(state.user.todayViewMode)) {
               state.user.todayViewMode = 'list';
             }
+            if (!['calendar', 'grid'].includes(state.user.insightsCalendarMode)) {
+              state.user.insightsCalendarMode = 'calendar';
+            }
+            if (!['calendar', 'grid'].includes(state.user.detailCalendarMode)) {
+              state.user.detailCalendarMode = 'grid';
+            }
             state.logs = parsed.logs && typeof parsed.logs === 'object' ? parsed.logs : {};
             state.counts = parsed.counts && typeof parsed.counts === 'object' ? parsed.counts : {};
             state.restDays = parsed.restDays && typeof parsed.restDays === 'object' ? parsed.restDays : {};
@@ -7760,6 +8621,7 @@
       state.ui.heatmapSelectedDate = getTodayKey();
       state.ui.heatmapMonth = new Date().getMonth();
       state.ui.heatmapYear = new Date().getFullYear();
+      state.ui.heatmapGridShiftMonths = 0;
 
       const dropBtn = document.getElementById('manage-drop-btn');
       const dropLabel = document.getElementById('manage-drop-label');

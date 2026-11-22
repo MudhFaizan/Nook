@@ -1,11 +1,11 @@
-const CACHE_VERSION = 'v21';
+const CACHE_VERSION = 'v25';
 const UPDATE_INFO = {
   version: CACHE_VERSION,
-  title: 'Custom Per-Ritual Colors',
-  summary: 'Give any ritual its own cozy accent color—or leave it on App Theme—to light up its dot grid, buttons, timer, and confetti.',
+  title: '3-by-3 Quarter Grid Paging',
+  summary: 'Swiping or tapping the arrows on any 3-month dot-grid now jumps cleanly by 3 months at a time with a smooth directional slide.',
   highlights: [
-    'New 8-palette Card Color swatch row in Add / Edit Ritual',
-    'Colors flow across Today List & Grid, Habit Detail, and Insights'
+    'Insights Overall Rhythm and Ritual Detail 3-month grids now page 3 months at once',
+    'Added subtle left/right directional slide motion when paging between 3-month views'
   ]
 };
 const APP_SHELL_CACHE = `nook-shell-${CACHE_VERSION}`;
