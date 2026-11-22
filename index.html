@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Nook v29 -->
+<!-- Nook v30 -->
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -1091,6 +1091,152 @@
       100% { transform: rotate(0deg); }
     }
 
+    /* Dewdrop Arc + Liquid Ripple Check-Off Animations */
+    .liquid-orb-halo {
+      position: absolute;
+      inset: -6px;
+      border-radius: 9999px;
+      background: radial-gradient(circle, var(--accent-soft) 35%, transparent 72%);
+      opacity: 0;
+      transform: scale(0.88);
+      pointer-events: none;
+      z-index: 0;
+      transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .liquid-orb-halo.is-sanctuary-complete {
+      opacity: 0.92;
+      transform: scale(1.08);
+      animation: breatheRing 3.2s ease-in-out infinite;
+    }
+    .liquid-orb-halo.is-pulsing {
+      animation: orbHaloSplash 0.72s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+    @keyframes orbHaloSplash {
+      0% { opacity: 0.25; transform: scale(0.92); }
+      38% { opacity: 1; transform: scale(1.24); }
+      100% { opacity: 0; transform: scale(1.36); }
+    }
+    .orb-impact-bounce {
+      animation: orbImpactBounce 0.56s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    @keyframes orbImpactBounce {
+      0% { transform: scale(1, 1); }
+      28% { transform: scale(1.085, 0.935); }
+      62% { transform: scale(0.965, 1.045); }
+      100% { transform: scale(1, 1); }
+    }
+    .wave-impact-slosh {
+      animation: waveSurfaceSlosh 0.62s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    @keyframes waveSurfaceSlosh {
+      0% { filter: brightness(1); }
+      30% { filter: brightness(1.18) saturate(1.15); }
+      100% { filter: brightness(1); }
+    }
+    .liquid-surface-ripple {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 20px;
+      height: 20px;
+      margin-left: -10px;
+      margin-top: -10px;
+      border-radius: 9999px;
+      border: 2px solid var(--ripple-color, var(--accent-primary));
+      box-shadow: 0 0 10px var(--ripple-glow, var(--accent-glow)), inset 0 0 6px rgba(255, 255, 255, 0.55);
+      pointer-events: none;
+      animation: liquidRippleExpand 0.68s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    .liquid-surface-ripple.is-secondary {
+      border-width: 1.5px;
+      border-color: rgba(255, 255, 255, 0.78);
+      animation-delay: 0.11s;
+      animation-duration: 0.72s;
+    }
+    @keyframes liquidRippleExpand {
+      0% { transform: scale(0.45); opacity: 0.95; }
+      55% { opacity: 0.6; }
+      100% { transform: scale(4.2); opacity: 0; }
+    }
+    .liquid-micro-bubble {
+      position: absolute;
+      width: 5px;
+      height: 5px;
+      border-radius: 9999px;
+      background: radial-gradient(circle at 30% 30%, #FFFFFF 0%, rgba(255, 255, 255, 0.45) 75%);
+      box-shadow: 0 0 6px rgba(255, 255, 255, 0.65);
+      pointer-events: none;
+      animation: microBubbleRise 0.72s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+    @keyframes microBubbleRise {
+      0% { opacity: 0; transform: translate(0, 8px) scale(0.4); }
+      25% { opacity: 0.95; transform: translate(var(--bx, 0px), -2px) scale(1.05); }
+      100% { opacity: 0; transform: translate(calc(var(--bx, 0px) * 1.5), -24px) scale(0.45); }
+    }
+    .dewdrop-arc-orb {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 15px;
+      height: 15px;
+      margin-left: -7.5px;
+      margin-top: -7.5px;
+      border-radius: 9999px;
+      pointer-events: none;
+      z-index: 58;
+      will-change: transform, opacity;
+      background: radial-gradient(circle at 32% 28%, #FFFFFF 0%, var(--dew-light, var(--accent-grad-start)) 42%, var(--dew-main, var(--accent-primary)) 100%);
+      box-shadow: 0 0 14px var(--dew-glow, var(--accent-glow)),
+                  0 0 5px rgba(255, 255, 255, 0.75),
+                  inset 0 -2px 3px rgba(0, 0, 0, 0.14);
+    }
+    .dewdrop-trail-dot {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 7px;
+      height: 7px;
+      margin-left: -3.5px;
+      margin-top: -3.5px;
+      border-radius: 9999px;
+      pointer-events: none;
+      z-index: 57;
+      background: var(--dew-light, var(--accent-grad-start));
+      box-shadow: 0 0 8px var(--dew-glow, var(--accent-glow));
+      animation: dewdropTrailFade 0.34s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+    @keyframes dewdropTrailFade {
+      0% { opacity: 0.78; transform: translate3d(var(--tx), var(--ty), 0) scale(1); }
+      100% { opacity: 0; transform: translate3d(var(--tx), calc(var(--ty) + 6px), 0) scale(0.25); }
+    }
+    .seal-local-ripple {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 36px;
+      height: 36px;
+      margin-left: -18px;
+      margin-top: -18px;
+      border-radius: 16px;
+      border: 2px solid var(--dew-main, var(--accent-primary));
+      box-shadow: 0 0 12px var(--dew-glow, var(--accent-glow));
+      pointer-events: none;
+      z-index: 56;
+      animation: sealLocalRipple 0.46s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+    @keyframes sealLocalRipple {
+      0% { opacity: 0.85; transform: translate3d(var(--rx), var(--ry), 0) scale(0.82); }
+      100% { opacity: 0; transform: translate3d(var(--rx), var(--ry), 0) scale(1.75); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .dewdrop-arc-orb, .dewdrop-trail-dot, .seal-local-ripple, .liquid-surface-ripple, .liquid-micro-bubble {
+        display: none !important;
+      }
+      .orb-impact-bounce, .wave-impact-slosh, .liquid-orb-halo.is-pulsing {
+        animation: none !important;
+      }
+    }
+
     /* Soft Breathing Ring, View Transitions & Card Cascade */
     .breathing-ring {
       animation: breatheRing 3.4s ease-in-out infinite;
@@ -2173,7 +2319,8 @@
         <!-- Daily Progress Summary Card with Clean Pure Fluid-Filling Circle -->
         <div class="cozy-card p-4 flex items-center gap-4">
           <div class="relative w-[76px] h-[76px] flex-shrink-0 flex items-center justify-center">
-            <div class="liquid-orb-shell w-full h-full">
+            <div id="daily-progress-orb-halo" class="liquid-orb-halo" aria-hidden="true"></div>
+            <div id="daily-progress-orb" class="liquid-orb-shell relative z-10 w-full h-full">
               <!-- Pure Fluid Wave Clip -->
               <div class="liquid-orb-clip">
                 <div id="daily-progress-wave" class="liquid-wave-carrier" style="transform: translateY(84%);">
@@ -2181,6 +2328,9 @@
                   <div class="liquid-wave-layer" style="top: 12%;"></div>
                 </div>
               </div>
+
+              <!-- Liquid Impact Ripple & Rising Micro-Bubbles Layer -->
+              <div id="daily-progress-ripple-layer" class="absolute inset-0 pointer-events-none z-[8] overflow-hidden rounded-full" aria-hidden="true"></div>
 
               <!-- Center Percentage Readout -->
               <div class="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
@@ -2624,6 +2774,20 @@
               class="cozy-switch-track">
               <span id="toggle-sound-knob" class="cozy-switch-knob">
                 <i class="ph-fill ph-music-note-simple"></i>
+              </span>
+            </button>
+          </div>
+
+          <!-- Gentle Mobile Haptics Toggle -->
+          <div class="flex items-center justify-between pt-2 border-t border-subtle-cozy">
+            <div>
+              <p class="text-xs font-semibold text-cozy-primary">Gentle Mobile Haptics</p>
+              <p class="text-[11px] text-cozy-secondary">Soft vibration pulses on check-ins &amp; swipes</p>
+            </div>
+            <button id="toggle-haptics-btn" onclick="togglePreference('hapticsEnabled')"
+              class="cozy-switch-track">
+              <span id="toggle-haptics-knob" class="cozy-switch-knob">
+                <i class="ph-fill ph-vibrate"></i>
               </span>
             </button>
           </div>
@@ -3414,6 +3578,7 @@
         theme: 'light',
         accent: 'sage',
         soundEnabled: true,
+        hapticsEnabled: true,
         confettiEnabled: true,
         showQuotes: true,
         groupByTimeOfDay: true,
@@ -3571,6 +3736,7 @@
           theme: 'light',
           accent: 'sage',
           soundEnabled: true,
+          hapticsEnabled: true,
           confettiEnabled: true,
           showQuotes: true,
           groupByTimeOfDay: true,
@@ -3665,6 +3831,7 @@
               state.user.insightsBreakdownSort = 'order';
             }
             state.user.groupByTimeOfDay = state.user.groupByTimeOfDay !== false;
+            state.user.hapticsEnabled = state.user.hapticsEnabled !== false;
             state.logs = parsed.logs && typeof parsed.logs === 'object' ? parsed.logs : {};
             state.counts = parsed.counts && typeof parsed.counts === 'object' ? parsed.counts : {};
             state.restDays = parsed.restDays && typeof parsed.restDays === 'object' ? parsed.restDays : {};
@@ -4780,21 +4947,34 @@
       }
     }
 
-    function renderDailyProgress() {
+    function syncDailyProgressWave() {
       const info = getDayCompletionInfo(state.ui.selectedDate);
       const waveEl = document.getElementById('daily-progress-wave');
       const pctEl = document.getElementById('daily-progress-percent');
-      const countEl = document.getElementById('daily-progress-count');
       const barEl = document.getElementById('daily-progress-bar');
-      const titleEl = document.getElementById('daily-progress-title');
-      const subEl = document.getElementById('daily-progress-subtitle');
+      const haloEl = document.getElementById('daily-progress-orb-halo');
 
       // Keep a soft whisper of wave visible at 0% (84%) and rise cleanly to full (-12%) at 100%
       const translateY = Math.round(84 - (info.pct * 0.96));
       if (waveEl) waveEl.style.transform = `translateY(${translateY}%)`;
       if (pctEl) pctEl.textContent = `${info.pct}%`;
-      if (countEl) countEl.textContent = `${info.done} / ${info.total}`;
       if (barEl) barEl.style.width = `${info.pct}%`;
+      if (haloEl) {
+        const complete = info.total > 0 && info.done >= info.total;
+        haloEl.classList.toggle('is-sanctuary-complete', complete);
+      }
+    }
+
+    function renderDailyProgress(options = {}) {
+      const info = getDayCompletionInfo(state.ui.selectedDate);
+      const countEl = document.getElementById('daily-progress-count');
+      const titleEl = document.getElementById('daily-progress-title');
+      const subEl = document.getElementById('daily-progress-subtitle');
+
+      if (!options.deferWave) {
+        syncDailyProgressWave();
+      }
+      if (countEl) countEl.textContent = `${info.done} / ${info.total}`;
 
       const resting = isRestDay(state.ui.selectedDate);
       let title = 'A gentle start';
@@ -5481,35 +5661,52 @@
 
       saveState();
 
+      // Capture origin geometry & ritual accent colors BEFORE list reordering
+      const originEl = (event && event.currentTarget) || document.querySelector(`[data-habit-id="${habitId}"] .check-btn, [data-habit-id="${habitId}"] .grid-action-btn, [data-habit-id="${habitId}"]`);
+      const originColors = getAccentColorsFromElement(originEl);
+      let originX = window.innerWidth / 2;
+      let originY = window.innerHeight / 2;
+      if (originEl) {
+        const rect = originEl.getBoundingClientRect();
+        originX = rect.left + rect.width / 2;
+        originY = rect.top + rect.height / 2;
+      }
+
       const afterInfo = getDayCompletionInfo(dateKey);
       const isAllDone = afterInfo.total > 0 && afterInfo.done >= afterInfo.total;
 
       if (nowCompleted && isAllDone) {
         playCozySound('celebrate');
+        triggerHaptic('check');
         showToast('All rituals completed for the day!', '✨');
       } else if (!nowCompleted && wasAllDone) {
         playCozySound('uncelebrate');
+        triggerHaptic('uncheck');
       } else if (nowCompleted) {
         playCozySound('check');
+        triggerHaptic('check');
       } else {
         playCozySound('uncheck');
+        triggerHaptic('uncheck');
       }
 
-      if (nowCompleted && state.user.confettiEnabled) {
-        let x = window.innerWidth / 2;
-        let y = window.innerHeight / 2;
-        const originEl = (event && event.currentTarget) || document.querySelector(`[data-habit-id="${habitId}"] .check-btn, [data-habit-id="${habitId}"] .grid-action-btn`);
-        if (originEl) {
-          const rect = originEl.getBoundingClientRect();
-          x = rect.left + rect.width / 2;
-          y = rect.top + rect.height / 2;
+      if (nowCompleted) {
+        spawnLocalTapRipple(originX, originY, originColors);
+        if (state.user.confettiEnabled) {
+          spawnConfettiBurst(originX, originY, originEl);
         }
-        spawnConfettiBurst(x, y, originEl);
       }
 
       renderHeader();
       renderWeekStrip(false);
-      renderDailyProgress();
+      const launchedArc = nowCompleted && launchDewdropArc({
+        startX: originX,
+        startY: originY,
+        colors: originColors,
+        isAllDone,
+        onLand: () => syncDailyProgressWave()
+      });
+      renderDailyProgress({ deferWave: launchedArc });
       renderHabitsList(false, nowCompleted ? habitId : null, true);
       if (nowCompleted) checkAndCelebrateNewBadges({ quietAudio: isAllDone });
     }
@@ -5537,41 +5734,60 @@
       setHabitCountOn(habitId, dateKey, nextCount, targetCount);
       saveState();
 
+      const originEl = (event && event.currentTarget) || document.querySelector(`[data-habit-id="${habitId}"] .check-btn, [data-habit-id="${habitId}"] .grid-action-btn, [data-habit-id="${habitId}"]`);
+      const originColors = getAccentColorsFromElement(originEl);
+      let originX = window.innerWidth / 2;
+      let originY = window.innerHeight / 2;
+      if (originEl) {
+        const rect = originEl.getBoundingClientRect();
+        originX = rect.left + rect.width / 2;
+        originY = rect.top + rect.height / 2;
+      }
+
       const afterInfo = getDayCompletionInfo(dateKey);
       const isAllDone = afterInfo.total > 0 && afterInfo.done >= afterInfo.total;
       const isHabitDone = nextCount >= targetCount;
+      const justCompletedHabit = !wasHabitDone && isHabitDone;
 
-      if (!wasHabitDone && isHabitDone && isAllDone) {
+      if (justCompletedHabit && isAllDone) {
         playCozySound('celebrate');
+        triggerHaptic('check');
         showToast('All rituals completed for the day!', '✨');
       } else if (wasHabitDone && !isHabitDone && wasAllDone) {
         playCozySound('uncelebrate');
-      } else if (!wasHabitDone && isHabitDone) {
+        triggerHaptic('uncheck');
+      } else if (justCompletedHabit) {
         playCozySound('check');
+        triggerHaptic('check');
         showToast(`${habit.title} complete!`, habit.emoji || '🌿');
       } else if (delta > 0) {
         playCozySound('tap');
+        triggerHaptic('tap');
+        spawnLocalTapRipple(originX, originY, originColors);
       } else {
         playCozySound('uncheck');
+        triggerHaptic('uncheck');
       }
 
-      if (!wasHabitDone && isHabitDone && state.user.confettiEnabled) {
-        let x = window.innerWidth / 2;
-        let y = window.innerHeight / 2;
-        const originEl = (event && event.currentTarget) || document.querySelector(`[data-habit-id="${habitId}"] .check-btn, [data-habit-id="${habitId}"] .grid-action-btn`);
-        if (originEl) {
-          const rect = originEl.getBoundingClientRect();
-          x = rect.left + rect.width / 2;
-          y = rect.top + rect.height / 2;
+      if (justCompletedHabit) {
+        spawnLocalTapRipple(originX, originY, originColors);
+        if (state.user.confettiEnabled) {
+          spawnConfettiBurst(originX, originY, originEl);
         }
-        spawnConfettiBurst(x, y, originEl);
       }
 
       renderHeader();
       renderWeekStrip(false);
-      renderDailyProgress();
-      renderHabitsList(false, (!wasHabitDone && isHabitDone) ? habitId : null, wasHabitDone !== isHabitDone);
-      if (!wasHabitDone && isHabitDone) checkAndCelebrateNewBadges({ quietAudio: isAllDone });
+      const launchedArc = justCompletedHabit && launchDewdropArc({
+        startX: originX,
+        startY: originY,
+        colors: originColors,
+        isAllDone,
+        onLand: () => syncDailyProgressWave()
+      });
+      renderDailyProgress({ deferWave: launchedArc });
+      renderHabitsList(false, justCompletedHabit ? habitId : null, wasHabitDone !== isHabitDone);
+      if (justCompletedHabit) checkAndCelebrateNewBadges({ quietAudio: isAllDone });
     }
 
     function renderTodayView(animateCalendar = false) {
@@ -7908,6 +8124,10 @@
       }
 
       playCozySound(completedWholeDay ? 'celebrate' : 'timerDone');
+      triggerHaptic('celebrate');
+      if (completedWholeDay) {
+        spawnSanctuaryShimmer(getAccentColorsFromElement(document.getElementById('detail-timer-orb')));
+      }
 
       if (state.user.confettiEnabled) {
         const orbEl = document.getElementById('detail-timer-orb');
@@ -8771,6 +8991,7 @@
       const stage = getCompanionGrowthStage(getGlobalActiveStreak());
 
       playCozySound('check');
+      triggerHaptic('nurture');
 
       if (dome) {
         dome.classList.remove('welcome-dome-ripple');
@@ -9060,6 +9281,9 @@
       state.user[key] = !state.user[key];
       saveState();
       renderSettingsView();
+      if (key === 'hapticsEnabled' && state.user.hapticsEnabled) {
+        triggerHaptic('check');
+      }
       if (key === 'showQuotes' || key === 'autoSortCompleted' || key === 'groupByTimeOfDay') {
         renderTodayView(false);
         if (key === 'groupByTimeOfDay') {
@@ -9107,6 +9331,7 @@
 
       const prefBindings = [
         { key: 'soundEnabled', btnId: 'toggle-sound-btn', knobId: 'toggle-sound-knob' },
+        { key: 'hapticsEnabled', btnId: 'toggle-haptics-btn', knobId: 'toggle-haptics-knob' },
         { key: 'confettiEnabled', btnId: 'toggle-confetti-btn', knobId: 'toggle-confetti-knob' },
         { key: 'showQuotes', btnId: 'toggle-quotes-btn', knobId: 'toggle-quotes-knob' },
         { key: 'groupByTimeOfDay', btnId: 'toggle-group-tod-btn', knobId: 'toggle-group-tod-knob' },
@@ -9173,6 +9398,7 @@
               state.user.insightsBreakdownSort = 'order';
             }
             state.user.groupByTimeOfDay = state.user.groupByTimeOfDay !== false;
+            state.user.hapticsEnabled = state.user.hapticsEnabled !== false;
             state.logs = parsed.logs && typeof parsed.logs === 'object' ? parsed.logs : {};
             state.counts = parsed.counts && typeof parsed.counts === 'object' ? parsed.counts : {};
             state.restDays = parsed.restDays && typeof parsed.restDays === 'object' ? parsed.restDays : {};
@@ -9358,26 +9584,296 @@
       playCozySound('tap');
     }, { passive: true });
 
-    function spawnConfettiBurst(x, y, sourceEl = null) {
+    function triggerHaptic(type = 'tap') {
+      if (state.user.hapticsEnabled === false) return;
+      if (typeof navigator === 'undefined' || typeof navigator.vibrate !== 'function') return;
+      const patterns = {
+        tap: 8,
+        arm: 10,
+        uncheck: 9,
+        ripple: 11,
+        check: [14, 24, 10],
+        nurture: [10, 26, 12],
+        celebrate: [16, 36, 22, 42, 34]
+      };
+      try {
+        navigator.vibrate(patterns[type] ?? 8);
+      } catch (e) {}
+    }
+
+    function prefersReducedMotion() {
+      return typeof window !== 'undefined' &&
+        typeof window.matchMedia === 'function' &&
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    }
+
+    function getAccentColorsFromElement(el = null) {
+      const styles = getComputedStyle(el || document.documentElement);
+      return {
+        main: styles.getPropertyValue('--accent-primary').trim() || '#5E8C76',
+        light: styles.getPropertyValue('--accent-grad-start').trim() || '#7BA892',
+        glow: styles.getPropertyValue('--accent-glow').trim() || 'rgba(94, 140, 118, 0.38)',
+        secondary: styles.getPropertyValue('--accent-secondary').trim() || '#E07A5F',
+        honey: styles.getPropertyValue('--accent-honey').trim() || '#D99B38'
+      };
+    }
+
+    function spawnLocalTapRipple(x, y, colors = null) {
+      if (prefersReducedMotion()) return;
+      const c = colors || getAccentColorsFromElement();
+      const ring = document.createElement('span');
+      ring.className = 'seal-local-ripple';
+      ring.style.setProperty('--rx', `${Math.round(x)}px`);
+      ring.style.setProperty('--ry', `${Math.round(y)}px`);
+      ring.style.setProperty('--dew-main', c.main);
+      ring.style.setProperty('--dew-glow', c.glow);
+      document.body.appendChild(ring);
+      setTimeout(() => ring.remove(), 480);
+    }
+
+    function triggerOrbLiquidRipple(colors = null, isAllDone = false) {
+      const orb = document.getElementById('daily-progress-orb');
+      const wave = document.getElementById('daily-progress-wave');
+      const halo = document.getElementById('daily-progress-orb-halo');
+      const rippleLayer = document.getElementById('daily-progress-ripple-layer');
+      const c = colors || getAccentColorsFromElement();
+
+      if (orb) {
+        orb.classList.remove('orb-impact-bounce');
+        void orb.offsetWidth;
+        orb.classList.add('orb-impact-bounce');
+      }
+      if (wave) {
+        wave.classList.remove('wave-impact-slosh');
+        void wave.offsetWidth;
+        wave.classList.add('wave-impact-slosh');
+      }
+      if (halo) {
+        halo.classList.remove('is-pulsing');
+        void halo.offsetWidth;
+        halo.classList.add('is-pulsing');
+        setTimeout(() => halo.classList.remove('is-pulsing'), 740);
+      }
+
+      if (rippleLayer && !prefersReducedMotion()) {
+        const primaryRing = document.createElement('span');
+        primaryRing.className = 'liquid-surface-ripple';
+        primaryRing.style.setProperty('--ripple-color', c.main);
+        primaryRing.style.setProperty('--ripple-glow', c.glow);
+        rippleLayer.appendChild(primaryRing);
+
+        const secondaryRing = document.createElement('span');
+        secondaryRing.className = 'liquid-surface-ripple is-secondary';
+        rippleLayer.appendChild(secondaryRing);
+
+        setTimeout(() => {
+          primaryRing.remove();
+          secondaryRing.remove();
+        }, 820);
+
+        const bubbleCount = isAllDone ? 6 : 4;
+        for (let i = 0; i < bubbleCount; i++) {
+          const b = document.createElement('span');
+          b.className = 'liquid-micro-bubble';
+          const leftPct = 24 + Math.random() * 52;
+          const bottomPct = 22 + Math.random() * 28;
+          const driftX = (Math.random() - 0.5) * 18;
+          b.style.left = `${leftPct.toFixed(1)}%`;
+          b.style.bottom = `${bottomPct.toFixed(1)}%`;
+          b.style.setProperty('--bx', `${driftX.toFixed(1)}px`);
+          b.style.animationDelay = `${i * 55}ms`;
+          rippleLayer.appendChild(b);
+          setTimeout(() => b.remove(), 820 + i * 55);
+        }
+      }
+    }
+
+    function launchDewdropArc({ startX, startY, colors = null, isAllDone = false, onLand = null } = {}) {
+      const orb = document.getElementById('daily-progress-orb');
+      const c = colors || getAccentColorsFromElement();
+
+      const finishImpact = () => {
+        if (typeof onLand === 'function') onLand();
+        triggerOrbLiquidRipple(c, isAllDone);
+        triggerHaptic(isAllDone ? 'celebrate' : 'ripple');
+        if (isAllDone) {
+          spawnSanctuaryShimmer(c);
+        }
+      };
+
+      if (!orb || prefersReducedMotion()) {
+        finishImpact();
+        return false;
+      }
+
+      const orbRect = orb.getBoundingClientRect();
+      if (orbRect.width <= 0 || orbRect.height <= 0) {
+        finishImpact();
+        return false;
+      }
+
+      const targetX = orbRect.left + orbRect.width / 2;
+      const targetY = Math.max(24, Math.min(window.innerHeight - 24, orbRect.top + orbRect.height / 2));
+
+      // Graceful parabolic control point curving smoothly toward the orb
+      const dx = targetX - startX;
+      const dy = targetY - startY;
+      const dist = Math.hypot(dx, dy);
+      const bow = Math.min(95, Math.max(36, dist * 0.28));
+      const sideSign = startX >= targetX ? -1 : 1;
+      const ctrlX = (startX + targetX) / 2 + sideSign * bow * 0.65;
+      const ctrlY = Math.min(startY, targetY) - bow * 0.55;
+
+      const dew = document.createElement('span');
+      dew.className = 'dewdrop-arc-orb';
+      dew.style.setProperty('--dew-main', c.main);
+      dew.style.setProperty('--dew-light', c.light);
+      dew.style.setProperty('--dew-glow', c.glow);
+      dew.style.transform = `translate3d(${startX}px, ${startY}px, 0) scale(0.85)`;
+      document.body.appendChild(dew);
+
+      const durationMs = Math.min(470, Math.max(320, Math.round(270 + dist * 0.34)));
+      const startedAt = performance.now();
+      let lastTrailMark = 0;
+
+      const step = (now) => {
+        const rawT = Math.min(1, (now - startedAt) / durationMs);
+        // Smooth easeInOutCubic for buoyant float-then-plunge feel
+        const t = rawT < 0.5
+          ? 4 * rawT * rawT * rawT
+          : 1 - Math.pow(-2 * rawT + 2, 3) / 2;
+        const inv = 1 - t;
+        const x = inv * inv * startX + 2 * inv * t * ctrlX + t * t * targetX;
+        const y = inv * inv * startY + 2 * inv * t * ctrlY + t * t * targetY;
+        const scale = rawT < 0.65
+          ? 0.85 + Math.sin((rawT / 0.65) * Math.PI) * 0.32
+          : 0.85 - ((rawT - 0.65) / 0.35) * 0.22;
+
+        dew.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0) scale(${scale.toFixed(2)})`;
+        dew.style.opacity = rawT > 0.88 ? String(Math.max(0.25, 1 - (rawT - 0.88) / 0.14)) : '1';
+
+        // Shed 4 delicate trailing mist beads along the curve
+        if (rawT > 0.12 && rawT < 0.86 && rawT - lastTrailMark >= 0.17) {
+          lastTrailMark = rawT;
+          const trail = document.createElement('span');
+          trail.className = 'dewdrop-trail-dot';
+          trail.style.setProperty('--tx', `${x.toFixed(1)}px`);
+          trail.style.setProperty('--ty', `${y.toFixed(1)}px`);
+          trail.style.setProperty('--dew-light', c.light);
+          trail.style.setProperty('--dew-glow', c.glow);
+          document.body.appendChild(trail);
+          setTimeout(() => trail.remove(), 360);
+        }
+
+        if (rawT < 1) {
+          requestAnimationFrame(step);
+        } else {
+          dew.remove();
+          finishImpact();
+        }
+      };
+
+      requestAnimationFrame(step);
+      return true;
+    }
+
+    // Unified Full-Viewport Particle Engine (Check-Off Confetti + 100% Sanctuary Shimmer)
+    let canvasParticles = [];
+    let canvasAnimRunning = false;
+
+    function ensureCanvasParticleLoop() {
+      if (canvasAnimRunning) return;
       const canvas = document.getElementById('confetti-canvas');
       if (!canvas) return;
       const ctx = canvas.getContext('2d');
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      canvasAnimRunning = true;
 
-      const styles = getComputedStyle(sourceEl || document.documentElement);
-      const colors = [
-        styles.getPropertyValue('--accent-primary').trim() || '#5E8C76',
-        styles.getPropertyValue('--accent-grad-start').trim() || '#7BA892',
-        styles.getPropertyValue('--accent-secondary').trim() || '#E07A5F',
-        styles.getPropertyValue('--accent-honey').trim() || '#D99B38',
-        '#FFFFFF'
-      ];
+      const tick = () => {
+        if (canvas.width !== window.innerWidth || canvas.height !== window.innerHeight) {
+          canvas.width = window.innerWidth;
+          canvas.height = window.innerHeight;
+        }
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      const particles = Array.from({ length: 24 }, (_, i) => {
-        const angle = (Math.PI * 2 * i) / 24 + (Math.random() - 0.5) * 0.4;
+        const next = [];
+        for (let i = 0; i < canvasParticles.length; i++) {
+          const p = canvasParticles[i];
+          if (p.kind === 'shimmer') {
+            p.age += 1;
+            p.x += p.vx + Math.sin(p.age * p.swayFreq + p.phase) * p.swayAmp;
+            p.y += p.vy;
+            p.rot += p.vrot;
+            const lifeFrac = p.age / p.maxAge;
+            p.alpha = lifeFrac < 0.16
+              ? (lifeFrac / 0.16) * p.peakAlpha
+              : Math.max(0, (1 - (lifeFrac - 0.16) / 0.84) * p.peakAlpha);
+
+            if (p.age < p.maxAge && p.alpha > 0.01) {
+              next.push(p);
+              ctx.save();
+              ctx.globalAlpha = p.alpha;
+              ctx.translate(p.x, p.y);
+              ctx.rotate(p.rot);
+              ctx.fillStyle = p.color;
+              if (p.shape === 'petal') {
+                ctx.beginPath();
+                ctx.moveTo(0, -p.size);
+                ctx.quadraticCurveTo(p.size * 0.72, -p.size * 0.18, 0, p.size);
+                ctx.quadraticCurveTo(-p.size * 0.72, -p.size * 0.18, 0, -p.size);
+                ctx.fill();
+              } else {
+                // Soft glowing firefly mote
+                ctx.shadowColor = p.color;
+                ctx.shadowBlur = 10;
+                ctx.beginPath();
+                ctx.arc(0, 0, p.size * 0.52, 0, Math.PI * 2);
+                ctx.fill();
+              }
+              ctx.restore();
+            }
+          } else {
+            p.x += p.vx;
+            p.y += p.vy;
+            p.vy += 0.18;
+            p.alpha -= 0.028;
+            p.rot += 0.1;
+            if (p.alpha > 0) {
+              next.push(p);
+              ctx.save();
+              ctx.globalAlpha = Math.max(0, p.alpha);
+              ctx.translate(p.x, p.y);
+              ctx.rotate(p.rot);
+              ctx.fillStyle = p.color;
+              ctx.beginPath();
+              ctx.roundRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.7, 2);
+              ctx.fill();
+              ctx.restore();
+            }
+          }
+        }
+
+        canvasParticles = next;
+        if (canvasParticles.length > 0) {
+          requestAnimationFrame(tick);
+        } else {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          canvasAnimRunning = false;
+        }
+      };
+
+      requestAnimationFrame(tick);
+    }
+
+    function spawnConfettiBurst(x, y, sourceEl = null) {
+      if (prefersReducedMotion()) return;
+      const c = getAccentColorsFromElement(sourceEl);
+      const colors = [c.main, c.light, c.secondary, c.honey, '#FFFFFF'];
+
+      for (let i = 0; i < 22; i++) {
+        const angle = (Math.PI * 2 * i) / 22 + (Math.random() - 0.5) * 0.4;
         const speed = 2.4 + Math.random() * 3.8;
-        return {
+        canvasParticles.push({
+          kind: 'confetti',
           x,
           y,
           vx: Math.cos(angle) * speed,
@@ -9386,38 +9882,41 @@
           color: colors[i % colors.length],
           alpha: 1,
           rot: Math.random() * Math.PI
-        };
-      });
-
-      function tick() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        let alive = false;
-        particles.forEach(p => {
-          p.x += p.vx;
-          p.y += p.vy;
-          p.vy += 0.18;
-          p.alpha -= 0.028;
-          p.rot += 0.1;
-          if (p.alpha > 0) {
-            alive = true;
-            ctx.save();
-            ctx.globalAlpha = Math.max(0, p.alpha);
-            ctx.translate(p.x, p.y);
-            ctx.rotate(p.rot);
-            ctx.fillStyle = p.color;
-            ctx.beginPath();
-            ctx.roundRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.7, 2);
-            ctx.fill();
-            ctx.restore();
-          }
         });
-        if (alive) {
-          requestAnimationFrame(tick);
-        } else {
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-        }
       }
-      requestAnimationFrame(tick);
+      ensureCanvasParticleLoop();
+    }
+
+    function spawnSanctuaryShimmer(colors = null) {
+      if (prefersReducedMotion()) return;
+      const c = colors || getAccentColorsFromElement();
+      const shell = document.getElementById('app-shell');
+      const rect = shell ? shell.getBoundingClientRect() : { left: 0, width: window.innerWidth, top: 0, height: window.innerHeight };
+      const palette = [c.light, c.main, c.honey, '#FFFFFF', c.secondary];
+
+      for (let i = 0; i < 34; i++) {
+        const isPetal = i % 2 === 0;
+        canvasParticles.push({
+          kind: 'shimmer',
+          shape: isPetal ? 'petal' : 'mote',
+          x: rect.left + 16 + Math.random() * Math.max(40, rect.width - 32),
+          y: rect.top + rect.height * (0.45 + Math.random() * 0.55),
+          vx: (Math.random() - 0.5) * 0.45,
+          vy: -(1.1 + Math.random() * 1.9),
+          swayAmp: 0.45 + Math.random() * 0.85,
+          swayFreq: 0.04 + Math.random() * 0.045,
+          phase: Math.random() * Math.PI * 2,
+          size: isPetal ? (4.5 + Math.random() * 4.5) : (3 + Math.random() * 3.5),
+          color: palette[i % palette.length],
+          peakAlpha: isPetal ? (0.58 + Math.random() * 0.3) : (0.65 + Math.random() * 0.3),
+          alpha: 0,
+          rot: Math.random() * Math.PI * 2,
+          vrot: (Math.random() - 0.5) * 0.06,
+          age: 0,
+          maxAge: 85 + Math.floor(Math.random() * 48)
+        });
+      }
+      ensureCanvasParticleLoop();
     }
 
     let toastTimeout = null;
@@ -10042,6 +10541,7 @@
           if (nowArmed && !armed) {
             armed = true;
             playCozySound('tap');
+            triggerHaptic('arm');
           } else if (!nowArmed && armed) {
             armed = false;
           }

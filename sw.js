@@ -1,11 +1,11 @@
-const CACHE_VERSION = 'v29';
+const CACHE_VERSION = 'v30';
 const UPDATE_INFO = {
   version: CACHE_VERSION,
-  title: 'Anytime-First Sections & Unified Order',
-  summary: 'Anytime now sits at the top above Morning, Afternoon, and Evening—synced cleanly across Today, Drop / Edit, and Insights with a Settings toggle.',
+  title: 'Dewdrop Arc, Liquid Ripples & Mobile Haptics',
+  summary: 'Checking off rituals now launches a glowing dewdrop into the Today orb with liquid ripples, 100% rising sanctuary shimmer, and optional mobile haptics.',
   highlights: [
-    'Unified Anytime → Morning → Afternoon → Evening order across Today, Drop / Edit, and Insights',
-    'New Time-of-Day Sections on/off switch in Settings plus drag-across-category support in Drop / Edit'
+    'Glowing dewdrop arcs from each ritual into the Today liquid orb with surface ripples & bubbles',
+    'Soft rising petal & firefly shimmer at 100% plus a Gentle Mobile Haptics toggle in Settings'
   ]
 };
 const APP_SHELL_CACHE = `nook-shell-${CACHE_VERSION}`;
