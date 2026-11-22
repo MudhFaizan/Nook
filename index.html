@@ -1452,6 +1452,22 @@
       user-select: none;
     }
 
+    /* Sanctuary Milestone Unlock Celebration Toast */
+    .milestone-toast-shell {
+      background: var(--bg-glass-modal);
+      backdrop-filter: blur(26px) saturate(195%);
+      -webkit-backdrop-filter: blur(26px) saturate(195%);
+      border: 1.5px solid var(--accent-medium);
+      box-shadow: var(--shadow-float), 0 10px 30px -6px var(--accent-glow), inset 0 1px 1px rgba(255, 255, 255, 0.65);
+      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease;
+    }
+    .milestone-toast-shell:active {
+      transform: scale(0.96);
+    }
+    .milestone-toast-pill {
+      transition: transform 0.44s cubic-bezier(0.32, 1.25, 0.54, 1), opacity 0.28s ease;
+    }
+
     /* Splash Zen Bloom Animation */
     .splash-bloom-orb {
       animation: splashOrbFloat 2.4s ease-in-out infinite alternate;
@@ -1469,6 +1485,9 @@
         }
         #pwa-update-sheet {
           padding-top: calc(1.1rem + env(safe-area-inset-top));
+        }
+        #milestone-toast-pill {
+          top: calc(1rem + env(safe-area-inset-top));
         }
         #bottom-nav-dock {
           bottom: calc(0.75rem + env(safe-area-inset-bottom));
@@ -2741,6 +2760,27 @@
       </div>
     </div>
 
+    <!-- ======================================================================
+         SANCTUARY MILESTONE UNLOCK CELEBRATION TOAST
+         ====================================================================== -->
+    <div id="milestone-toast-pill" class="milestone-toast-pill fixed top-4 left-1/2 -translate-x-1/2 z-[62] w-[calc(100%-2rem)] max-w-[390px] pointer-events-none opacity-0 -translate-y-6" role="status" aria-live="polite">
+      <button type="button" onclick="openSanctuaryFromMilestoneToast()"
+        class="milestone-toast-shell w-full px-3.5 py-2.5 rounded-[22px] flex items-center justify-between gap-3 text-left cursor-pointer">
+        <div class="flex items-center gap-3 min-w-0">
+          <div class="relative w-10 h-10 rounded-2xl accent-bg-soft border border-[var(--accent-medium)] flex items-center justify-center flex-shrink-0">
+            <span id="milestone-toast-emoji" class="text-xl leading-none">🌸</span>
+            <span class="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full accent-bg text-white flex items-center justify-center text-[8px] font-bold shadow-xs">✦</span>
+          </div>
+          <div class="min-w-0">
+            <span class="text-[9.5px] font-extrabold uppercase tracking-[0.16em] accent-text block leading-none">Milestone Unlocked</span>
+            <p id="milestone-toast-title" class="text-xs font-extrabold text-cozy-primary truncate mt-1 leading-tight">First Dew</p>
+            <p id="milestone-toast-desc" class="text-[10.5px] text-cozy-secondary truncate leading-tight mt-0.5">Logged your first mindful check-in</p>
+          </div>
+        </div>
+        <span class="px-2.5 py-1 rounded-xl accent-bg-soft accent-text text-[10px] font-extrabold flex-shrink-0">Garden ↗</span>
+      </button>
+    </div>
+
   </div>
 
   <!-- ========================================================================
@@ -2854,7 +2894,9 @@
         soundEnabled: true,
         confettiEnabled: true,
         showQuotes: true,
-        autoSortCompleted: true
+        autoSortCompleted: true,
+        timerSessions: 0,
+        unlockedBadges: []
       },
       habits: [],
       archivedHabits: [],
@@ -2998,7 +3040,9 @@
           soundEnabled: true,
           confettiEnabled: true,
           showQuotes: true,
-          autoSortCompleted: true
+          autoSortCompleted: true,
+          timerSessions: 0,
+          unlockedBadges: []
         },
         habits: createCleanStarterHabits(),
         archivedHabits: [],
@@ -3074,6 +3118,9 @@
             const rawArchived = Array.isArray(parsed.archivedHabits) ? parsed.archivedHabits : [];
             state.habits = rawHabits.map(h => normalizeHabitRecord(h, state.logs));
             state.archivedHabits = rawArchived.map(h => normalizeHabitRecord(h, state.logs));
+            if (!Array.isArray(parsed.user && parsed.user.unlockedBadges)) {
+              state.user.unlockedBadges = null;
+            }
             return;
           }
         }
@@ -3456,6 +3503,7 @@
       renderAll();
       const comp = getCompanionObj(state.user.companion);
       showToast(`Your ${comp.label} is planted in Nook`, comp.emoji);
+      if (alreadyOnboarded) checkAndCelebrateNewBadges({ quietAudio: true });
     }
 
     // ========================================================================
@@ -3577,6 +3625,7 @@
       }
       saveState();
       renderAll();
+      if (nowRest) checkAndCelebrateNewBadges();
     }
 
     function isHabitActiveOnDate(habit, dateKey) {
@@ -4512,6 +4561,7 @@
       renderWeekStrip(false);
       renderDailyProgress();
       renderHabitsList(false, nowCompleted ? habitId : null, true);
+      if (nowCompleted) checkAndCelebrateNewBadges({ quietAudio: isAllDone });
     }
 
     function adjustHabitCount(habitId, delta, event) {
@@ -4571,6 +4621,7 @@
       renderWeekStrip(false);
       renderDailyProgress();
       renderHabitsList(false, (!wasHabitDone && isHabitDone) ? habitId : null, wasHabitDone !== isHabitDone);
+      if (!wasHabitDone && isHabitDone) checkAndCelebrateNewBadges({ quietAudio: isAllDone });
     }
 
     function renderTodayView(animateCalendar = false) {
@@ -4697,6 +4748,7 @@
       renderTodayView(false);
       renderRecommendations();
       showToast(`Planted "${rec.title}"`, rec.emoji);
+      checkAndCelebrateNewBadges();
     }
 
     function toggleDropMode() {
@@ -5757,6 +5809,7 @@
       playCozySound('check');
       closeHabitModal();
       renderAll();
+      if (!id) checkAndCelebrateNewBadges();
     }
 
     function deleteCurrentHabit() {
@@ -6071,6 +6124,8 @@
       const todayKey = getTodayKey();
       let completedWholeDay = false;
 
+      state.user.timerSessions = (Number(state.user.timerSessions) || 0) + 1;
+
       if (habit && !habit.archivedAt) {
         const targetCount = getHabitTargetCount(habit);
         if (targetCount > 1) {
@@ -6089,6 +6144,8 @@
 
         const dayInfo = getDayCompletionInfo(todayKey);
         completedWholeDay = dayInfo.total > 0 && dayInfo.done >= dayInfo.total;
+      } else {
+        saveState();
       }
 
       playCozySound(completedWholeDay ? 'celebrate' : 'timerDone');
@@ -6119,6 +6176,7 @@
       if (state.ui.detailHabitId === habitId) {
         renderHabitDetailContent(false);
       }
+      checkAndCelebrateNewBadges({ quietAudio: true });
     }
 
     document.addEventListener('visibilitychange', () => {
@@ -6190,14 +6248,17 @@
       const snapshot = getHabitSnapshotForDate(habit, dateKey);
       const targetCount = getHabitTargetCount(snapshot);
 
+      let becameCompleted = false;
       if (targetCount > 1) {
         const done = isHabitCompletedOn(habitId, dateKey);
+        becameCompleted = !done;
         setHabitCountOn(habitId, dateKey, done ? 0 : targetCount, targetCount);
         playCozySound(done ? 'uncheck' : 'check');
       } else {
         if (!Array.isArray(state.logs[dateKey])) state.logs[dateKey] = [];
         const idx = state.logs[dateKey].indexOf(habitId);
         if (idx === -1) {
+          becameCompleted = true;
           state.logs[dateKey].push(habitId);
           playCozySound('check');
         } else {
@@ -6209,6 +6270,7 @@
       saveState();
       renderHabitDetailContent(false);
       renderAll();
+      if (becameCompleted) checkAndCelebrateNewBadges();
     }
 
     function buildDetailMindfulTimerHtml(habit) {
@@ -6543,6 +6605,10 @@
         stageProgressPct = Math.min(100, Math.max(8, Math.round(((activeStreak - prevMin) / span) * 100)));
       }
 
+      const restDayCount = Object.keys(state.restDays || {}).filter(k => Boolean(state.restDays[k])).length;
+      const activeHabitCount = state.habits.length;
+      const timerSessions = Math.max(0, Math.round(Number(state.user.timerSessions) || 0));
+
       const badges = [
         {
           id: 'first_dew',
@@ -6559,6 +6625,30 @@
           unlocked: perfectDays >= 1,
           progress: `${Math.min(1, perfectDays)}/1`,
           desc: perfectDays >= 1 ? `Completed ${perfectDays} full 100% ${perfectDays === 1 ? 'day' : 'days'}` : 'Complete 100% of rituals in a day'
+        },
+        {
+          id: 'gentle_rest',
+          emoji: '🌙',
+          title: 'Gentle Rest',
+          unlocked: restDayCount >= 1,
+          progress: `${Math.min(1, restDayCount)}/1`,
+          desc: restDayCount >= 1 ? `Honored ${restDayCount} planned Rest ${restDayCount === 1 ? 'Day' : 'Days'}` : 'Shield your flow with 1 Rest Day'
+        },
+        {
+          id: 'mindful_pause',
+          emoji: '⏱️',
+          title: 'Mindful Pause',
+          unlocked: timerSessions >= 1,
+          progress: `${Math.min(1, timerSessions)}/1`,
+          desc: timerSessions >= 1 ? `Completed ${timerSessions} timed focus ${timerSessions === 1 ? 'session' : 'sessions'}` : 'Finish 1 Mindful Timer session'
+        },
+        {
+          id: 'green_thumb',
+          emoji: '🪴',
+          title: 'Green Thumb',
+          unlocked: activeHabitCount >= 5,
+          progress: `${Math.min(5, activeHabitCount)}/5`,
+          desc: activeHabitCount >= 5 ? `Tending ${activeHabitCount} active rituals in your nook` : `Plant ${Math.max(0, 5 - activeHabitCount)} more ${5 - activeHabitCount === 1 ? 'ritual' : 'rituals'} to reach 5`
         },
         {
           id: 'rooted',
@@ -6585,12 +6675,36 @@
           desc: bestStreak >= 14 ? 'Blossomed with a 14-day streak' : `${Math.max(0, 14 - bestStreak)} more days to Full Bloom`
         },
         {
+          id: 'deep_roots',
+          emoji: '🌳',
+          title: 'Deep Roots',
+          unlocked: bestStreak >= 30,
+          progress: `${Math.min(30, bestStreak)}/30d`,
+          desc: bestStreak >= 30 ? 'Nurtured a 30-day streak milestone' : `${Math.max(0, 30 - bestStreak)} more days to a 30d streak`
+        },
+        {
+          id: 'radiant_week',
+          emoji: '🌻',
+          title: 'Radiant Week',
+          unlocked: perfectDays >= 7,
+          progress: `${Math.min(7, perfectDays)}/7`,
+          desc: perfectDays >= 7 ? `Shone through ${perfectDays} full 100% days` : `${Math.max(0, 7 - perfectDays)} more full 100% days to unlock`
+        },
+        {
           id: 'garden_keeper',
           emoji: '✨',
           title: 'Keeper',
           unlocked: totalCheckins >= 25,
           progress: `${Math.min(25, totalCheckins)}/25`,
           desc: totalCheckins >= 25 ? `${totalCheckins} mindful check-ins tended` : `${Math.max(0, 25 - totalCheckins)} more check-ins to reach 25`
+        },
+        {
+          id: 'sanctuary_sage',
+          emoji: '🦋',
+          title: 'Sanctuary',
+          unlocked: totalCheckins >= 100,
+          progress: `${Math.min(100, totalCheckins)}/100`,
+          desc: totalCheckins >= 100 ? `Tended ${totalCheckins} mindful check-ins all-time` : `${Math.max(0, 100 - totalCheckins)} more check-ins to reach 100`
         }
       ];
 
@@ -7036,6 +7150,9 @@
             state.archivedHabits = Array.isArray(parsed.archivedHabits)
               ? parsed.archivedHabits.map(h => normalizeHabitRecord(h, state.logs))
               : [];
+            if (!Array.isArray(parsed.user && parsed.user.unlockedBadges)) {
+              syncUnlockedBadgesSilently(false);
+            }
             saveState();
             applyThemeAndAccentToDOM();
             renderAll();
@@ -7078,7 +7195,8 @@
     }
 
     function confirmResetToDefaults() {
-      const preservedUser = { ...state.user };
+      const preservedUser = { ...state.user, timerSessions: 0, unlockedBadges: [] };
+      resetMilestoneToastQueue();
       state.habits = createCleanStarterHabits();
       state.archivedHabits = [];
       state.logs = {};
@@ -7167,6 +7285,12 @@
           playSineNote(440.00, 440.00, 0.00, 0.55, 0.075);
           playSineNote(659.25, 659.25, 0.09, 0.55, 0.065);
           playSineNote(880.00, 880.00, 0.18, 0.65, 0.070);
+        } else if (type === 'badgeUnlock') {
+          // Crystalline ascending botanical chime when a Sanctuary Milestone unlocks
+          playSineNote(587.33, 587.33, 0.00, 0.24, 0.068); // D5
+          playSineNote(783.99, 783.99, 0.08, 0.28, 0.072); // G5
+          playSineNote(1174.66, 1174.66, 0.16, 0.44, 0.076); // D6
+          playSineNote(880.00, 880.00, 0.16, 0.42, 0.036); // A5 shimmer
         } else if (type === 'uncheck') {
           playSineNote(420, 310, 0.00, 0.14, 0.05);
         } else if (type === 'tap') {
@@ -7275,6 +7399,136 @@
       toastTimeout = setTimeout(() => {
         pill.classList.add('opacity-0', '-translate-y-3');
       }, 2400);
+    }
+
+    // Sanctuary Milestone Unlock Celebration Toast Queue
+    let milestoneToastQueue = [];
+    let milestoneToastActive = false;
+    let milestoneToastHideTimer = null;
+    let milestoneToastNextTimer = null;
+
+    function syncUnlockedBadgesSilently(persist = false) {
+      const metrics = getSanctuaryMetrics();
+      const existing = Array.isArray(state.user.unlockedBadges) ? state.user.unlockedBadges : [];
+      const set = new Set(existing);
+      metrics.badges.forEach(b => {
+        if (b.unlocked) set.add(b.id);
+      });
+      state.user.unlockedBadges = Array.from(set);
+      if (persist) saveState();
+    }
+
+    function resetMilestoneToastQueue() {
+      milestoneToastQueue = [];
+      milestoneToastActive = false;
+      clearTimeout(milestoneToastHideTimer);
+      clearTimeout(milestoneToastNextTimer);
+      const pill = document.getElementById('milestone-toast-pill');
+      if (pill) {
+        pill.classList.add('opacity-0', '-translate-y-6', 'pointer-events-none');
+      }
+    }
+
+    function checkAndCelebrateNewBadges({ quietAudio = false } = {}) {
+      if (!Array.isArray(state.user.unlockedBadges)) {
+        syncUnlockedBadgesSilently(true);
+        return false;
+      }
+
+      const metrics = getSanctuaryMetrics();
+      const known = new Set(state.user.unlockedBadges);
+      const newlyUnlocked = metrics.badges.filter(b => b.unlocked && !known.has(b.id));
+      if (newlyUnlocked.length === 0) return false;
+
+      newlyUnlocked.forEach(b => known.add(b.id));
+      state.user.unlockedBadges = Array.from(known);
+      saveState();
+
+      newlyUnlocked.forEach((badge, idx) => {
+        milestoneToastQueue.push({ badge, quietAudio: quietAudio && idx === 0 });
+      });
+
+      if (!milestoneToastActive) {
+        clearTimeout(milestoneToastNextTimer);
+        milestoneToastNextTimer = setTimeout(() => showNextMilestoneToast(), 380);
+      }
+
+      // Refresh Sanctuary modal immediately if it is currently open
+      const sanctuaryBackdrop = document.getElementById('sanctuary-modal-backdrop');
+      if (sanctuaryBackdrop && !sanctuaryBackdrop.classList.contains('hidden')) {
+        renderSanctuaryModalContent(false);
+      }
+
+      return true;
+    }
+
+    function showNextMilestoneToast() {
+      if (milestoneToastQueue.length === 0) {
+        milestoneToastActive = false;
+        return;
+      }
+
+      const pill = document.getElementById('milestone-toast-pill');
+      if (!pill) {
+        milestoneToastQueue = [];
+        milestoneToastActive = false;
+        return;
+      }
+
+      milestoneToastActive = true;
+      const { badge, quietAudio } = milestoneToastQueue.shift();
+
+      // Dismiss any standard top toast so the milestone celebration never overlaps
+      const stdToast = document.getElementById('toast-pill');
+      if (stdToast) {
+        clearTimeout(toastTimeout);
+        stdToast.classList.add('opacity-0', '-translate-y-3');
+      }
+
+      const emojiEl = document.getElementById('milestone-toast-emoji');
+      const titleEl = document.getElementById('milestone-toast-title');
+      const descEl = document.getElementById('milestone-toast-desc');
+
+      if (emojiEl) {
+        emojiEl.textContent = badge.emoji || '✨';
+        emojiEl.classList.remove('companion-crest-pop');
+        void emojiEl.offsetWidth;
+        emojiEl.classList.add('companion-crest-pop');
+      }
+      if (titleEl) titleEl.textContent = badge.title;
+      if (descEl) descEl.textContent = badge.desc;
+
+      pill.classList.remove('opacity-0', '-translate-y-6', 'pointer-events-none');
+
+      if (!quietAudio) {
+        playCozySound('badgeUnlock');
+        if (state.user.confettiEnabled) {
+          spawnConfettiBurst(window.innerWidth / 2, 64);
+        }
+      }
+
+      clearTimeout(milestoneToastHideTimer);
+      milestoneToastHideTimer = setTimeout(() => {
+        pill.classList.add('opacity-0', '-translate-y-6', 'pointer-events-none');
+        clearTimeout(milestoneToastNextTimer);
+        milestoneToastNextTimer = setTimeout(() => {
+          milestoneToastActive = false;
+          showNextMilestoneToast();
+        }, 320);
+      }, 3400);
+    }
+
+    function openSanctuaryFromMilestoneToast() {
+      resetMilestoneToastQueue();
+      const detailBackdrop = document.getElementById('habit-detail-backdrop');
+      if (detailBackdrop && !detailBackdrop.classList.contains('hidden')) {
+        closeHabitDetailModal();
+      }
+      const habitBackdrop = document.getElementById('habit-modal-backdrop');
+      if (habitBackdrop && !habitBackdrop.classList.contains('hidden')) {
+        closeHabitModal();
+      }
+      openSanctuaryModal();
     }
 
     function renderAll() {
@@ -8034,6 +8288,9 @@
     // Boot Application
     window.addEventListener('DOMContentLoaded', () => {
       loadState();
+      if (!Array.isArray(state.user.unlockedBadges)) {
+        syncUnlockedBadgesSilently(true);
+      }
       applyThemeAndAccentToDOM();
       switchTab('today');
       handlePwaLaunchShortcuts();

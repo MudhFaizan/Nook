@@ -1,11 +1,11 @@
-const CACHE_VERSION = 'v8';
+const CACHE_VERSION = 'v15';
 const UPDATE_INFO = {
   version: CACHE_VERSION,
-  title: 'Top Update Drop-In',
-  summary: 'Updates now pop down smoothly from the top with a short summary and Update Now or Later options.',
+  title: 'Milestone Celebration Toasts',
+  summary: 'Unlocking any Sanctuary Milestone badge now triggers an automatic frosted celebration toast with chime and confetti.',
   highlights: [
-    'Full top frosted-glass update sheet with release notes',
-    'Tap Later to dismiss — returns next time you open Nook'
+    'Drops in automatically when you earn a new badge',
+    'Tap the toast to jump straight into your Sanctuary Garden'
   ]
 };
 const APP_SHELL_CACHE = `nook-shell-${CACHE_VERSION}`;
