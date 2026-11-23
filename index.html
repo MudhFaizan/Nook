@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Nook v37 -->
+<!-- Nook v38 -->
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -3039,8 +3039,8 @@
                 <button type="button" onclick="setAccent('mono')" data-accent-btn="mono" id="accent-mono-pill"
                   title="Monochrome black &amp; white accent" aria-label="Monochrome black and white accent"
                   class="accent-choice-btn px-2 py-1 rounded-full border border-cozy bg-cozy-secondary/60 inline-flex items-center gap-1.5 transition">
-                  <span class="w-3.5 h-3.5 rounded-full inline-block flex-shrink-0 border border-cozy"
-                    style="background: linear-gradient(135deg, #18181B 50%, #F4F4F5 50%);"></span>
+                  <span class="w-3.5 h-3.5 rounded-full inline-block flex-shrink-0 border border-cozy shadow-2xs"
+                    style="background: linear-gradient(135deg, #F4F4F5 0%, #52525B 52%, #09090B 100%);"></span>
                   <span class="text-[10px] font-bold text-cozy-primary leading-none">Mono</span>
                 </button>
                 <div class="flex items-center gap-1.5">
@@ -3832,7 +3832,7 @@
       { id: 'amber', label: 'Honey', grad: 'linear-gradient(135deg, #E2A659, #B07327)' },
       { id: 'matcha', label: 'Matcha', grad: 'linear-gradient(135deg, #8AB577, #578046)' },
       { id: 'blue', label: 'Azure', grad: 'linear-gradient(135deg, #6499F0, #2959B0)' },
-      { id: 'mono', label: 'Mono', grad: 'linear-gradient(135deg, #18181B 50%, #F4F4F5 50%)' }
+      { id: 'mono', label: 'Mono', grad: 'linear-gradient(135deg, #F4F4F5 0%, #52525B 52%, #09090B 100%)' }
     ];
 
     function getHabitColorAccent(habit) {
@@ -8188,12 +8188,7 @@
         if (opt.id) btn.setAttribute('data-accent', opt.id);
         btn.className = `ritual-color-swatch ${picked ? 'is-selected' : ''}`;
 
-        if (opt.id === 'mono') {
-          btn.style.background = opt.grad;
-          btn.innerHTML = picked
-            ? '<span class="w-4 h-4 rounded-full bg-[#18181B] text-white flex items-center justify-center shadow-xs"><i class="ph-bold ph-check text-[9px]"></i></span>'
-            : '';
-        } else if (opt.grad) {
+        if (opt.grad) {
           btn.style.background = opt.grad;
           btn.innerHTML = picked
             ? '<i class="ph-bold ph-check text-white text-[11px] drop-shadow-xs"></i>'

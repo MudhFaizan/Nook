@@ -1,11 +1,11 @@
-const CACHE_VERSION = 'v37';
+const CACHE_VERSION = 'v38';
 const UPDATE_INFO = {
   version: CACHE_VERSION,
-  title: 'Monochrome Accent & Ritual Swatch',
-  summary: 'Added a 1-tap Mono black-and-white accent pill in Settings plus a Mono card color swatch in Add / Edit Ritual.',
+  title: 'Silky Mono Gradient Swatch',
+  summary: 'Refined the Mono accent icon and per-ritual color dot into a smooth pearl-to-obsidian diagonal gradient.',
   highlights: [
-    '1-tap Mono pill in Settings → Appearance for pure ink-black (Light) & platinum-white (Dark) highlights',
-    'Mono swatch added to the per-ritual Card Color picker with smart contrast across buttons, seals & heatmaps'
+    'Smooth pearl-to-obsidian gradient icon on the 1-tap Mono pill in Settings',
+    'Matching smooth monochrome gradient dot in the Add / Edit Ritual card color picker'
   ]
 };
 const APP_SHELL_CACHE = `nook-shell-${CACHE_VERSION}`;
