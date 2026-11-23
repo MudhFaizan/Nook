@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Nook v34 -->
+<!-- Nook v37 -->
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -53,6 +53,12 @@
       --accent-soft: rgba(94, 140, 118, 0.16);
       --accent-medium: rgba(94, 140, 118, 0.38);
       --accent-glow: rgba(94, 140, 118, 0.35);
+      --accent-on-solid: #FFFFFF;
+      --accent-on-solid-ring: rgba(255, 255, 255, 0.32);
+      --accent-on-solid-chip: rgba(255, 255, 255, 0.24);
+      --accent-on-solid-chip-border: rgba(255, 255, 255, 0.38);
+      --liquid-wave-opacity: 0.78;
+      --liquid-wave-back-opacity: 0.44;
       
       --accent-secondary: #E07A5F;
       --accent-secondary-soft: rgba(224, 122, 95, 0.16);
@@ -108,6 +114,49 @@
       
       --shadow-glass: 0 12px 32px -6px rgba(0, 0, 0, 0.45), 0 2px 8px -1px rgba(0, 0, 0, 0.3), inset 0 1px 0.5px rgba(255, 255, 255, 0.12);
       --shadow-float: 0 20px 44px -8px rgba(0, 0, 0, 0.65), inset 0 1px 1px rgba(255, 255, 255, 0.16);
+    }
+
+    /* Pure Canvas Surface Tokens (Crisp Pure White #FFFFFF & True OLED Pitch Black #000000) */
+    [data-surface="pure"] {
+      --bg-base: #FFFFFF;
+      --bg-secondary: #F4F4F6;
+      --bg-glass-card: #FAFAFB;
+      --bg-glass-completed: #F5F5F7;
+      --bg-glass-elevated: #FFFFFF;
+      --bg-glass-nav: rgba(255, 255, 255, 0.94);
+      --bg-glass-modal: #FFFFFF;
+      --bg-glass-input: #F4F4F6;
+
+      --border-glass: rgba(0, 0, 0, 0.085);
+      --border-subtle: rgba(0, 0, 0, 0.065);
+
+      --text-primary: #111113;
+      --text-secondary: #52525B;
+      --text-muted: #8E8E98;
+
+      --shadow-glass: 0 2px 10px -4px rgba(0, 0, 0, 0.05);
+      --shadow-float: 0 14px 34px -10px rgba(0, 0, 0, 0.14);
+    }
+
+    [data-theme="dark"][data-surface="pure"] {
+      --bg-base: #000000;
+      --bg-secondary: #141417;
+      --bg-glass-card: #0B0B0D;
+      --bg-glass-completed: #070709;
+      --bg-glass-elevated: #141418;
+      --bg-glass-nav: rgba(10, 10, 12, 0.94);
+      --bg-glass-modal: #0C0C0F;
+      --bg-glass-input: #111114;
+
+      --border-glass: rgba(255, 255, 255, 0.105);
+      --border-subtle: rgba(255, 255, 255, 0.075);
+
+      --text-primary: #FAFAFA;
+      --text-secondary: #A1A1AA;
+      --text-muted: #6E6E78;
+
+      --shadow-glass: 0 0 0 0 transparent;
+      --shadow-float: 0 18px 40px -10px rgba(0, 0, 0, 0.92);
     }
 
     /* Living Sky Ambient Mesh Palettes (Time-of-Day Shifting Orbs — Light & Dark) */
@@ -327,11 +376,89 @@
       --accent-glow: rgba(102, 157, 246, 0.36);
     }
 
+    /* Ensure per-ritual colored cards inside Dark + Mono always keep crisp white foregrounds */
+    [data-accent="sage"],
+    [data-accent="terracotta"],
+    [data-accent="lavender"],
+    [data-accent="ocean"],
+    [data-accent="rose"],
+    [data-accent="amber"],
+    [data-accent="matcha"],
+    [data-accent="blue"],
+    [data-accent="berry"] {
+      --accent-on-solid: #FFFFFF;
+      --accent-on-solid-ring: rgba(255, 255, 255, 0.32);
+      --accent-on-solid-chip: rgba(255, 255, 255, 0.24);
+      --accent-on-solid-chip-border: rgba(255, 255, 255, 0.38);
+      --liquid-wave-opacity: 0.78;
+      --liquid-wave-back-opacity: 0.44;
+    }
+
+    /* Monochrome ("Mono") Accent — Pure Ink Black (Light) & Crisp Platinum White (Dark) */
+    [data-accent="mono"] {
+      --accent-primary: #18181B;
+      --accent-primary-hover: #09090B;
+      --accent-grad-start: #3F3F46;
+      --accent-grad-end: #09090B;
+      --accent-soft: rgba(24, 24, 27, 0.11);
+      --accent-medium: rgba(24, 24, 27, 0.32);
+      --accent-glow: rgba(24, 24, 27, 0.22);
+      --accent-on-solid: #FFFFFF;
+      --accent-on-solid-ring: rgba(255, 255, 255, 0.32);
+      --accent-on-solid-chip: rgba(255, 255, 255, 0.24);
+      --accent-on-solid-chip-border: rgba(255, 255, 255, 0.38);
+      --liquid-wave-opacity: 0.52;
+      --liquid-wave-back-opacity: 0.28;
+    }
+    [data-theme="dark"][data-accent="mono"],
+    [data-theme="dark"] [data-accent="mono"] {
+      --accent-primary: #F4F4F5;
+      --accent-primary-hover: #FFFFFF;
+      --accent-grad-start: #FFFFFF;
+      --accent-grad-end: #D4D4D8;
+      --accent-soft: rgba(244, 244, 245, 0.14);
+      --accent-medium: rgba(244, 244, 245, 0.38);
+      --accent-glow: rgba(244, 244, 245, 0.24);
+      --accent-on-solid: #09090B;
+      --accent-on-solid-ring: rgba(9, 9, 11, 0.22);
+      --accent-on-solid-chip: rgba(9, 9, 11, 0.12);
+      --accent-on-solid-chip-border: rgba(9, 9, 11, 0.24);
+      --liquid-wave-opacity: 0.44;
+      --liquid-wave-back-opacity: 0.24;
+    }
+
+    /* Smart Contrast Inversion for Solid Accent Buttons, Seals & Switches under Dark + Mono */
+    .accent-bg.text-white,
+    .accent-progress-gradient.text-white,
+    .fab-orb-btn.text-white {
+      color: var(--accent-on-solid, #FFFFFF) !important;
+    }
+    [data-theme="dark"][data-accent="mono"] .cozy-switch-knob {
+      color: #18181B;
+    }
+    [data-theme="dark"][data-accent="mono"] .cozy-switch-track.is-on .cozy-switch-knob {
+      background-color: #09090B;
+      color: #FFFFFF;
+    }
+    [data-accent="mono"] #daily-progress-percent {
+      text-shadow: 0 1px 8px rgba(255, 255, 255, 0.92), 0 0 3px rgba(255, 255, 255, 0.85);
+    }
+    [data-theme="dark"][data-accent="mono"] #daily-progress-percent {
+      text-shadow: 0 1px 8px rgba(0, 0, 0, 0.9), 0 0 3px rgba(0, 0, 0, 0.8);
+    }
+    [data-theme="dark"][data-accent="mono"] .fab-orb-btn > span {
+      border-color: rgba(9, 9, 11, 0.22) !important;
+    }
+    [data-theme="dark"][data-accent="mono"] #welcome-footer-step-1 span.bg-white\/20,
+    [data-theme="dark"][data-accent="mono"] #welcome-footer-step-2 span.bg-white\/20 {
+      background-color: rgba(9, 9, 11, 0.12);
+    }
+
     /* Per-Ritual Color Swatch Dots (Add / Edit Modal) */
     .ritual-color-swatch {
       position: relative;
-      width: 28px;
-      height: 28px;
+      width: 30px;
+      height: 30px;
       border-radius: 9999px;
       display: inline-flex;
       align-items: center;
@@ -380,6 +507,26 @@
       overflow: hidden;
       pointer-events: none;
       z-index: 0;
+      transition: opacity 0.45s ease;
+    }
+    [data-surface="pure"] .ambient-mesh-container {
+      opacity: 0;
+    }
+    [data-surface="pure"] .cozy-card.habit-card-completed {
+      box-shadow: none;
+    }
+    [data-theme="dark"][data-surface="pure"] .floating-nav-dock {
+      box-shadow: var(--shadow-float), 0 0 0 1px rgba(255, 255, 255, 0.08);
+    }
+    [data-surface="pure"] .floating-nav-dock::before {
+      opacity: 0.45;
+    }
+    .sky-mesh-cards-grid {
+      transition: opacity 0.3s ease, filter 0.3s ease;
+    }
+    .sky-mesh-section.is-paused-for-pure .sky-mesh-cards-grid {
+      opacity: 0.45;
+      filter: saturate(0.72);
     }
     .ambient-orb {
       position: absolute;
@@ -739,7 +886,7 @@
     .check-btn.completed {
       background: linear-gradient(135deg, var(--accent-grad-start) 0%, var(--accent-primary) 55%, var(--accent-grad-end) 100%);
       border-color: transparent;
-      color: #FFFFFF;
+      color: var(--accent-on-solid, #FFFFFF);
       box-shadow: 0 6px 16px -3px var(--accent-glow), inset 0 1.5px 2px rgba(255, 255, 255, 0.5);
     }
     .check-btn.just-completed {
@@ -759,7 +906,7 @@
     }
     .check-btn.completed .seal-seed-ring {
       border-style: solid;
-      border-color: rgba(255, 255, 255, 0.32);
+      border-color: var(--accent-on-solid-ring, rgba(255, 255, 255, 0.32));
       transform: scale(0.94);
     }
 
@@ -982,7 +1129,7 @@
     .inspector-toggle-pill.is-open .inspector-icon-orb {
       transform: rotate(180deg) scale(1.05);
       background: linear-gradient(135deg, var(--accent-grad-start) 0%, var(--accent-primary) 55%, var(--accent-grad-end) 100%);
-      color: #FFFFFF;
+      color: var(--accent-on-solid, #FFFFFF);
       box-shadow: 0 3px 8px -2px var(--accent-glow);
     }
     .inspector-drawer-grid {
@@ -1176,7 +1323,7 @@
     .welcome-seed-tile.is-picked .welcome-seed-seal {
       background: linear-gradient(135deg, var(--accent-grad-start) 0%, var(--accent-primary) 55%, var(--accent-grad-end) 100%);
       border-color: transparent;
-      color: #FFFFFF;
+      color: var(--accent-on-solid, #FFFFFF);
       box-shadow: 0 4px 12px -2px var(--accent-glow);
     }
 
@@ -1211,12 +1358,12 @@
       height: 200%;
       border-radius: 42%;
       background: linear-gradient(180deg, var(--accent-grad-start) 0%, var(--accent-primary) 65%, var(--accent-grad-end) 100%);
-      opacity: 0.78;
+      opacity: var(--liquid-wave-opacity, 0.78);
       animation: liquidWaveSpin 8.5s linear infinite;
     }
     .liquid-wave-layer-back {
       border-radius: 45%;
-      opacity: 0.44;
+      opacity: var(--liquid-wave-back-opacity, 0.44);
       animation: liquidWaveSpinReverse 12s linear infinite;
     }
     @keyframes liquidWaveSpin {
@@ -1785,7 +1932,7 @@
     .habit-swipe-track.is-forward {
       background: linear-gradient(115deg, var(--accent-grad-start) 0%, var(--accent-primary) 55%, var(--accent-grad-end) 100%);
       box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.35);
-      color: #FFFFFF;
+      color: var(--accent-on-solid, #FFFFFF);
     }
     .habit-swipe-track.is-undo {
       background: linear-gradient(245deg, var(--accent-secondary) 0%, rgba(224, 122, 95, 0.78) 65%, var(--accent-secondary-soft) 100%);
@@ -1815,8 +1962,8 @@
       width: 28px;
       height: 28px;
       border-radius: 10px;
-      background: rgba(255, 255, 255, 0.24);
-      border: 1px solid rgba(255, 255, 255, 0.38);
+      background: var(--accent-on-solid-chip, rgba(255, 255, 255, 0.24));
+      border: 1px solid var(--accent-on-solid-chip-border, rgba(255, 255, 255, 0.38));
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -1992,7 +2139,7 @@
     .sanctuary-stage-node.is-reached {
       background: linear-gradient(135deg, var(--accent-grad-start) 0%, var(--accent-primary) 55%, var(--accent-grad-end) 100%);
       border-color: transparent;
-      color: #FFFFFF;
+      color: var(--accent-on-solid, #FFFFFF);
       box-shadow: 0 4px 12px -3px var(--accent-glow);
     }
     .sanctuary-stage-node.is-current {
@@ -2101,7 +2248,7 @@
     }
     .habit-timer-chip.is-live {
       background: linear-gradient(135deg, var(--accent-grad-start) 0%, var(--accent-primary) 100%);
-      color: #FFFFFF;
+      color: var(--accent-on-solid, #FFFFFF);
       box-shadow: 0 3px 10px -3px var(--accent-glow);
     }
 
@@ -2802,7 +2949,7 @@
           </div>
 
           <!-- Ambient Sky Mesh Visual Selector Cards (Classic Static Mesh vs. Living Real-Time Sky) -->
-          <div class="pt-2 border-t border-subtle-cozy space-y-2.5">
+          <div id="settings-sky-mesh-section" class="sky-mesh-section pt-2 border-t border-subtle-cozy space-y-2.5">
             <div class="flex items-center justify-between gap-2">
               <p class="text-xs font-semibold text-cozy-primary">Ambient Sky Mesh</p>
               <span id="settings-sky-phase-pill" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full accent-bg-soft accent-text text-[10px] font-bold leading-none">
@@ -2811,7 +2958,7 @@
               </span>
             </div>
 
-            <div class="grid grid-cols-2 gap-3" role="radiogroup" aria-label="Ambient Sky Mesh Mode">
+            <div class="sky-mesh-cards-grid grid grid-cols-2 gap-3" role="radiogroup" aria-label="Ambient Sky Mesh Mode">
               <!-- Classic Static Mesh Card -->
               <button type="button" onclick="setLivingSky(false)" id="sky-card-static" role="radio" aria-checked="false"
                 class="sky-mode-card p-3 rounded-2xl text-left flex flex-col justify-between h-24">
@@ -2867,18 +3014,41 @@
             </button>
           </div>
 
-          <!-- Cozy Accent Palette Selector (8 Colors: 4 Visible at a time, Swipe Left/Right) -->
+          <!-- Pure Canvas (OLED Black / Pure White) Switch Row -->
+          <div class="flex items-center justify-between pt-2 border-t border-subtle-cozy">
+            <div class="min-w-0 pr-2">
+              <p class="text-xs font-semibold text-cozy-primary">Pure Canvas</p>
+              <p id="settings-pure-canvas-subtitle" class="text-[11px] text-cozy-secondary">OLED Black &amp; Pure White · No orbs</p>
+            </div>
+            <button id="toggle-pure-canvas-btn" onclick="togglePreference('pureCanvas')" role="switch" aria-checked="false"
+              class="cozy-switch-track">
+              <span id="toggle-pure-canvas-knob" class="cozy-switch-knob">
+                <i class="ph-fill ph-circle-half"></i>
+              </span>
+            </button>
+          </div>
+
+          <!-- Cozy Accent Palette Selector (8 Colors + 1-Tap Mono Pill) -->
           <div class="pt-2 border-t border-subtle-cozy">
-            <div class="flex items-center justify-between mb-2">
-              <div>
+            <div class="flex items-center justify-between gap-2 mb-2">
+              <div class="min-w-0">
                 <p class="text-xs font-semibold text-cozy-primary">Cozy Glass Accent Color</p>
-                <p class="text-[10px] text-cozy-muted">Swipe left or right for more palettes</p>
+                <p class="text-[10px] text-cozy-muted">Swipe for colors · Tap Mono for B&amp;W</p>
               </div>
-              <div class="flex items-center gap-1.5">
-                <button type="button" onclick="scrollAccentCarousel(0)" id="accent-dot-0" aria-label="First 4 colors"
-                  class="w-4 h-1.5 rounded-full accent-bg transition-all duration-300"></button>
-                <button type="button" onclick="scrollAccentCarousel(1)" id="accent-dot-1" aria-label="Next 4 colors"
-                  class="w-1.5 h-1.5 rounded-full bg-cozy-muted/40 transition-all duration-300"></button>
+              <div class="flex items-center gap-2 flex-shrink-0">
+                <button type="button" onclick="setAccent('mono')" data-accent-btn="mono" id="accent-mono-pill"
+                  title="Monochrome black &amp; white accent" aria-label="Monochrome black and white accent"
+                  class="accent-choice-btn px-2 py-1 rounded-full border border-cozy bg-cozy-secondary/60 inline-flex items-center gap-1.5 transition">
+                  <span class="w-3.5 h-3.5 rounded-full inline-block flex-shrink-0 border border-cozy"
+                    style="background: linear-gradient(135deg, #18181B 50%, #F4F4F5 50%);"></span>
+                  <span class="text-[10px] font-bold text-cozy-primary leading-none">Mono</span>
+                </button>
+                <div class="flex items-center gap-1.5">
+                  <button type="button" onclick="scrollAccentCarousel(0)" id="accent-dot-0" aria-label="First 4 colors"
+                    class="w-4 h-1.5 rounded-full accent-bg transition-all duration-300"></button>
+                  <button type="button" onclick="scrollAccentCarousel(1)" id="accent-dot-1" aria-label="Next 4 colors"
+                    class="w-1.5 h-1.5 rounded-full bg-cozy-muted/40 transition-all duration-300"></button>
+                </div>
               </div>
             </div>
 
@@ -3473,7 +3643,7 @@
               <label class="text-xs font-semibold text-cozy-secondary">Card Color</label>
               <span id="modal-color-helper" class="text-[11px] font-semibold accent-text">App Theme</span>
             </div>
-            <div id="modal-color-picker" class="flex items-center justify-between gap-1 px-2.5 py-2 rounded-2xl bg-cozy-secondary/60 border border-cozy">
+            <div id="modal-color-picker" class="grid grid-cols-5 gap-2 place-items-center px-3 py-2.5 rounded-2xl bg-cozy-secondary/60 border border-cozy">
               <!-- Populated by JS -->
             </div>
           </div>
@@ -3661,7 +3831,8 @@
       { id: 'rose', label: 'Blossom', grad: 'linear-gradient(135deg, #DF91A3, #B05D70)' },
       { id: 'amber', label: 'Honey', grad: 'linear-gradient(135deg, #E2A659, #B07327)' },
       { id: 'matcha', label: 'Matcha', grad: 'linear-gradient(135deg, #8AB577, #578046)' },
-      { id: 'blue', label: 'Azure', grad: 'linear-gradient(135deg, #6499F0, #2959B0)' }
+      { id: 'blue', label: 'Azure', grad: 'linear-gradient(135deg, #6499F0, #2959B0)' },
+      { id: 'mono', label: 'Mono', grad: 'linear-gradient(135deg, #18181B 50%, #F4F4F5 50%)' }
     ];
 
     function getHabitColorAccent(habit) {
@@ -3766,6 +3937,7 @@
         companion: 'fern',
         theme: 'light',
         autoThemeByTime: false,
+        pureCanvas: false,
         accent: 'sage',
         livingSky: true,
         soundEnabled: true,
@@ -3926,6 +4098,7 @@
           companion: 'fern',
           theme: 'light',
           autoThemeByTime: false,
+          pureCanvas: false,
           accent: 'sage',
           livingSky: true,
           soundEnabled: true,
@@ -4027,6 +4200,7 @@
             state.user.hapticsEnabled = state.user.hapticsEnabled !== false;
             state.user.livingSky = state.user.livingSky !== false;
             state.user.autoThemeByTime = Boolean(state.user.autoThemeByTime);
+            state.user.pureCanvas = Boolean(state.user.pureCanvas);
             state.logs = parsed.logs && typeof parsed.logs === 'object' ? parsed.logs : {};
             state.counts = parsed.counts && typeof parsed.counts === 'object' ? parsed.counts : {};
             state.restDays = parsed.restDays && typeof parsed.restDays === 'object' ? parsed.restDays : {};
@@ -4216,11 +4390,16 @@
 
     function setLivingSky(enabled) {
       const next = Boolean(enabled);
-      const changed = (state.user.livingSky !== false) !== next;
+      const wasPure = Boolean(state.user.pureCanvas);
+      const changed = (state.user.livingSky !== false) !== next || wasPure;
       state.user.livingSky = next;
+      if (wasPure) {
+        state.user.pureCanvas = false;
+      }
       saveState();
-      applyLivingSkyToDOM();
-      updateLivingSkySettingsUIOnly();
+      applyThemeAndAccentToDOM();
+      renderSettingsView();
+      if (wasPure && state.ui.activeTab === 'insights') renderHeatmap(false);
       if (changed) {
         playCozySound(next ? 'check' : 'tap');
         triggerHaptic('tap');
@@ -4234,11 +4413,13 @@
 
     function updateLivingSkySettingsUIOnly() {
       const skyEnabled = state.user.livingSky !== false;
+      const pureActive = Boolean(state.user.pureCanvas);
       const mins = getCurrentDayMinutes();
       const isDark = state.user.theme === 'dark';
       const sky = computeInterpolatedSky(mins, isDark);
       const clockStr = formatMinutesToClock(mins);
 
+      const skySection = document.getElementById('settings-sky-mesh-section');
       const livingCard = document.getElementById('sky-card-living');
       const staticCard = document.getElementById('sky-card-static');
       const livingBadge = document.getElementById('sky-living-check-badge');
@@ -4248,14 +4429,17 @@
       const phaseText = document.getElementById('settings-sky-phase-text');
       const liveDot = document.getElementById('settings-sky-live-dot');
 
-      if (livingCard && staticCard) {
-        livingCard.classList.toggle('is-active', skyEnabled);
-        staticCard.classList.toggle('is-active', !skyEnabled);
-        livingCard.setAttribute('aria-checked', String(skyEnabled));
-        staticCard.setAttribute('aria-checked', String(!skyEnabled));
+      if (skySection) {
+        skySection.classList.toggle('is-paused-for-pure', pureActive);
       }
-      if (livingBadge) livingBadge.classList.toggle('hidden', !skyEnabled);
-      if (staticBadge) staticBadge.classList.toggle('hidden', skyEnabled);
+      if (livingCard && staticCard) {
+        livingCard.classList.toggle('is-active', skyEnabled && !pureActive);
+        staticCard.classList.toggle('is-active', !skyEnabled && !pureActive);
+        livingCard.setAttribute('aria-checked', String(skyEnabled && !pureActive));
+        staticCard.setAttribute('aria-checked', String(!skyEnabled && !pureActive));
+      }
+      if (livingBadge) livingBadge.classList.toggle('hidden', !skyEnabled || pureActive);
+      if (staticBadge) staticBadge.classList.toggle('hidden', skyEnabled || pureActive);
       if (livingIcon) livingIcon.textContent = sky.icon;
       if (livingSub) livingSub.textContent = `${sky.label} · ${clockStr}`;
 
@@ -4266,21 +4450,29 @@
       });
 
       if (phaseText) {
-        phaseText.textContent = skyEnabled ? `Live · ${clockStr}` : 'Static Glow';
+        phaseText.textContent = pureActive
+          ? 'Paused · Pure Canvas'
+          : (skyEnabled ? `Live · ${clockStr}` : 'Static Glow');
       }
       if (liveDot) {
-        liveDot.classList.toggle('hidden', !skyEnabled);
+        liveDot.classList.toggle('hidden', !skyEnabled || pureActive);
       }
     }
 
     function applyThemeAndAccentToDOM() {
       syncAutoThemeIfEnabled();
       const root = document.documentElement;
-      root.setAttribute('data-theme', state.user.theme === 'dark' ? 'dark' : 'light');
+      const isDark = state.user.theme === 'dark';
+      const isPure = Boolean(state.user.pureCanvas);
+      root.setAttribute('data-theme', isDark ? 'dark' : 'light');
       root.setAttribute('data-accent', state.user.accent || 'sage');
+      if (isPure) {
+        root.setAttribute('data-surface', 'pure');
+      } else {
+        root.removeAttribute('data-surface');
+      }
       applyLivingSkyToDOM();
 
-      const isDark = state.user.theme === 'dark';
       const quickIcon = document.getElementById('quick-theme-icon');
       if (quickIcon) {
         quickIcon.className = isDark
@@ -4290,7 +4482,10 @@
 
       const metaTheme = document.getElementById('meta-theme-color');
       if (metaTheme) {
-        metaTheme.setAttribute('content', isDark ? '#121316' : '#F7F3EB');
+        metaTheme.setAttribute(
+          'content',
+          isPure ? (isDark ? '#000000' : '#FFFFFF') : (isDark ? '#121316' : '#F7F3EB')
+        );
       }
       const metaAppleStatus = document.getElementById('meta-apple-status');
       if (metaAppleStatus) {
@@ -6569,10 +6764,11 @@
       }
       const alphas = [0, 0.24, 0.44, 0.68, 0.94];
       const a = alphas[Math.min(4, level)];
+      const isBrightAccent = (r * 0.299 + g * 0.587 + b * 0.114) > 195;
       return {
         bg: `rgba(${r}, ${g}, ${b}, ${a})`,
         border: `rgba(${r}, ${g}, ${b}, ${Math.min(1, a + 0.14)})`,
-        text: level >= 3 ? '#FFFFFF' : 'var(--text-primary)'
+        text: level >= 3 ? (isBrightAccent ? '#09090B' : '#FFFFFF') : 'var(--text-primary)'
       };
     }
 
@@ -7992,7 +8188,12 @@
         if (opt.id) btn.setAttribute('data-accent', opt.id);
         btn.className = `ritual-color-swatch ${picked ? 'is-selected' : ''}`;
 
-        if (opt.grad) {
+        if (opt.id === 'mono') {
+          btn.style.background = opt.grad;
+          btn.innerHTML = picked
+            ? '<span class="w-4 h-4 rounded-full bg-[#18181B] text-white flex items-center justify-center shadow-xs"><i class="ph-bold ph-check text-[9px]"></i></span>'
+            : '';
+        } else if (opt.grad) {
           btn.style.background = opt.grad;
           btn.innerHTML = picked
             ? '<i class="ph-bold ph-check text-white text-[11px] drop-shadow-xs"></i>'
@@ -8000,8 +8201,8 @@
         } else {
           btn.style.background = 'linear-gradient(135deg, var(--accent-grad-start), var(--accent-grad-end))';
           btn.innerHTML = picked
-            ? '<i class="ph-bold ph-sparkle text-white text-[11px] drop-shadow-xs"></i>'
-            : '<i class="ph-bold ph-sparkle text-white/85 text-[10px]"></i>';
+            ? '<i class="ph-bold ph-sparkle text-[11px] drop-shadow-xs" style="color: var(--accent-on-solid, #FFFFFF);"></i>'
+            : '<i class="ph-bold ph-sparkle text-[10px] opacity-85" style="color: var(--accent-on-solid, #FFFFFF);"></i>';
         }
         container.appendChild(btn);
       });
@@ -9711,6 +9912,20 @@
           showToast(`Auto Day/Night on · ${state.user.theme === 'dark' ? 'Night' : 'Daylight'}`, state.user.theme === 'dark' ? '🌙' : '☀️');
         }
       }
+      if (key === 'pureCanvas') {
+        applyThemeAndAccentToDOM();
+        renderSettingsView();
+        if (state.ui.activeTab === 'insights') renderHeatmap(false);
+        playCozySound(state.user.pureCanvas ? 'check' : 'tap');
+        triggerHaptic('tap');
+        const isDarkNow = state.user.theme === 'dark';
+        showToast(
+          state.user.pureCanvas
+            ? (isDarkNow ? 'Pure OLED Black on' : 'Pure White Canvas on')
+            : 'Frosted glass mesh restored',
+          state.user.pureCanvas ? (isDarkNow ? '🖤' : '🤍') : '✨'
+        );
+      }
       if (key === 'showQuotes' || key === 'autoSortCompleted' || key === 'groupByTimeOfDay') {
         renderTodayView(false);
         if (key === 'groupByTimeOfDay') {
@@ -9723,6 +9938,7 @@
     function renderSettingsView() {
       const isDark = state.user.theme === 'dark';
 
+      const isPure = Boolean(state.user.pureCanvas);
       const lightCard = document.getElementById('theme-card-light');
       const darkCard = document.getElementById('theme-card-dark');
       const lightBadge = document.getElementById('light-check-badge');
@@ -9748,8 +9964,18 @@
       const autoThemeBtn = document.getElementById('toggle-auto-theme-btn');
       if (autoThemeBtn) autoThemeBtn.setAttribute('aria-checked', String(Boolean(state.user.autoThemeByTime)));
 
+      const pureBtn = document.getElementById('toggle-pure-canvas-btn');
+      const pureSub = document.getElementById('settings-pure-canvas-subtitle');
+      if (pureBtn) pureBtn.setAttribute('aria-checked', String(isPure));
+      if (pureSub) {
+        pureSub.textContent = isPure
+          ? (isDark ? 'Active · True OLED #000' : 'Active · Crisp Pure White #FFF')
+          : 'OLED Black & Pure White · No orbs';
+      }
+
       const prefBindings = [
         { key: 'autoThemeByTime', btnId: 'toggle-auto-theme-btn', knobId: 'toggle-auto-theme-knob' },
+        { key: 'pureCanvas', btnId: 'toggle-pure-canvas-btn', knobId: 'toggle-pure-canvas-knob' },
         { key: 'soundEnabled', btnId: 'toggle-sound-btn', knobId: 'toggle-sound-knob' },
         { key: 'hapticsEnabled', btnId: 'toggle-haptics-btn', knobId: 'toggle-haptics-knob' },
         { key: 'confettiEnabled', btnId: 'toggle-confetti-btn', knobId: 'toggle-confetti-knob' },
@@ -9762,6 +9988,7 @@
         const knob = document.getElementById(knobId);
         const enabled = Boolean(state.user[key]);
         if (btn && knob) {
+          btn.classList.toggle('is-on', enabled);
           btn.style.backgroundColor = enabled ? 'var(--accent-primary)' : 'var(--bg-secondary)';
           knob.style.transform = enabled ? 'translateX(20px)' : 'translateX(0px)';
         }
@@ -9821,6 +10048,7 @@
             state.user.hapticsEnabled = state.user.hapticsEnabled !== false;
             state.user.livingSky = state.user.livingSky !== false;
             state.user.autoThemeByTime = Boolean(state.user.autoThemeByTime);
+            state.user.pureCanvas = Boolean(state.user.pureCanvas);
             state.logs = parsed.logs && typeof parsed.logs === 'object' ? parsed.logs : {};
             state.counts = parsed.counts && typeof parsed.counts === 'object' ? parsed.counts : {};
             state.restDays = parsed.restDays && typeof parsed.restDays === 'object' ? parsed.restDays : {};

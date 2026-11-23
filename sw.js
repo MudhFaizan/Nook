@@ -1,11 +1,11 @@
-const CACHE_VERSION = 'v34';
+const CACHE_VERSION = 'v37';
 const UPDATE_INFO = {
   version: CACHE_VERSION,
-  title: 'Refined Appearance Layout',
-  summary: 'Cleaner Settings appearance cards with Classic Mesh and Living Sky stacked directly beneath Cozy Daylight and Lo-Fi Night.',
+  title: 'Monochrome Accent & Ritual Swatch',
+  summary: 'Added a 1-tap Mono black-and-white accent pill in Settings plus a Mono card color swatch in Add / Edit Ritual.',
   highlights: [
-    'Removed duplicate Dark Mode switch in favor of the visual Daylight / Night cards',
-    'Classic Mesh and Living Sky cards now sit directly below Light & Dark mode'
+    '1-tap Mono pill in Settings → Appearance for pure ink-black (Light) & platinum-white (Dark) highlights',
+    'Mono swatch added to the per-ritual Card Color picker with smart contrast across buttons, seals & heatmaps'
   ]
 };
 const APP_SHELL_CACHE = `nook-shell-${CACHE_VERSION}`;
