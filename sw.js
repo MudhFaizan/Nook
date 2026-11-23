@@ -1,11 +1,11 @@
-const CACHE_VERSION = 'v30';
+const CACHE_VERSION = 'v34';
 const UPDATE_INFO = {
   version: CACHE_VERSION,
-  title: 'Dewdrop Arc, Liquid Ripples & Mobile Haptics',
-  summary: 'Checking off rituals now launches a glowing dewdrop into the Today orb with liquid ripples, 100% rising sanctuary shimmer, and optional mobile haptics.',
+  title: 'Refined Appearance Layout',
+  summary: 'Cleaner Settings appearance cards with Classic Mesh and Living Sky stacked directly beneath Cozy Daylight and Lo-Fi Night.',
   highlights: [
-    'Glowing dewdrop arcs from each ritual into the Today liquid orb with surface ripples & bubbles',
-    'Soft rising petal & firefly shimmer at 100% plus a Gentle Mobile Haptics toggle in Settings'
+    'Removed duplicate Dark Mode switch in favor of the visual Daylight / Night cards',
+    'Classic Mesh and Living Sky cards now sit directly below Light & Dark mode'
   ]
 };
 const APP_SHELL_CACHE = `nook-shell-${CACHE_VERSION}`;

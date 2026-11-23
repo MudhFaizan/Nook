@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Nook v30 -->
+<!-- Nook v34 -->
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -108,6 +108,59 @@
       
       --shadow-glass: 0 12px 32px -6px rgba(0, 0, 0, 0.45), 0 2px 8px -1px rgba(0, 0, 0, 0.3), inset 0 1px 0.5px rgba(255, 255, 255, 0.12);
       --shadow-float: 0 20px 44px -8px rgba(0, 0, 0, 0.65), inset 0 1px 1px rgba(255, 255, 255, 0.16);
+    }
+
+    /* Living Sky Ambient Mesh Palettes (Time-of-Day Shifting Orbs — Light & Dark) */
+    [data-sky="morning"] {
+      --orb-1: rgba(249, 198, 152, 0.56);
+      --orb-2: rgba(242, 168, 154, 0.46);
+      --orb-3: rgba(250, 224, 156, 0.50);
+      --orb-4: rgba(188, 212, 194, 0.40);
+    }
+    [data-theme="dark"][data-sky="morning"] {
+      --orb-1: rgba(168, 108, 72, 0.36);
+      --orb-2: rgba(148, 78, 82, 0.30);
+      --orb-3: rgba(154, 122, 64, 0.28);
+      --orb-4: rgba(74, 106, 94, 0.30);
+    }
+
+    [data-sky="afternoon"] {
+      --orb-1: rgba(138, 194, 174, 0.54);
+      --orb-2: rgba(156, 202, 224, 0.48);
+      --orb-3: rgba(240, 222, 164, 0.44);
+      --orb-4: rgba(182, 212, 198, 0.42);
+    }
+    [data-theme="dark"][data-sky="afternoon"] {
+      --orb-1: rgba(68, 122, 106, 0.40);
+      --orb-2: rgba(66, 108, 134, 0.34);
+      --orb-3: rgba(128, 114, 62, 0.26);
+      --orb-4: rgba(76, 114, 118, 0.32);
+    }
+
+    [data-sky="evening"] {
+      --orb-1: rgba(238, 154, 122, 0.54);
+      --orb-2: rgba(214, 152, 184, 0.48);
+      --orb-3: rgba(244, 196, 124, 0.52);
+      --orb-4: rgba(186, 158, 204, 0.44);
+    }
+    [data-theme="dark"][data-sky="evening"] {
+      --orb-1: rgba(176, 92, 66, 0.38);
+      --orb-2: rgba(134, 72, 114, 0.34);
+      --orb-3: rgba(162, 112, 52, 0.32);
+      --orb-4: rgba(98, 72, 128, 0.34);
+    }
+
+    [data-sky="night"] {
+      --orb-1: rgba(158, 174, 216, 0.50);
+      --orb-2: rgba(186, 162, 208, 0.46);
+      --orb-3: rgba(142, 186, 188, 0.42);
+      --orb-4: rgba(208, 188, 178, 0.36);
+    }
+    [data-theme="dark"][data-sky="night"] {
+      --orb-1: rgba(66, 84, 146, 0.44);
+      --orb-2: rgba(102, 74, 142, 0.38);
+      --orb-3: rgba(54, 102, 108, 0.34);
+      --orb-4: rgba(124, 88, 74, 0.24);
     }
 
     /* Cozy Accent Theme Overrides (Global App Theme & Per-Ritual Swatches) */
@@ -335,7 +388,91 @@
       -webkit-filter: blur(55px);
       opacity: 0.85;
       will-change: transform;
-      transition: background 0.6s ease;
+      transition: background 1.8s ease-in-out;
+    }
+    /* Unique Visual Selector Cards for Living Sky vs. Classic Mesh */
+    .sky-mode-card {
+      position: relative;
+      overflow: hidden;
+      background: var(--bg-glass-elevated);
+      border: 2px solid transparent;
+      box-shadow: var(--shadow-glass);
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+                  border-color 0.28s ease,
+                  box-shadow 0.3s ease;
+    }
+    .sky-mode-card:hover {
+      transform: translateY(-1.5px);
+    }
+    .sky-mode-card.is-active {
+      border-color: var(--accent-primary);
+      box-shadow: 0 8px 20px -8px var(--accent-glow), inset 0 1px 1px rgba(255, 255, 255, 0.55);
+    }
+    .sky-mini-orb {
+      position: absolute;
+      border-radius: 9999px;
+      filter: blur(18px);
+      -webkit-filter: blur(18px);
+      pointer-events: none;
+      opacity: 0.92;
+      transition: background-color 1.4s ease-in-out;
+    }
+    .sky-mini-orb-live-1 {
+      width: 72px;
+      height: 72px;
+      top: -22px;
+      left: -16px;
+      animation: skyMiniDriftA 9s ease-in-out infinite alternate;
+    }
+    .sky-mini-orb-live-2 {
+      width: 68px;
+      height: 68px;
+      top: 6px;
+      right: -18px;
+      animation: skyMiniDriftB 11s ease-in-out infinite alternate;
+    }
+    .sky-mini-orb-live-3 {
+      width: 64px;
+      height: 64px;
+      bottom: -26px;
+      left: 28%;
+      animation: skyMiniDriftA 13s ease-in-out infinite alternate-reverse;
+    }
+    .sky-mini-orb-static-1 {
+      width: 68px;
+      height: 68px;
+      top: -22px;
+      left: -14px;
+      background: rgba(132, 178, 155, 0.55);
+    }
+    .sky-mini-orb-static-2 {
+      width: 62px;
+      height: 62px;
+      bottom: -20px;
+      right: -14px;
+      background: rgba(235, 162, 138, 0.48);
+    }
+    [data-theme="dark"] .sky-mini-orb-static-1 {
+      background: rgba(72, 112, 92, 0.52);
+    }
+    [data-theme="dark"] .sky-mini-orb-static-2 {
+      background: rgba(158, 86, 68, 0.42);
+    }
+    @keyframes skyMiniDriftA {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(12px, 8px) scale(1.12); }
+    }
+    @keyframes skyMiniDriftB {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(-12px, 10px) scale(0.92); }
+    }
+    .sky-live-pulse-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 9999px;
+      background: var(--accent-primary);
+      box-shadow: 0 0 8px var(--accent-glow);
+      animation: timerDotPulse 2s ease-in-out infinite;
     }
     .orb-1 {
       width: 280px;
@@ -2664,16 +2801,68 @@
             </button>
           </div>
 
-          <!-- Explicit Smooth Toggle Switch Row -->
-          <div class="flex items-center justify-between pt-2 border-t border-subtle-cozy">
-            <div>
-              <p class="text-xs font-semibold text-cozy-primary">Dark Mode</p>
-              <p class="text-[11px] text-cozy-secondary">Switch between frosted daylight & night glass</p>
+          <!-- Ambient Sky Mesh Visual Selector Cards (Classic Static Mesh vs. Living Real-Time Sky) -->
+          <div class="pt-2 border-t border-subtle-cozy space-y-2.5">
+            <div class="flex items-center justify-between gap-2">
+              <p class="text-xs font-semibold text-cozy-primary">Ambient Sky Mesh</p>
+              <span id="settings-sky-phase-pill" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full accent-bg-soft accent-text text-[10px] font-bold leading-none">
+                <span id="settings-sky-live-dot" class="sky-live-pulse-dot"></span>
+                <span id="settings-sky-phase-text">Live · 12:00 PM</span>
+              </span>
             </div>
-            <button id="settings-dark-toggle" onclick="toggleTheme()" role="switch" aria-checked="false"
+
+            <div class="grid grid-cols-2 gap-3" role="radiogroup" aria-label="Ambient Sky Mesh Mode">
+              <!-- Classic Static Mesh Card -->
+              <button type="button" onclick="setLivingSky(false)" id="sky-card-static" role="radio" aria-checked="false"
+                class="sky-mode-card p-3 rounded-2xl text-left flex flex-col justify-between h-24">
+                <span class="sky-mini-orb sky-mini-orb-static-1" aria-hidden="true"></span>
+                <span class="sky-mini-orb sky-mini-orb-static-2" aria-hidden="true"></span>
+
+                <div class="relative z-10 flex items-center justify-between w-full">
+                  <span class="w-7 h-7 rounded-xl bg-cozy-elevated/90 border border-cozy accent-text flex items-center justify-center shadow-2xs">
+                    <i class="ph-fill ph-sparkle text-sm"></i>
+                  </span>
+                  <span id="sky-static-check-badge" class="w-5 h-5 rounded-full accent-bg text-white flex items-center justify-center text-xs shadow-xs hidden">
+                    <i class="ph-bold ph-check"></i>
+                  </span>
+                </div>
+                <div class="relative z-10">
+                  <p class="text-xs font-bold text-cozy-primary leading-tight">Classic Mesh</p>
+                  <p class="text-[10px] text-cozy-secondary leading-tight mt-0.5 truncate">Calm static glow</p>
+                </div>
+              </button>
+
+              <!-- Living Real-Time Sky Card -->
+              <button type="button" onclick="setLivingSky(true)" id="sky-card-living" role="radio" aria-checked="true"
+                class="sky-mode-card is-active p-3 rounded-2xl text-left flex flex-col justify-between h-24">
+                <span id="sky-mini-orb-1" class="sky-mini-orb sky-mini-orb-live-1" aria-hidden="true"></span>
+                <span id="sky-mini-orb-2" class="sky-mini-orb sky-mini-orb-live-2" aria-hidden="true"></span>
+                <span id="sky-mini-orb-3" class="sky-mini-orb sky-mini-orb-live-3" aria-hidden="true"></span>
+
+                <div class="relative z-10 flex items-center justify-between w-full">
+                  <span id="sky-card-living-icon" class="w-7 h-7 rounded-xl bg-cozy-elevated/90 border border-cozy flex items-center justify-center text-sm shadow-2xs">🌅</span>
+                  <span id="sky-living-check-badge" class="w-5 h-5 rounded-full accent-bg text-white flex items-center justify-center text-xs shadow-xs">
+                    <i class="ph-bold ph-check"></i>
+                  </span>
+                </div>
+                <div class="relative z-10">
+                  <p class="text-xs font-bold text-cozy-primary leading-tight">Living Sky</p>
+                  <p id="sky-card-living-sub" class="text-[10px] text-cozy-secondary leading-tight mt-0.5 truncate">Follows phone clock</p>
+                </div>
+              </button>
+            </div>
+          </div>
+
+          <!-- Optional Auto Day/Night Theme Sync -->
+          <div class="flex items-center justify-between pt-2 border-t border-subtle-cozy">
+            <div class="min-w-0 pr-2">
+              <p class="text-xs font-semibold text-cozy-primary">Auto Day / Night Theme</p>
+              <p class="text-[11px] text-cozy-secondary">Syncs with phone clock</p>
+            </div>
+            <button id="toggle-auto-theme-btn" onclick="togglePreference('autoThemeByTime')" role="switch" aria-checked="false"
               class="cozy-switch-track">
-              <span id="settings-dark-knob" class="cozy-switch-knob">
-                <i id="settings-knob-icon" class="ph-fill ph-sun"></i>
+              <span id="toggle-auto-theme-knob" class="cozy-switch-knob">
+                <i class="ph-fill ph-clock"></i>
               </span>
             </button>
           </div>
@@ -3576,7 +3765,9 @@
       user: {
         companion: 'fern',
         theme: 'light',
+        autoThemeByTime: false,
         accent: 'sage',
+        livingSky: true,
         soundEnabled: true,
         hapticsEnabled: true,
         confettiEnabled: true,
@@ -3734,7 +3925,9 @@
         user: {
           companion: 'fern',
           theme: 'light',
+          autoThemeByTime: false,
           accent: 'sage',
+          livingSky: true,
           soundEnabled: true,
           hapticsEnabled: true,
           confettiEnabled: true,
@@ -3832,6 +4025,8 @@
             }
             state.user.groupByTimeOfDay = state.user.groupByTimeOfDay !== false;
             state.user.hapticsEnabled = state.user.hapticsEnabled !== false;
+            state.user.livingSky = state.user.livingSky !== false;
+            state.user.autoThemeByTime = Boolean(state.user.autoThemeByTime);
             state.logs = parsed.logs && typeof parsed.logs === 'object' ? parsed.logs : {};
             state.counts = parsed.counts && typeof parsed.counts === 'object' ? parsed.counts : {};
             state.restDays = parsed.restDays && typeof parsed.restDays === 'object' ? parsed.restDays : {};
@@ -3876,10 +4071,214 @@
       }
     }
 
+    // Continuous 24-Hour Living Sky Keyframes (Smoothly interpolated minute-by-minute from real phone clock)
+    const LIVING_SKY_KEYFRAMES = [
+      {
+        min: 0, // 12:00 AM — Midnight
+        id: 'night', label: 'Midnight', icon: '🌙', mood: 'Deep twilight indigo & quiet starlight',
+        light: [[154, 170, 214, 0.50], [182, 158, 206, 0.46], [138, 182, 188, 0.42], [202, 184, 178, 0.34]],
+        dark:  [[60, 78, 142, 0.46],   [98, 70, 138, 0.40],   [50, 96, 106, 0.35],   [114, 82, 72, 0.24]]
+      },
+      {
+        min: 270, // 4:30 AM — Pre-Dawn
+        id: 'night', label: 'Pre-Dawn', icon: '🌌', mood: 'Soft periwinkle & first warm blush',
+        light: [[182, 176, 214, 0.50], [218, 174, 196, 0.46], [188, 192, 206, 0.42], [224, 194, 176, 0.38]],
+        dark:  [[88, 84, 146, 0.40],   [128, 82, 114, 0.34],  [78, 96, 124, 0.32],   [134, 92, 78, 0.26]]
+      },
+      {
+        min: 390, // 6:30 AM — Sunrise
+        id: 'morning', label: 'Sunrise', icon: '🌅', mood: 'Warm sunrise peach & rose gold',
+        light: [[250, 194, 148, 0.58], [244, 166, 154, 0.48], [252, 224, 152, 0.52], [188, 214, 194, 0.40]],
+        dark:  [[174, 108, 72, 0.38],  [152, 78, 84, 0.32],   [158, 124, 64, 0.30],  [76, 108, 94, 0.30]]
+      },
+      {
+        min: 570, // 9:30 AM — Morning
+        id: 'morning', label: 'Morning', icon: '🌤️', mood: 'Sunlit honey & fresh sage dew',
+        light: [[194, 216, 176, 0.54], [242, 198, 158, 0.46], [248, 228, 164, 0.48], [174, 210, 206, 0.42]],
+        dark:  [[104, 128, 96, 0.38],  [146, 108, 76, 0.30],  [144, 124, 68, 0.28],  [70, 112, 114, 0.32]]
+      },
+      {
+        min: 780, // 1:00 PM — Midday
+        id: 'afternoon', label: 'Midday', icon: '☀️', mood: 'Airy midday mint & clear sky',
+        light: [[138, 194, 174, 0.54], [154, 202, 226, 0.48], [240, 222, 164, 0.44], [182, 214, 198, 0.42]],
+        dark:  [[68, 122, 106, 0.40],  [66, 108, 136, 0.34],  [128, 114, 62, 0.26],  [76, 114, 118, 0.32]]
+      },
+      {
+        min: 975, // 4:15 PM — Late Sun
+        id: 'afternoon', label: 'Late Sun', icon: '🌾', mood: 'Warm afternoon honey & soft apricot',
+        light: [[212, 198, 152, 0.54], [238, 184, 144, 0.48], [246, 216, 146, 0.50], [176, 204, 190, 0.42]],
+        dark:  [[128, 114, 72, 0.38],  [154, 98, 72, 0.34],   [148, 118, 56, 0.30],  [78, 106, 102, 0.32]]
+      },
+      {
+        min: 1110, // 6:30 PM — Golden Hour
+        id: 'evening', label: 'Golden Hour', icon: '🌇', mood: 'Amber sunset & dusk orchid rose',
+        light: [[240, 152, 118, 0.56], [216, 148, 182, 0.50], [246, 194, 122, 0.52], [184, 156, 206, 0.44]],
+        dark:  [[178, 90, 64, 0.40],   [138, 70, 114, 0.35],  [164, 112, 52, 0.33],  [98, 72, 130, 0.35]]
+      },
+      {
+        min: 1245, // 8:45 PM — Twilight
+        id: 'night', label: 'Twilight', icon: '🌆', mood: 'Dusk violet & moonlit teal',
+        light: [[172, 166, 214, 0.52], [198, 156, 204, 0.46], [150, 184, 194, 0.42], [208, 180, 186, 0.38]],
+        dark:  [[82, 80, 148, 0.44],   [116, 72, 138, 0.38],  [58, 102, 112, 0.34],  [124, 82, 92, 0.28]]
+      }
+    ];
+
+    function getCurrentDayMinutes() {
+      const now = new Date();
+      return now.getHours() * 60 + now.getMinutes();
+    }
+
+    function normalizeDayMinutes(mins) {
+      const n = Math.round(Number(mins) || 0);
+      return ((n % 1440) + 1440) % 1440;
+    }
+
+    function formatMinutesToClock(mins) {
+      const m = normalizeDayMinutes(mins);
+      const h24 = Math.floor(m / 60);
+      const mm = String(m % 60).padStart(2, '0');
+      const suffix = h24 >= 12 ? 'PM' : 'AM';
+      const h12 = h24 % 12 || 12;
+      return `${h12}:${mm} ${suffix}`;
+    }
+
+    function computeInterpolatedSky(minutes, isDark) {
+      const m = normalizeDayMinutes(minutes);
+      const frames = LIVING_SKY_KEYFRAMES;
+      let prevIdx = frames.length - 1;
+      for (let i = 0; i < frames.length; i++) {
+        if (frames[i].min <= m) prevIdx = i;
+        else break;
+      }
+      const nextIdx = (prevIdx + 1) % frames.length;
+      const prev = frames[prevIdx];
+      const next = frames[nextIdx];
+
+      const span = nextIdx === 0 ? (1440 - prev.min + next.min) : (next.min - prev.min);
+      const elapsed = m >= prev.min ? (m - prev.min) : (1440 - prev.min + m);
+      const rawT = span > 0 ? Math.min(1, Math.max(0, elapsed / span)) : 0;
+      // Smoothstep easing so transitions feel natural without sudden color kinks
+      const t = rawT * rawT * (3 - 2 * rawT);
+
+      const modeKey = isDark ? 'dark' : 'light';
+      const orbs = prev[modeKey].map((c0, idx) => {
+        const c1 = next[modeKey][idx];
+        const r = Math.round(c0[0] + (c1[0] - c0[0]) * t);
+        const g = Math.round(c0[1] + (c1[1] - c0[1]) * t);
+        const b = Math.round(c0[2] + (c1[2] - c0[2]) * t);
+        const a = (c0[3] + (c1[3] - c0[3]) * t).toFixed(3);
+        return `rgba(${r}, ${g}, ${b}, ${a})`;
+      });
+
+      const meta = rawT >= 0.65 ? next : prev;
+      return {
+        minutes: m,
+        id: meta.id,
+        label: meta.label,
+        icon: meta.icon,
+        mood: meta.mood,
+        orbs
+      };
+    }
+
+    function getAutoThemeForMinutes(mins) {
+      const m = normalizeDayMinutes(mins);
+      // Daytime: 6:00 AM (360) through 6:59 PM (1139); Nighttime: 7:00 PM through 5:59 AM
+      return (m >= 360 && m < 1140) ? 'light' : 'dark';
+    }
+
+    function syncAutoThemeIfEnabled() {
+      if (!state.user.autoThemeByTime) return false;
+      const targetTheme = getAutoThemeForMinutes(getCurrentDayMinutes());
+      if (state.user.theme !== targetTheme) {
+        state.user.theme = targetTheme;
+        return true;
+      }
+      return false;
+    }
+
+    function applyLivingSkyToDOM() {
+      const root = document.documentElement;
+      if (state.user.livingSky === false) {
+        root.removeAttribute('data-sky');
+        ['--orb-1', '--orb-2', '--orb-3', '--orb-4'].forEach(v => root.style.removeProperty(v));
+        return null;
+      }
+      const mins = getCurrentDayMinutes();
+      const isDark = state.user.theme === 'dark';
+      const sky = computeInterpolatedSky(mins, isDark);
+      root.setAttribute('data-sky', sky.id);
+      sky.orbs.forEach((rgba, idx) => {
+        root.style.setProperty(`--orb-${idx + 1}`, rgba);
+      });
+      return sky;
+    }
+
+    function setLivingSky(enabled) {
+      const next = Boolean(enabled);
+      const changed = (state.user.livingSky !== false) !== next;
+      state.user.livingSky = next;
+      saveState();
+      applyLivingSkyToDOM();
+      updateLivingSkySettingsUIOnly();
+      if (changed) {
+        playCozySound(next ? 'check' : 'tap');
+        triggerHaptic('tap');
+        const sky = computeInterpolatedSky(getCurrentDayMinutes(), state.user.theme === 'dark');
+        showToast(
+          next ? `Living Sky on · ${sky.label}` : 'Classic static mesh on',
+          next ? sky.icon : '✨'
+        );
+      }
+    }
+
+    function updateLivingSkySettingsUIOnly() {
+      const skyEnabled = state.user.livingSky !== false;
+      const mins = getCurrentDayMinutes();
+      const isDark = state.user.theme === 'dark';
+      const sky = computeInterpolatedSky(mins, isDark);
+      const clockStr = formatMinutesToClock(mins);
+
+      const livingCard = document.getElementById('sky-card-living');
+      const staticCard = document.getElementById('sky-card-static');
+      const livingBadge = document.getElementById('sky-living-check-badge');
+      const staticBadge = document.getElementById('sky-static-check-badge');
+      const livingIcon = document.getElementById('sky-card-living-icon');
+      const livingSub = document.getElementById('sky-card-living-sub');
+      const phaseText = document.getElementById('settings-sky-phase-text');
+      const liveDot = document.getElementById('settings-sky-live-dot');
+
+      if (livingCard && staticCard) {
+        livingCard.classList.toggle('is-active', skyEnabled);
+        staticCard.classList.toggle('is-active', !skyEnabled);
+        livingCard.setAttribute('aria-checked', String(skyEnabled));
+        staticCard.setAttribute('aria-checked', String(!skyEnabled));
+      }
+      if (livingBadge) livingBadge.classList.toggle('hidden', !skyEnabled);
+      if (staticBadge) staticBadge.classList.toggle('hidden', skyEnabled);
+      if (livingIcon) livingIcon.textContent = sky.icon;
+      if (livingSub) livingSub.textContent = `${sky.label} · ${clockStr}`;
+
+      // Paint the miniature orbs inside the Living Sky preview card with the real-time interpolated colors
+      [0, 1, 2].forEach(i => {
+        const orbEl = document.getElementById(`sky-mini-orb-${i + 1}`);
+        if (orbEl && sky.orbs[i]) orbEl.style.backgroundColor = sky.orbs[i];
+      });
+
+      if (phaseText) {
+        phaseText.textContent = skyEnabled ? `Live · ${clockStr}` : 'Static Glow';
+      }
+      if (liveDot) {
+        liveDot.classList.toggle('hidden', !skyEnabled);
+      }
+    }
+
     function applyThemeAndAccentToDOM() {
+      syncAutoThemeIfEnabled();
       const root = document.documentElement;
       root.setAttribute('data-theme', state.user.theme === 'dark' ? 'dark' : 'light');
       root.setAttribute('data-accent', state.user.accent || 'sage');
+      applyLivingSkyToDOM();
 
       const isDark = state.user.theme === 'dark';
       const quickIcon = document.getElementById('quick-theme-icon');
@@ -4735,11 +5134,19 @@
     }
 
     function setTheme(mode) {
-      state.user.theme = mode === 'dark' ? 'dark' : 'light';
+      const nextMode = mode === 'dark' ? 'dark' : 'light';
+      const wasAuto = Boolean(state.user.autoThemeByTime);
+      state.user.theme = nextMode;
+      if (wasAuto) {
+        state.user.autoThemeByTime = false;
+      }
       saveState();
       applyThemeAndAccentToDOM();
       renderSettingsView();
       if (state.ui.activeTab === 'insights') renderHeatmap(false);
+      if (wasAuto) {
+        showToast('Switched to manual Light / Dark mode', nextMode === 'dark' ? '🌙' : '☀️');
+      }
     }
 
     function setAccent(accentName) {
@@ -8159,8 +8566,18 @@
     }
 
     document.addEventListener('visibilitychange', () => {
-      if (document.visibilityState === 'visible' && mindfulTimer.status === 'running') {
-        tickMindfulTimer();
+      if (document.visibilityState === 'visible') {
+        if (mindfulTimer.status === 'running') tickMindfulTimer();
+        const themeChanged = syncAutoThemeIfEnabled();
+        if (themeChanged) {
+          saveState();
+          applyThemeAndAccentToDOM();
+          if (state.ui.activeTab === 'insights') renderHeatmap(false);
+        } else {
+          applyLivingSkyToDOM();
+        }
+        renderHeader();
+        if (state.ui.activeTab === 'settings') renderSettingsView();
       }
     });
 
@@ -9284,6 +9701,16 @@
       if (key === 'hapticsEnabled' && state.user.hapticsEnabled) {
         triggerHaptic('check');
       }
+      if (key === 'autoThemeByTime') {
+        if (state.user.autoThemeByTime) {
+          syncAutoThemeIfEnabled();
+          saveState();
+          applyThemeAndAccentToDOM();
+          renderSettingsView();
+          if (state.ui.activeTab === 'insights') renderHeatmap(false);
+          showToast(`Auto Day/Night on · ${state.user.theme === 'dark' ? 'Night' : 'Daylight'}`, state.user.theme === 'dark' ? '🌙' : '☀️');
+        }
+      }
       if (key === 'showQuotes' || key === 'autoSortCompleted' || key === 'groupByTimeOfDay') {
         renderTodayView(false);
         if (key === 'groupByTimeOfDay') {
@@ -9308,19 +9735,6 @@
       if (lightBadge) lightBadge.classList.toggle('hidden', isDark);
       if (darkBadge) darkBadge.classList.toggle('hidden', !isDark);
 
-      const darkToggle = document.getElementById('settings-dark-toggle');
-      const darkKnob = document.getElementById('settings-dark-knob');
-      const knobIcon = document.getElementById('settings-knob-icon');
-      if (darkToggle && darkKnob) {
-        darkToggle.setAttribute('aria-checked', String(isDark));
-        darkToggle.style.backgroundColor = isDark ? 'var(--accent-primary)' : 'var(--bg-secondary)';
-        darkKnob.style.transform = isDark ? 'translateX(20px)' : 'translateX(0px)';
-        darkKnob.style.backgroundColor = '#FFFFFF';
-        if (knobIcon) {
-          knobIcon.className = isDark ? 'ph-fill ph-moon' : 'ph-fill ph-sun';
-        }
-      }
-
       document.querySelectorAll('.accent-choice-btn').forEach(btn => {
         const isCurrent = btn.getAttribute('data-accent-btn') === state.user.accent;
         btn.style.borderColor = isCurrent ? 'var(--accent-primary)' : 'var(--border-glass)';
@@ -9329,7 +9743,13 @@
 
       renderSettingsCompanions();
 
+      updateLivingSkySettingsUIOnly();
+
+      const autoThemeBtn = document.getElementById('toggle-auto-theme-btn');
+      if (autoThemeBtn) autoThemeBtn.setAttribute('aria-checked', String(Boolean(state.user.autoThemeByTime)));
+
       const prefBindings = [
+        { key: 'autoThemeByTime', btnId: 'toggle-auto-theme-btn', knobId: 'toggle-auto-theme-knob' },
         { key: 'soundEnabled', btnId: 'toggle-sound-btn', knobId: 'toggle-sound-knob' },
         { key: 'hapticsEnabled', btnId: 'toggle-haptics-btn', knobId: 'toggle-haptics-knob' },
         { key: 'confettiEnabled', btnId: 'toggle-confetti-btn', knobId: 'toggle-confetti-knob' },
@@ -9399,6 +9819,8 @@
             }
             state.user.groupByTimeOfDay = state.user.groupByTimeOfDay !== false;
             state.user.hapticsEnabled = state.user.hapticsEnabled !== false;
+            state.user.livingSky = state.user.livingSky !== false;
+            state.user.autoThemeByTime = Boolean(state.user.autoThemeByTime);
             state.logs = parsed.logs && typeof parsed.logs === 'object' ? parsed.logs : {};
             state.counts = parsed.counts && typeof parsed.counts === 'object' ? parsed.counts : {};
             state.restDays = parsed.restDays && typeof parsed.restDays === 'object' ? parsed.restDays : {};
@@ -10758,6 +11180,23 @@
       initSwipeGestures();
       registerServiceWorker();
       runSplashScreen(1500);
+
+      // Keep Living Sky (minute-by-minute), Auto Day/Night & greeting smoothly synced to real phone time
+      setInterval(() => {
+        const themeChanged = syncAutoThemeIfEnabled();
+        if (themeChanged) {
+          saveState();
+          applyThemeAndAccentToDOM();
+          if (state.ui.activeTab === 'insights') renderHeatmap(false);
+        } else {
+          applyLivingSkyToDOM();
+        }
+        renderHeader();
+        if (state.ui.activeTab === 'settings') {
+          if (themeChanged) renderSettingsView();
+          else updateLivingSkySettingsUIOnly();
+        }
+      }, 60000);
     });
   </script>
 </body>
