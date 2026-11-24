@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Nook v43 -->
+<!-- Nook v44 -->
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -1384,63 +1384,84 @@
       100% { transform: rotate(0deg); }
     }
 
-    /* Dewdrop Arc + Liquid Ripple Check-Off Animations */
-    .orb-impact-bounce {
-      animation: orbImpactBounce 0.56s cubic-bezier(0.34, 1.56, 0.64, 1);
+    /* Dewdrop Arc + Cozy Capsule Glow & Sheen Check-Off Animations */
+    .capsule-dew-settle {
+      animation: capsuleDewSettle 0.52s cubic-bezier(0.22, 1, 0.36, 1);
     }
-    @keyframes orbImpactBounce {
-      0% { transform: scale(1, 1); }
-      28% { transform: scale(1.085, 0.935); }
-      62% { transform: scale(0.965, 1.045); }
-      100% { transform: scale(1, 1); }
+    .capsule-dew-settle.is-complete {
+      animation: capsuleDewSettleComplete 0.64s cubic-bezier(0.22, 1, 0.36, 1);
     }
-    .wave-impact-slosh {
-      animation: waveSurfaceSlosh 0.62s cubic-bezier(0.22, 1, 0.36, 1);
+    @keyframes capsuleDewSettle {
+      0% {
+        transform: translateY(-2px) scale(1);
+        box-shadow: 0 8px 18px -6px var(--accent-glow), inset 0 1px 1px rgba(255, 255, 255, 0.65);
+      }
+      38% {
+        transform: translateY(-4.5px) scale(1.045);
+        box-shadow: 0 10px 24px -4px var(--accent-glow), 0 0 0 3px var(--accent-soft), inset 0 1px 2px rgba(255, 255, 255, 0.85);
+      }
+      100% {
+        transform: translateY(-2px) scale(1);
+        box-shadow: 0 8px 18px -6px var(--accent-glow), inset 0 1px 1px rgba(255, 255, 255, 0.65);
+      }
     }
-    @keyframes waveSurfaceSlosh {
+    @keyframes capsuleDewSettleComplete {
+      0% {
+        transform: translateY(-2px) scale(1);
+        box-shadow: 0 8px 18px -6px var(--accent-glow), inset 0 1px 1px rgba(255, 255, 255, 0.65);
+      }
+      40% {
+        transform: translateY(-5px) scale(1.06);
+        box-shadow: 0 12px 26px -3px var(--accent-glow), 0 0 0 4px var(--accent-soft), inset 0 1px 3px rgba(255, 255, 255, 0.9);
+      }
+      100% {
+        transform: translateY(-2px) scale(1);
+        box-shadow: 0 8px 18px -6px var(--accent-glow), inset 0 1px 1px rgba(255, 255, 255, 0.65);
+      }
+    }
+    .capsule-fill-glow {
+      animation: capsuleFillGlow 0.56s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    @keyframes capsuleFillGlow {
       0% { filter: brightness(1); }
-      30% { filter: brightness(1.18) saturate(1.15); }
+      35% { filter: brightness(1.16) saturate(1.12); }
       100% { filter: brightness(1); }
     }
-    .liquid-surface-ripple {
+    .capsule-liquid-sheen {
       position: absolute;
-      left: 50%;
-      top: 50%;
-      width: 20px;
-      height: 20px;
-      margin-left: -10px;
-      margin-top: -10px;
-      border-radius: 9999px;
-      border: 2px solid var(--ripple-color, var(--accent-primary));
-      box-shadow: 0 0 10px var(--ripple-glow, var(--accent-glow)), inset 0 0 6px rgba(255, 255, 255, 0.55);
+      inset: -12% -25%;
+      background: linear-gradient(
+        180deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.52) 48%,
+        var(--sheen-tint, var(--accent-soft)) 64%,
+        transparent 100%
+      );
       pointer-events: none;
-      animation: liquidRippleExpand 0.68s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      will-change: transform, opacity;
+      animation: capsuleLiquidSheen 0.62s cubic-bezier(0.22, 1, 0.36, 1) forwards;
     }
-    .liquid-surface-ripple.is-secondary {
-      border-width: 1.5px;
-      border-color: rgba(255, 255, 255, 0.78);
-      animation-delay: 0.11s;
-      animation-duration: 0.72s;
+    [data-theme="dark"] .capsule-liquid-sheen {
+      background: linear-gradient(
+        180deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.28) 48%,
+        var(--sheen-tint, var(--accent-soft)) 64%,
+        transparent 100%
+      );
     }
-    @keyframes liquidRippleExpand {
-      0% { transform: scale(0.45); opacity: 0.95; }
-      55% { opacity: 0.6; }
-      100% { transform: scale(4.2); opacity: 0; }
+    @keyframes capsuleLiquidSheen {
+      0% { transform: translateY(105%); opacity: 0; }
+      28% { opacity: 0.95; }
+      100% { transform: translateY(-105%); opacity: 0; }
     }
-    .liquid-micro-bubble {
-      position: absolute;
-      width: 5px;
-      height: 5px;
-      border-radius: 9999px;
-      background: radial-gradient(circle at 30% 30%, #FFFFFF 0%, rgba(255, 255, 255, 0.45) 75%);
-      box-shadow: 0 0 6px rgba(255, 255, 255, 0.65);
-      pointer-events: none;
-      animation: microBubbleRise 0.72s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    .pill-soft-bump {
+      animation: pillSoftBump 0.36s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
-    @keyframes microBubbleRise {
-      0% { opacity: 0; transform: translate(0, 8px) scale(0.4); }
-      25% { opacity: 0.95; transform: translate(var(--bx, 0px), -2px) scale(1.05); }
-      100% { opacity: 0; transform: translate(calc(var(--bx, 0px) * 1.5), -24px) scale(0.45); }
+    @keyframes pillSoftBump {
+      0% { transform: scale(1); }
+      45% { transform: scale(1.07); }
+      100% { transform: scale(1); }
     }
     .dewdrop-arc-orb {
       position: fixed;
@@ -1498,10 +1519,10 @@
       100% { opacity: 0; transform: translate3d(var(--rx), var(--ry), 0) scale(1.75); }
     }
     @media (prefers-reduced-motion: reduce) {
-      .dewdrop-arc-orb, .dewdrop-trail-dot, .seal-local-ripple, .liquid-surface-ripple, .liquid-micro-bubble {
+      .dewdrop-arc-orb, .dewdrop-trail-dot, .seal-local-ripple, .capsule-liquid-sheen {
         display: none !important;
       }
-      .orb-impact-bounce, .wave-impact-slosh {
+      .capsule-dew-settle, .capsule-fill-glow, .pill-soft-bump {
         animation: none !important;
       }
     }
@@ -5509,9 +5530,10 @@
       renderTodayView(false);
       const selectedBtn = document.querySelector(`[data-week-day="${dateKey}"]`);
       if (selectedBtn) {
-        selectedBtn.classList.remove('cal-select-pop');
+        selectedBtn.classList.remove('cal-cell-bloom', 'cal-select-pop');
         void selectedBtn.offsetWidth;
         selectedBtn.classList.add('cal-select-pop');
+        selectedBtn.addEventListener('animationend', () => selectedBtn.classList.remove('cal-select-pop'), { once: true });
       }
     }
 
@@ -5566,7 +5588,15 @@
           btn.style.backgroundColor = 'var(--accent-honey-soft)';
           btn.style.borderColor = 'rgba(217, 155, 56, 0.38)';
         }
-        if (animate) btn.style.animationDelay = `${i * 32}ms`;
+        if (animate) {
+          btn.style.animationDelay = `${i * 32}ms`;
+          const clearBloom = () => {
+            btn.classList.remove('cal-cell-bloom');
+            btn.style.animationDelay = '';
+          };
+          btn.addEventListener('animationend', clearBloom, { once: true });
+          setTimeout(clearBloom, 480 + i * 32);
+        }
 
         btn.innerHTML = `
           <div class="week-day-liquid-fill" style="height: ${info.pct}%;"></div>
@@ -5616,9 +5646,11 @@
           pillEl.className = 'inline-flex items-center gap-1 px-2 py-0.5 rounded-full accent-bg-soft accent-text text-[10px] font-bold leading-none whitespace-nowrap transition-all duration-300';
         }
         if (animatePill) {
-          pillEl.classList.remove('cal-header-anim');
+          pillEl.classList.remove('pill-soft-bump');
           void pillEl.offsetWidth;
-          pillEl.classList.add('cal-header-anim');
+          pillEl.classList.add('pill-soft-bump');
+          clearTimeout(pillEl._bumpTimer);
+          pillEl._bumpTimer = setTimeout(() => pillEl.classList.remove('pill-soft-bump'), 380);
         }
       }
 
@@ -10380,48 +10412,33 @@
       const rippleLayer = capsule.querySelector('.week-day-ripple-layer');
       const c = colors || getAccentColorsFromElement();
 
-      capsule.classList.remove('orb-impact-bounce');
+      // Clear any lingering entrance/select classes so removing settle never re-triggers them
+      capsule.classList.remove('cal-cell-bloom', 'cal-select-pop', 'capsule-dew-settle', 'is-complete');
+      capsule.style.animationDelay = '';
+      clearTimeout(capsule._settleTimer);
       void capsule.offsetWidth;
-      capsule.classList.add('orb-impact-bounce');
-      setTimeout(() => capsule.classList.remove('orb-impact-bounce'), 580);
+
+      capsule.classList.add('capsule-dew-settle');
+      if (isAllDone) capsule.classList.add('is-complete');
+      capsule._settleTimer = setTimeout(() => {
+        capsule.classList.remove('capsule-dew-settle', 'is-complete');
+      }, isAllDone ? 660 : 540);
 
       if (fill) {
-        fill.classList.remove('wave-impact-slosh');
+        fill.classList.remove('capsule-fill-glow');
+        clearTimeout(fill._glowTimer);
         void fill.offsetWidth;
-        fill.classList.add('wave-impact-slosh');
-        setTimeout(() => fill.classList.remove('wave-impact-slosh'), 640);
+        fill.classList.add('capsule-fill-glow');
+        fill._glowTimer = setTimeout(() => fill.classList.remove('capsule-fill-glow'), 580);
       }
 
       if (rippleLayer && !prefersReducedMotion()) {
-        const primaryRing = document.createElement('span');
-        primaryRing.className = 'liquid-surface-ripple';
-        primaryRing.style.setProperty('--ripple-color', c.main);
-        primaryRing.style.setProperty('--ripple-glow', c.glow);
-        rippleLayer.appendChild(primaryRing);
-
-        const secondaryRing = document.createElement('span');
-        secondaryRing.className = 'liquid-surface-ripple is-secondary';
-        rippleLayer.appendChild(secondaryRing);
-
-        setTimeout(() => {
-          primaryRing.remove();
-          secondaryRing.remove();
-        }, 820);
-
-        const bubbleCount = isAllDone ? 5 : 3;
-        for (let i = 0; i < bubbleCount; i++) {
-          const b = document.createElement('span');
-          b.className = 'liquid-micro-bubble';
-          const leftPct = 22 + Math.random() * 56;
-          const bottomPct = 18 + Math.random() * 34;
-          const driftX = (Math.random() - 0.5) * 14;
-          b.style.left = `${leftPct.toFixed(1)}%`;
-          b.style.bottom = `${bottomPct.toFixed(1)}%`;
-          b.style.setProperty('--bx', `${driftX.toFixed(1)}px`);
-          b.style.animationDelay = `${i * 55}ms`;
-          rippleLayer.appendChild(b);
-          setTimeout(() => b.remove(), 820 + i * 55);
-        }
+        rippleLayer.innerHTML = '';
+        const sheen = document.createElement('span');
+        sheen.className = 'capsule-liquid-sheen';
+        sheen.style.setProperty('--sheen-tint', c.glow);
+        rippleLayer.appendChild(sheen);
+        setTimeout(() => sheen.remove(), 660);
       }
     }
 

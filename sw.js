@@ -1,12 +1,11 @@
-const CACHE_VERSION = 'v43';
+const CACHE_VERSION = 'v44';
 const UPDATE_INFO = {
   version: CACHE_VERSION,
-  title: 'Cleaner Today & Notes',
+  title: 'Smoother Calendar Glow',
   summary: '',
   highlights: [
-    'Removed Daily Progress card',
-    'Progress pill & bar on 7-day strip',
-    'Shorter, quick-glance update notes'
+    'Fixed 7-day capsule landing glitch',
+    'New soft glow & liquid sheen sweep'
   ]
 };
 const APP_SHELL_CACHE = `nook-shell-${CACHE_VERSION}`;
