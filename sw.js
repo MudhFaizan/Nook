@@ -1,11 +1,11 @@
-const CACHE_VERSION = 'v47';
+const CACHE_VERSION = 'v48';
 const UPDATE_INFO = {
   version: CACHE_VERSION,
-  title: 'Direct Auto-Updates',
+  title: 'Mon–Sun Calendar Strip',
   summary: '',
   highlights: [
-    'Nook now updates automatically',
-    'Clean one-tap "Got it" button'
+    '7-day strip now starts every Monday',
+    'Active highlight moves along each day'
   ]
 };
 const APP_SHELL_CACHE = `nook-shell-${CACHE_VERSION}`;

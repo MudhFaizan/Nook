@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Nook v47 -->
+<!-- Nook v48 -->
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -793,8 +793,16 @@
                   box-shadow 0.3s ease,
                   border-color 0.3s ease;
     }
-    .week-day-capsule:hover {
+    .week-day-capsule:hover:not(:disabled) {
       transform: translateY(-1.5px);
+    }
+    .week-day-capsule.is-future {
+      background: transparent;
+      border-color: var(--border-subtle);
+      cursor: default;
+    }
+    .week-day-capsule.is-future > span {
+      opacity: 0.42;
     }
     .week-day-capsule.is-selected {
       border-color: var(--accent-primary);
@@ -2655,13 +2663,13 @@
             </div>
 
             <div class="flex items-center gap-1 flex-shrink-0">
-              <button type="button" onclick="shiftWeek(-7)" class="cozy-icon-orb-btn !w-6 !h-6 !rounded-lg" aria-label="Previous 7 days">
+              <button type="button" onclick="shiftWeek(-7)" class="cozy-icon-orb-btn !w-6 !h-6 !rounded-lg" aria-label="Previous week">
                 <svg class="w-3 h-3" viewBox="0 0 16 16" fill="none">
                   <circle cx="11.2" cy="8" r="1.2" fill="currentColor" opacity="0.75"/>
                   <path d="M9.25 4.25L5.5 8L9.25 11.75" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
               </button>
-              <button id="next-week-btn" type="button" onclick="shiftWeek(7)" class="cozy-icon-orb-btn !w-6 !h-6 !rounded-lg" aria-label="Next 7 days">
+              <button id="next-week-btn" type="button" onclick="shiftWeek(7)" class="cozy-icon-orb-btn !w-6 !h-6 !rounded-lg" aria-label="Next week">
                 <svg class="w-3 h-3" viewBox="0 0 16 16" fill="none">
                   <circle cx="4.8" cy="8" r="1.2" fill="currentColor" opacity="0.75"/>
                   <path d="M6.75 4.25L10.5 8L6.75 11.75" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
@@ -3435,7 +3443,7 @@
             <div class="min-w-0">
               <div class="flex items-center gap-1.5">
                 <span class="text-[10px] font-bold uppercase tracking-[0.16em] accent-text leading-none">Freshly Updated</span>
-                <span id="pwa-update-version" class="px-1.5 py-0.5 rounded-md accent-bg-soft accent-text text-[9.5px] font-extrabold leading-none">v47</span>
+                <span id="pwa-update-version" class="px-1.5 py-0.5 rounded-md accent-bg-soft accent-text text-[9.5px] font-extrabold leading-none">v48</span>
               </div>
               <h3 id="pwa-update-title" class="font-serif-cozy text-[17px] font-semibold text-cozy-primary mt-1 leading-tight truncate">
                 Nook Updated
@@ -4031,6 +4039,7 @@
         activeTab: 'today',
         onboardingStep: 0,
         selectedDate: getTodayKey(),
+        lastKnownTodayKey: getTodayKey(),
         weekOffsetDays: 0,
         dropMode: false,
         discoverOpen: false,
@@ -5533,6 +5542,21 @@
       }
     }
 
+    function syncDayRolloverIfNeeded() {
+      const currentToday = getTodayKey();
+      const prevToday = state.ui.lastKnownTodayKey;
+      if (currentToday === prevToday) return false;
+      state.ui.lastKnownTodayKey = currentToday;
+      if (!prevToday || state.ui.selectedDate === prevToday) {
+        state.ui.selectedDate = currentToday;
+        state.ui.weekOffsetDays = 0;
+      }
+      if (!prevToday || state.ui.heatmapSelectedDate === prevToday) {
+        state.ui.heatmapSelectedDate = currentToday;
+      }
+      return true;
+    }
+
     function renderWeekStrip(animate = false) {
       const grid = document.getElementById('week-strip-grid');
       const rangeLabel = document.getElementById('week-range-label');
@@ -5540,8 +5564,9 @@
       if (!grid) return;
 
       const todayKey = getTodayKey();
-      const endKey = addDays(todayKey, state.ui.weekOffsetDays);
-      const startKey = addDays(endKey, -6);
+      const currentWeekStart = getWeekStartKey(todayKey);
+      const startKey = addDays(currentWeekStart, state.ui.weekOffsetDays);
+      const endKey = addDays(startKey, 6);
 
       if (rangeLabel) {
         if (state.ui.weekOffsetDays === 0) {
@@ -5569,17 +5594,22 @@
         const dt = parseDateKey(key);
         const dayLetter = dt.toLocaleDateString('en-US', { weekday: 'short' }).slice(0, 2);
         const dayNum = dt.getDate();
-        const isSelected = key === state.ui.selectedDate;
+        const isFuture = key > todayKey;
+        const isSelected = !isFuture && key === state.ui.selectedDate;
         const isToday = key === todayKey;
-        const info = getDayCompletionInfo(key);
-        const isFull = info.total > 0 && info.done >= info.total;
-        const resting = isRestDay(key);
+        const info = isFuture ? { done: 0, total: 0, pct: 0 } : getDayCompletionInfo(key);
+        const resting = !isFuture && isRestDay(key);
 
         const btn = document.createElement('button');
         btn.type = 'button';
+        btn.disabled = isFuture;
         btn.setAttribute('data-week-day', key);
-        btn.onclick = () => selectDate(key);
-        btn.className = `week-day-capsule py-2 px-1 flex flex-col items-center justify-between gap-1 ${isSelected ? 'is-selected' : ''} ${animate ? 'cal-cell-bloom' : ''}`;
+        if (isFuture) {
+          btn.setAttribute('aria-label', `${dt.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })} (upcoming)`);
+        } else {
+          btn.onclick = () => selectDate(key);
+        }
+        btn.className = `week-day-capsule py-2 px-1 flex flex-col items-center justify-between gap-1 ${isSelected ? 'is-selected' : ''} ${isFuture ? 'is-future' : ''} ${animate ? 'cal-cell-bloom' : ''}`;
         if (resting && !isSelected) {
           btn.style.backgroundColor = 'var(--accent-honey-soft)';
           btn.style.borderColor = 'rgba(217, 155, 56, 0.38)';
@@ -5600,7 +5630,7 @@
           <span class="relative z-10 text-[10px] font-semibold ${isSelected ? 'accent-text' : (resting ? 'honey-text' : 'text-cozy-muted')} leading-none">${dayLetter}</span>
           <span class="relative z-10 text-xs font-extrabold ${isSelected ? 'text-cozy-primary' : 'text-cozy-secondary'} leading-none">${dayNum}</span>
           <span data-week-day-status class="relative z-10 h-2.5 flex items-center justify-center">
-            ${getWeekDayStatusMarkup(info, isToday, resting)}
+            ${getWeekDayStatusMarkup(info, isToday, resting, isFuture)}
           </span>
         `;
         grid.appendChild(btn);
@@ -5608,7 +5638,8 @@
       syncTodayProgressUI(false);
     }
 
-    function getWeekDayStatusMarkup(info, isToday, resting) {
+    function getWeekDayStatusMarkup(info, isToday, resting, isFuture = false) {
+      if (isFuture) return '<span class="w-1 h-1 rounded-full bg-cozy-muted/20"></span>';
       const isFull = info.total > 0 && info.done >= info.total;
       if (resting) return '<span class="text-[9px] leading-none" title="Planned Rest Day">🌙</span>';
       if (isFull) return '<span class="text-[9px] accent-text cal-star-breathe leading-none">✦</span>';
@@ -7576,11 +7607,12 @@
     }
 
     function jumpToDateFromInsights(dateKey) {
-      const todayKey = getTodayKey();
-      const diffMs = parseDateKey(dateKey) - parseDateKey(todayKey);
-      const diffDays = Math.round(diffMs / 86400000);
+      const todayWeekStart = getWeekStartKey(getTodayKey());
+      const targetWeekStart = getWeekStartKey(dateKey);
+      const diffDays = Math.round((parseDateKey(targetWeekStart) - parseDateKey(todayWeekStart)) / 86400000);
+      const alignedWeekOffset = Math.min(0, Math.round(diffDays / 7) * 7);
       state.ui.selectedDate = dateKey;
-      state.ui.weekOffsetDays = diffDays <= -7 ? Math.min(0, diffDays + 6) : 0;
+      state.ui.weekOffsetDays = alignedWeekOffset;
       switchTab('today');
     }
 
@@ -8880,6 +8912,7 @@
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'visible') {
         if (mindfulTimer.status === 'running') tickMindfulTimer();
+        const dayChanged = syncDayRolloverIfNeeded();
         const themeChanged = syncAutoThemeIfEnabled();
         if (themeChanged) {
           saveState();
@@ -8888,8 +8921,12 @@
         } else {
           applyLivingSkyToDOM();
         }
-        renderHeader();
-        if (state.ui.activeTab === 'settings') renderSettingsView();
+        if (dayChanged) {
+          renderAll();
+        } else {
+          renderHeader();
+          if (state.ui.activeTab === 'settings') renderSettingsView();
+        }
       }
     });
 
@@ -10921,12 +10958,12 @@
 
     const SEEN_UPDATE_VERSION_KEY = 'nook_seen_update_version_v1';
     const APP_UPDATE_META = {
-      version: 'v47',
-      title: 'Direct Auto-Updates',
+      version: 'v48',
+      title: 'Mon–Sun Calendar Strip',
       summary: '',
       highlights: [
-        'Nook now updates automatically',
-        'Clean one-tap "Got it" button'
+        '7-day strip now starts every Monday',
+        'Active highlight moves along each day'
       ]
     };
 
@@ -11526,8 +11563,9 @@
       registerServiceWorker();
       runSplashScreen(1500);
 
-      // Keep Living Sky (minute-by-minute), Auto Day/Night & greeting smoothly synced to real phone time
+      // Keep Living Sky (minute-by-minute), Auto Day/Night, day rollover & greeting smoothly synced to real phone time
       setInterval(() => {
+        const dayChanged = syncDayRolloverIfNeeded();
         const themeChanged = syncAutoThemeIfEnabled();
         if (themeChanged) {
           saveState();
@@ -11536,10 +11574,14 @@
         } else {
           applyLivingSkyToDOM();
         }
-        renderHeader();
-        if (state.ui.activeTab === 'settings') {
-          if (themeChanged) renderSettingsView();
-          else updateLivingSkySettingsUIOnly();
+        if (dayChanged) {
+          renderAll();
+        } else {
+          renderHeader();
+          if (state.ui.activeTab === 'settings') {
+            if (themeChanged) renderSettingsView();
+            else updateLivingSkySettingsUIOnly();
+          }
         }
       }, 60000);
     });
