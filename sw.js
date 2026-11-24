@@ -1,11 +1,11 @@
-const CACHE_VERSION = 'v46';
+const CACHE_VERSION = 'v47';
 const UPDATE_INFO = {
   version: CACHE_VERSION,
   title: 'Direct Auto-Updates',
   summary: '',
   highlights: [
     'Nook now updates automatically',
-    'One-tap "Sounds Cozy" release note'
+    'Clean one-tap "Got it" button'
   ]
 };
 const APP_SHELL_CACHE = `nook-shell-${CACHE_VERSION}`;
