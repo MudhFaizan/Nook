@@ -1,11 +1,11 @@
-const CACHE_VERSION = 'v45';
+const CACHE_VERSION = 'v46';
 const UPDATE_INFO = {
   version: CACHE_VERSION,
-  title: 'Cozy Theme Labels',
+  title: 'Direct Auto-Updates',
   summary: '',
   highlights: [
-    'Renamed Pure Canvas to Paper & Ink',
-    'Updated theme subtitles to match Nook'
+    'Nook now updates automatically',
+    'One-tap "Sounds Cozy" release note'
   ]
 };
 const APP_SHELL_CACHE = `nook-shell-${CACHE_VERSION}`;
@@ -45,7 +45,7 @@ self.addEventListener('install', (event) => {
           })
         )
       )
-    )
+    ).then(() => self.skipWaiting())
   );
 });
 

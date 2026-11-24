@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Nook v45 -->
+<!-- Nook v46 -->
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -3419,9 +3419,9 @@
     </div>
 
     <!-- ======================================================================
-         FULL TOP DROP-IN PWA UPDATE POP-UP (Release Summary + Update Now / Later)
+         FULL TOP DROP-IN PWA WHAT'S NEW POP-UP (Direct Auto-Update Notice)
          ====================================================================== -->
-    <div id="pwa-update-banner" class="fixed sm:absolute inset-0 z-[55] hidden opacity-0 transition-opacity duration-300 flex items-start justify-center bg-black/35 backdrop-blur-[3px]" role="dialog" aria-modal="true" aria-labelledby="pwa-update-title">
+    <div id="pwa-update-banner" onclick="if (event.target === this) acknowledgePwaUpdate()" class="fixed sm:absolute inset-0 z-[55] hidden opacity-0 transition-opacity duration-300 flex items-start justify-center bg-black/35 backdrop-blur-[3px]" role="dialog" aria-modal="true" aria-labelledby="pwa-update-title">
       <div id="pwa-update-sheet" class="pwa-update-sheet w-full rounded-b-[30px] px-5 pt-4 pb-5 transform -translate-y-full">
         <!-- Top Header Row -->
         <div class="flex items-start justify-between gap-3">
@@ -3434,16 +3434,16 @@
             </span>
             <div class="min-w-0">
               <div class="flex items-center gap-1.5">
-                <span class="text-[10px] font-bold uppercase tracking-[0.16em] accent-text leading-none">New Update</span>
-                <span id="pwa-update-version" class="px-1.5 py-0.5 rounded-md accent-bg-soft accent-text text-[9.5px] font-extrabold leading-none">Latest</span>
+                <span class="text-[10px] font-bold uppercase tracking-[0.16em] accent-text leading-none">Freshly Updated</span>
+                <span id="pwa-update-version" class="px-1.5 py-0.5 rounded-md accent-bg-soft accent-text text-[9.5px] font-extrabold leading-none">v46</span>
               </div>
               <h3 id="pwa-update-title" class="font-serif-cozy text-[17px] font-semibold text-cozy-primary mt-1 leading-tight truncate">
-                Update Ready
+                Nook Updated
               </h3>
             </div>
           </div>
 
-          <button type="button" onclick="deferPwaUpdate()" class="cozy-icon-orb-btn !w-8 !h-8 !rounded-xl flex-shrink-0" aria-label="Remind me later">
+          <button type="button" onclick="acknowledgePwaUpdate()" class="cozy-icon-orb-btn !w-8 !h-8 !rounded-xl flex-shrink-0" aria-label="Close update notes">
             <svg class="w-3.5 h-3.5" viewBox="0 0 16 16" fill="none">
               <path d="M4.5 4.5L11.5 11.5M11.5 4.5L4.5 11.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
               <circle cx="8" cy="8" r="1.1" fill="currentColor"/>
@@ -3454,23 +3454,19 @@
         <!-- Quick-Glance What's New Box -->
         <div id="pwa-update-notes-box" class="mt-3 px-3 py-2.5 rounded-2xl bg-cozy-secondary/55 border border-cozy space-y-1.5">
           <p id="pwa-update-summary" class="text-xs font-medium text-cozy-primary leading-snug">
-            New improvements ready.
+            Freshly updated and ready.
           </p>
           <ul id="pwa-update-highlights" class="space-y-1 hidden">
-            <!-- Populated dynamically from the incoming Service Worker -->
+            <!-- Populated dynamically with short release highlights -->
           </ul>
         </div>
 
-        <!-- Action Buttons: Later | Update Now -->
-        <div class="grid grid-cols-2 gap-2.5 mt-3.5">
-          <button type="button" id="pwa-update-later-btn" onclick="deferPwaUpdate()"
-            class="py-2.5 px-4 rounded-2xl glass-pill text-xs font-bold text-cozy-secondary hover:text-cozy-primary">
-            Later
-          </button>
-          <button type="button" id="pwa-update-now-btn" onclick="applyPwaUpdate()"
-            class="pwa-update-now-btn py-2.5 px-4 rounded-2xl accent-progress-gradient text-white text-xs font-bold shadow-sm inline-flex items-center justify-center gap-1.5">
+        <!-- Single Cozy Acknowledge Button -->
+        <div class="mt-3.5">
+          <button type="button" id="pwa-update-ack-btn" onclick="acknowledgePwaUpdate()"
+            class="pwa-update-ack-btn w-full py-2.5 px-4 rounded-2xl accent-progress-gradient text-white text-xs font-bold shadow-sm inline-flex items-center justify-center gap-1.5">
             <i class="ph-bold ph-sparkle text-sm"></i>
-            <span>Update Now</span>
+            <span>Sounds Cozy</span>
           </button>
         </div>
 
@@ -10343,7 +10339,7 @@
         btn.classList.contains('nav-tab') ||
         btn.classList.contains('sanctuary-terrarium-btn') ||
         btn.classList.contains('timer-play-btn') ||
-        btn.classList.contains('pwa-update-now-btn') ||
+        btn.classList.contains('pwa-update-ack-btn') ||
         btn.id === 'rest-day-toggle-btn' ||
         btn.closest('#onboarding-companions-grid, #onboarding-starters-grid, #sanctuary-modal-content .welcome-companion-dock')
       ) return;
@@ -10923,34 +10919,51 @@
       }
     }
 
-    let waitingServiceWorker = null;
-    let pendingUpdateWorker = null;
-    let deferredUpdateWorker = null;
-    let updateDeferredUntilReopen = false;
-    let appWasHiddenSinceDefer = false;
+    const SEEN_UPDATE_VERSION_KEY = 'nook_seen_update_version_v1';
+    const APP_UPDATE_META = {
+      version: 'v46',
+      title: 'Direct Auto-Updates',
+      summary: '',
+      highlights: [
+        'Nook now updates automatically',
+        'One-tap "Sounds Cozy" release note'
+      ]
+    };
+
+    let pendingUpdateInfo = null;
+    let currentShownUpdateVersion = null;
+    let pendingAutoReloadForUpdate = false;
     let isRefreshingForUpdate = false;
     let activeSwRegistration = null;
 
-    const DEFAULT_UPDATE_META = {
-      version: 'New',
-      title: 'Update Ready',
-      summary: 'New improvements ready.',
-      highlights: []
-    };
+    function getSeenUpdateVersion() {
+      try {
+        return localStorage.getItem(SEEN_UPDATE_VERSION_KEY) || '';
+      } catch (e) {
+        return '';
+      }
+    }
+
+    function markUpdateVersionSeen(version) {
+      if (!version) return;
+      try {
+        localStorage.setItem(SEEN_UPDATE_VERSION_KEY, String(version));
+      } catch (e) {}
+    }
 
     function fetchWorkerUpdateInfo(worker) {
       return new Promise((resolve) => {
         if (!worker || typeof MessageChannel === 'undefined') {
-          resolve(DEFAULT_UPDATE_META);
+          resolve(APP_UPDATE_META);
           return;
         }
         let settled = false;
         const done = (info) => {
           if (settled) return;
           settled = true;
-          resolve(info && typeof info === 'object' ? { ...DEFAULT_UPDATE_META, ...info } : DEFAULT_UPDATE_META);
+          resolve(info && typeof info === 'object' ? { ...APP_UPDATE_META, ...info } : APP_UPDATE_META);
         };
-        const timer = setTimeout(() => done(DEFAULT_UPDATE_META), 450);
+        const timer = setTimeout(() => done(APP_UPDATE_META), 450);
         try {
           const channel = new MessageChannel();
           channel.port1.onmessage = (event) => {
@@ -10960,27 +10973,26 @@
           worker.postMessage({ type: 'GET_UPDATE_INFO' }, [channel.port2]);
         } catch (err) {
           clearTimeout(timer);
-          done(DEFAULT_UPDATE_META);
+          done(APP_UPDATE_META);
         }
       });
     }
 
     function populateUpdateSheetContent(info) {
-      const meta = { ...DEFAULT_UPDATE_META, ...(info || {}) };
+      const meta = { ...APP_UPDATE_META, ...(info || {}) };
       const versionEl = document.getElementById('pwa-update-version');
       const titleEl = document.getElementById('pwa-update-title');
       const notesBox = document.getElementById('pwa-update-notes-box');
       const summaryEl = document.getElementById('pwa-update-summary');
       const highlightsEl = document.getElementById('pwa-update-highlights');
-      const updateNowBtn = document.getElementById('pwa-update-now-btn');
 
       const items = Array.isArray(meta.highlights) ? meta.highlights.filter(Boolean).slice(0, 3) : [];
       const rawSummary = typeof (info && info.summary) === 'string'
         ? info.summary.trim()
-        : (items.length > 0 ? '' : DEFAULT_UPDATE_META.summary);
+        : (items.length > 0 ? '' : 'Freshly updated and ready.');
 
-      if (versionEl) versionEl.textContent = meta.version || 'New';
-      if (titleEl) titleEl.textContent = meta.title || DEFAULT_UPDATE_META.title;
+      if (versionEl) versionEl.textContent = meta.version || APP_UPDATE_META.version;
+      if (titleEl) titleEl.textContent = meta.title || 'Nook Updated';
 
       if (summaryEl) {
         summaryEl.textContent = rawSummary;
@@ -11006,11 +11018,6 @@
       if (notesBox) {
         notesBox.classList.toggle('hidden', !rawSummary && items.length === 0);
       }
-
-      if (updateNowBtn) {
-        updateNowBtn.disabled = false;
-        updateNowBtn.innerHTML = '<i class="ph-bold ph-sparkle text-sm"></i><span>Update Now</span>';
-      }
     }
 
     function isSplashCurrentlyVisible() {
@@ -11018,25 +11025,53 @@
       return Boolean(splash && !splash.classList.contains('hidden'));
     }
 
-    function flushPendingUpdateSheet() {
-      if (!pendingUpdateWorker) return;
-      const worker = pendingUpdateWorker;
-      pendingUpdateWorker = null;
-      showUpdateBanner(worker);
+    function isSafeToAutoReloadForUpdate() {
+      const habitBackdrop = document.getElementById('habit-modal-backdrop');
+      const habitModalOpen = Boolean(habitBackdrop && !habitBackdrop.classList.contains('hidden'));
+      const timerRunning = typeof mindfulTimer !== 'undefined' && mindfulTimer && mindfulTimer.status === 'running';
+      return !habitModalOpen && !timerRunning;
     }
 
-    async function showUpdateBanner(worker) {
-      if (!worker) return;
-      waitingServiceWorker = worker;
+    function triggerDirectUpdateReload() {
+      if (isRefreshingForUpdate) return;
+      if (!isSafeToAutoReloadForUpdate()) {
+        pendingAutoReloadForUpdate = true;
+        return;
+      }
+      isRefreshingForUpdate = true;
+      pendingAutoReloadForUpdate = false;
+      window.location.reload();
+    }
 
-      // Stay dismissed if the user chose "Later" for this update during the current open session
-      if (updateDeferredUntilReopen && deferredUpdateWorker === worker) {
+    function flushPendingUpdateSheet() {
+      if (!pendingUpdateInfo) return;
+      const info = pendingUpdateInfo;
+      pendingUpdateInfo = null;
+      showUpdateNotesSheet(info);
+    }
+
+    function checkAndQueueCurrentUpdateNotes() {
+      let hasOnboarded = false;
+      try { hasOnboarded = Boolean(localStorage.getItem(ONBOARDED_KEY)); } catch (e) {}
+
+      // Brand-new users should go straight to welcome onboarding without an update sheet
+      if (!hasOnboarded) {
+        markUpdateVersionSeen(APP_UPDATE_META.version);
         return;
       }
 
-      // If splash screen is still blooming, wait until it finishes so the top drop-in animation is visible
+      if (getSeenUpdateVersion() !== APP_UPDATE_META.version) {
+        showUpdateNotesSheet(APP_UPDATE_META);
+      }
+    }
+
+    function showUpdateNotesSheet(info) {
+      const meta = { ...APP_UPDATE_META, ...(info || {}) };
+      if (!meta.version || getSeenUpdateVersion() === meta.version) return;
+
+      // Wait until the splash screen finishes so the top drop-in glides cleanly into view
       if (isSplashCurrentlyVisible()) {
-        pendingUpdateWorker = worker;
+        pendingUpdateInfo = meta;
         return;
       }
 
@@ -11045,12 +11080,8 @@
       const sheet = document.getElementById('pwa-update-sheet');
       if (!backdrop || !sheet) return;
 
-      const info = await fetchWorkerUpdateInfo(worker);
-
-      // Re-check in case the user dismissed or splash reopened while awaiting message reply
-      if (updateDeferredUntilReopen && deferredUpdateWorker === worker) return;
-
-      populateUpdateSheetContent(info);
+      currentShownUpdateVersion = meta.version;
+      populateUpdateSheetContent(meta);
       backdrop.classList.remove('hidden');
       requestAnimationFrame(() => {
         backdrop.classList.remove('opacity-0');
@@ -11071,64 +11102,14 @@
       }, 340);
     }
 
-    function deferPwaUpdate() {
-      updateDeferredUntilReopen = true;
-      deferredUpdateWorker = waitingServiceWorker;
-      appWasHiddenSinceDefer = false;
-      pendingUpdateWorker = null;
-      dismissUpdateBanner();
-      showToast("We'll remind you next time you open Nook", '🌿');
-    }
-
-    function applyPwaUpdate() {
-      updateDeferredUntilReopen = false;
-      deferredUpdateWorker = null;
-      appWasHiddenSinceDefer = false;
-      pendingUpdateWorker = null;
+    function acknowledgePwaUpdate() {
+      markUpdateVersionSeen(currentShownUpdateVersion || APP_UPDATE_META.version);
+      currentShownUpdateVersion = null;
+      pendingUpdateInfo = null;
       playCozySound('check');
-
-      const updateNowBtn = document.getElementById('pwa-update-now-btn');
-      if (updateNowBtn) {
-        updateNowBtn.disabled = true;
-        updateNowBtn.innerHTML = '<i class="ph-bold ph-arrows-clockwise animate-spin text-sm"></i><span>Updating...</span>';
-      }
-
-      const worker = waitingServiceWorker || (activeSwRegistration && activeSwRegistration.waiting);
-      if (worker) {
-        worker.postMessage({ type: 'SKIP_WAITING' });
-        // Safety fallback in case controllerchange doesn't fire on certain WebViews
-        setTimeout(() => {
-          if (!isRefreshingForUpdate) {
-            isRefreshingForUpdate = true;
-            window.location.reload();
-          }
-        }, 2400);
-      } else {
-        window.location.reload();
-      }
+      triggerHaptic('tap');
+      dismissUpdateBanner();
     }
-
-    function handleAppReopenUpdateReminder() {
-      if (updateDeferredUntilReopen && appWasHiddenSinceDefer) {
-        updateDeferredUntilReopen = false;
-        appWasHiddenSinceDefer = false;
-        deferredUpdateWorker = null;
-        const worker = waitingServiceWorker || (activeSwRegistration && activeSwRegistration.waiting);
-        if (worker && navigator.serviceWorker && navigator.serviceWorker.controller) {
-          setTimeout(() => showUpdateBanner(worker), 260);
-        }
-      }
-    }
-
-    window.addEventListener('pagehide', () => {
-      if (updateDeferredUntilReopen) appWasHiddenSinceDefer = true;
-    });
-
-    window.addEventListener('pageshow', (e) => {
-      if (e.persisted) {
-        handleAppReopenUpdateReminder();
-      }
-    });
 
     function registerServiceWorker() {
       if (!('serviceWorker' in navigator)) return;
@@ -11136,18 +11117,34 @@
         return;
       }
 
-      navigator.serviceWorker.addEventListener('controllerchange', () => {
+      navigator.serviceWorker.addEventListener('controllerchange', async () => {
         if (isRefreshingForUpdate) return;
-        isRefreshingForUpdate = true;
-        window.location.reload();
+        const activeCtrl = navigator.serviceWorker.controller;
+        const info = await fetchWorkerUpdateInfo(activeCtrl);
+
+        // If network-first navigation already loaded this exact version, skip double-reload and show the cozy note
+        if (info && info.version === APP_UPDATE_META.version) {
+          showUpdateNotesSheet(info);
+          return;
+        }
+
+        // Otherwise we're running an older page version — upgrade directly
+        triggerDirectUpdateReload();
       });
+
+      const activateWorkerImmediately = (worker) => {
+        if (!worker) return;
+        try {
+          worker.postMessage({ type: 'SKIP_WAITING' });
+        } catch (e) {}
+      };
 
       navigator.serviceWorker
         .register('./sw.js', { scope: './', updateViaCache: 'none' })
         .then((reg) => {
           activeSwRegistration = reg;
-          if (reg.waiting && navigator.serviceWorker.controller) {
-            showUpdateBanner(reg.waiting);
+          if (reg.waiting) {
+            activateWorkerImmediately(reg.waiting);
           }
 
           reg.addEventListener('updatefound', () => {
@@ -11155,17 +11152,18 @@
             if (!newWorker) return;
             newWorker.addEventListener('statechange', () => {
               if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                showUpdateBanner(newWorker);
+                activateWorkerImmediately(newWorker);
               }
             });
           });
 
-          // Automatically check for new versions and re-prompt deferred updates when reopening the app
+          // Automatically check for new versions whenever returning to Nook
           document.addEventListener('visibilitychange', () => {
-            if (document.visibilityState === 'hidden') {
-              if (updateDeferredUntilReopen) appWasHiddenSinceDefer = true;
-            } else if (document.visibilityState === 'visible') {
-              handleAppReopenUpdateReminder();
+            if (document.visibilityState === 'visible') {
+              if (pendingAutoReloadForUpdate && isSafeToAutoReloadForUpdate()) {
+                triggerDirectUpdateReload();
+                return;
+              }
               reg.update().catch(() => {});
             }
           });
@@ -11524,6 +11522,7 @@
       handlePwaLaunchShortcuts();
       updatePwaInstallUI();
       initSwipeGestures();
+      checkAndQueueCurrentUpdateNotes();
       registerServiceWorker();
       runSplashScreen(1500);
 
