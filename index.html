@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Nook v38 -->
+<!-- Nook v43 -->
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -440,18 +440,25 @@
       background-color: #09090B;
       color: #FFFFFF;
     }
-    [data-accent="mono"] #daily-progress-percent {
-      text-shadow: 0 1px 8px rgba(255, 255, 255, 0.92), 0 0 3px rgba(255, 255, 255, 0.85);
-    }
-    [data-theme="dark"][data-accent="mono"] #daily-progress-percent {
-      text-shadow: 0 1px 8px rgba(0, 0, 0, 0.9), 0 0 3px rgba(0, 0, 0, 0.8);
-    }
     [data-theme="dark"][data-accent="mono"] .fab-orb-btn > span {
       border-color: rgba(9, 9, 11, 0.22) !important;
     }
     [data-theme="dark"][data-accent="mono"] #welcome-footer-step-1 span.bg-white\/20,
     [data-theme="dark"][data-accent="mono"] #welcome-footer-step-2 span.bg-white\/20 {
       background-color: rgba(9, 9, 11, 0.12);
+    }
+
+    /* Crisp Adaptive Mono Swatch Orb (Sleek Obsidian in Light, Luminous Pearl in Dark) */
+    .mono-swatch-orb {
+      background: linear-gradient(135deg, #4B4B52 0%, #141417 100%);
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.25), 0 1px 3px rgba(0, 0, 0, 0.18);
+    }
+    [data-theme="dark"] .mono-swatch-orb {
+      background: linear-gradient(135deg, #FFFFFF 0%, #C4C4CC 100%);
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.9), 0 1px 5px rgba(255, 255, 255, 0.18);
+    }
+    [data-theme="dark"] .ritual-color-swatch.mono-swatch-orb {
+      border-color: rgba(255, 255, 255, 0.85);
     }
 
     /* Per-Ritual Color Swatch Dots (Add / Edit Modal) */
@@ -803,10 +810,12 @@
       background: linear-gradient(180deg, var(--accent-soft) 0%, var(--accent-medium) 100%);
       opacity: 0.72;
       transform-origin: bottom;
-      animation: calLiquidRise 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
       transition: height 0.55s cubic-bezier(0.22, 1, 0.36, 1);
       pointer-events: none;
       z-index: 0;
+    }
+    .week-day-capsule.cal-cell-bloom .week-day-liquid-fill {
+      animation: calLiquidRise 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
     }
     .week-day-capsule.is-selected .week-day-liquid-fill {
       background: linear-gradient(180deg, var(--accent-soft) 0%, var(--accent-medium) 100%);
@@ -1376,30 +1385,6 @@
     }
 
     /* Dewdrop Arc + Liquid Ripple Check-Off Animations */
-    .liquid-orb-halo {
-      position: absolute;
-      inset: -6px;
-      border-radius: 9999px;
-      background: radial-gradient(circle, var(--accent-soft) 35%, transparent 72%);
-      opacity: 0;
-      transform: scale(0.88);
-      pointer-events: none;
-      z-index: 0;
-      transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-    }
-    .liquid-orb-halo.is-sanctuary-complete {
-      opacity: 0.92;
-      transform: scale(1.08);
-      animation: breatheRing 3.2s ease-in-out infinite;
-    }
-    .liquid-orb-halo.is-pulsing {
-      animation: orbHaloSplash 0.72s cubic-bezier(0.22, 1, 0.36, 1) both;
-    }
-    @keyframes orbHaloSplash {
-      0% { opacity: 0.25; transform: scale(0.92); }
-      38% { opacity: 1; transform: scale(1.24); }
-      100% { opacity: 0; transform: scale(1.36); }
-    }
     .orb-impact-bounce {
       animation: orbImpactBounce 0.56s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
@@ -1516,7 +1501,7 @@
       .dewdrop-arc-orb, .dewdrop-trail-dot, .seal-local-ripple, .liquid-surface-ripple, .liquid-micro-bubble {
         display: none !important;
       }
-      .orb-impact-bounce, .wave-impact-slosh, .liquid-orb-halo.is-pulsing {
+      .orb-impact-bounce, .wave-impact-slosh {
         animation: none !important;
       }
     }
@@ -1584,6 +1569,87 @@
       flex: 1;
       height: 1px;
       background: linear-gradient(90deg, transparent, var(--border-subtle), transparent);
+    }
+    .ritual-section-group {
+      display: flex;
+      flex-direction: column;
+    }
+    .section-divider-btn {
+      width: 100%;
+      background: transparent;
+      border: 0;
+      cursor: pointer;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    .section-divider-btn:active:not(:disabled) {
+      transform: none !important;
+    }
+    .section-divider-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px 4px 9px;
+      border-radius: 9999px;
+      border: 1px solid transparent;
+      transition: transform 0.26s cubic-bezier(0.34, 1.56, 0.64, 1),
+                  background-color 0.25s ease,
+                  border-color 0.25s ease,
+                  box-shadow 0.25s ease,
+                  color 0.22s ease;
+    }
+    .section-divider-btn:hover .section-divider-pill {
+      background: var(--bg-glass-card);
+      border-color: var(--border-subtle);
+    }
+    .section-divider-btn:active .section-divider-pill {
+      transform: scale(0.94);
+    }
+    .section-divider-btn.is-collapsed .section-divider-pill {
+      background: var(--bg-glass-elevated);
+      border-color: var(--border-glass);
+      box-shadow: var(--shadow-glass);
+    }
+    .section-divider-chevron {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0.72;
+      transition: transform 0.34s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.22s ease;
+    }
+    .section-divider-btn.is-collapsed .section-divider-chevron {
+      transform: rotate(-90deg);
+      opacity: 0.92;
+    }
+    .section-cards-drawer {
+      display: grid;
+      grid-template-rows: 0fr;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      margin-left: -4px;
+      margin-right: -4px;
+      transition: grid-template-rows 0.34s cubic-bezier(0.22, 1, 0.36, 1),
+                  opacity 0.24s ease,
+                  visibility 0s linear 0.34s;
+    }
+    .section-cards-drawer.is-open {
+      grid-template-rows: 1fr;
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transition: grid-template-rows 0.36s cubic-bezier(0.22, 1, 0.36, 1),
+                  opacity 0.28s ease 0.04s,
+                  visibility 0s linear 0s;
+    }
+    .section-cards-inner {
+      overflow: hidden;
+      padding-left: 4px;
+      padding-right: 4px;
+    }
+    .section-cards-stack {
+      padding-top: 8px;
+      padding-bottom: 2px;
     }
 
     /* Today View Switcher (List / Grid Segmented Pill) */
@@ -2529,8 +2595,8 @@
            ==================================================================== -->
       <section id="view-today" class="space-y-3.5 animate-view">
 
-        <!-- Prominent Date Title Row + Mindful Quote Card (Matching Reference Layout) -->
-        <div id="today-hero-section" class="space-y-3 px-1">
+        <!-- Prominent Date Title Row -->
+        <div id="today-hero-section" class="px-1">
           <div class="flex items-center justify-between gap-2">
             <h2 id="hero-date-heading" class="text-[26px] font-extrabold tracking-tight text-cozy-primary leading-none truncate">
               Today, Nov 19
@@ -2555,29 +2621,17 @@
               </button>
             </div>
           </div>
-
-          <!-- Mindful Daily Quote Banner -->
-          <div id="quote-banner" onclick="cycleQuote()" class="cozy-card px-3.5 py-3 flex items-center justify-between gap-3 cursor-pointer">
-            <div class="flex items-center gap-3 min-w-0">
-              <span class="w-8 h-8 rounded-xl accent-bg-soft accent-text flex items-center justify-center flex-shrink-0">
-                <i class="ph-fill ph-quotes text-sm"></i>
-              </span>
-              <p id="daily-quote-text" class="text-xs italic text-cozy-secondary leading-relaxed">
-                "Small gentle steps every day build a life you love coming home to."
-              </p>
-            </div>
-            <span class="w-8 h-8 rounded-full bg-cozy-elevated border border-cozy text-cozy-secondary flex items-center justify-center flex-shrink-0">
-              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none">
-                <path d="M12 3.5C13.2 8.2 15.8 10.8 20.5 12C15.8 13.2 13.2 15.8 12 20.5C10.8 15.8 8.2 13.2 3.5 12C8.2 10.8 10.8 8.2 12 3.5Z" fill="currentColor"/>
-              </svg>
-            </span>
-          </div>
         </div>
 
-        <!-- 7-Day Interactive Liquid-Glass Calendar Strip -->
-        <div id="week-strip-card" class="cozy-card swipe-surface p-3.5">
-          <div class="flex items-center justify-between mb-2.5 px-1">
-            <span id="week-range-label" class="text-xs font-bold text-cozy-secondary">This Week</span>
+        <!-- 7-Day Interactive Liquid-Glass Calendar Strip (with Inline Progress Pill & Bottom Hairline) -->
+        <div id="week-strip-card" class="cozy-card swipe-surface relative overflow-hidden p-3.5 pb-4">
+          <div class="flex items-center justify-between gap-2 mb-2.5 px-1">
+            <div class="flex items-center gap-2 min-w-0">
+              <span id="week-range-label" class="text-xs font-bold text-cozy-secondary truncate">This Week</span>
+              <span id="week-progress-pill" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full accent-bg-soft accent-text text-[10px] font-bold leading-none whitespace-nowrap transition-all duration-300">
+                0/0 · 0%
+              </span>
+            </div>
 
             <div class="flex items-center gap-1 flex-shrink-0">
               <button type="button" onclick="shiftWeek(-7)" class="cozy-icon-orb-btn !w-6 !h-6 !rounded-lg" aria-label="Previous 7 days">
@@ -2598,44 +2652,10 @@
           <div id="week-strip-grid" class="grid grid-cols-7 gap-1.5">
             <!-- Populated dynamically by JS -->
           </div>
-        </div>
 
-        <!-- Daily Progress Summary Card with Clean Pure Fluid-Filling Circle -->
-        <div class="cozy-card p-4 flex items-center gap-4">
-          <div class="relative w-[76px] h-[76px] flex-shrink-0 flex items-center justify-center">
-            <div id="daily-progress-orb-halo" class="liquid-orb-halo" aria-hidden="true"></div>
-            <div id="daily-progress-orb" class="liquid-orb-shell relative z-10 w-full h-full">
-              <!-- Pure Fluid Wave Clip -->
-              <div class="liquid-orb-clip">
-                <div id="daily-progress-wave" class="liquid-wave-carrier" style="transform: translateY(84%);">
-                  <div class="liquid-wave-layer liquid-wave-layer-back" style="top: 6%;"></div>
-                  <div class="liquid-wave-layer" style="top: 12%;"></div>
-                </div>
-              </div>
-
-              <!-- Liquid Impact Ripple & Rising Micro-Bubbles Layer -->
-              <div id="daily-progress-ripple-layer" class="absolute inset-0 pointer-events-none z-[8] overflow-hidden rounded-full" aria-hidden="true"></div>
-
-              <!-- Center Percentage Readout -->
-              <div class="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
-                <span id="daily-progress-percent" class="text-sm font-extrabold text-cozy-primary">0%</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="flex-1 min-w-0">
-            <div class="flex items-center justify-between">
-              <h2 id="daily-progress-title" class="text-sm font-bold text-cozy-primary truncate">
-                A gentle start
-              </h2>
-              <span id="daily-progress-count" class="text-[11px] font-bold text-cozy-secondary">0 / 0</span>
-            </div>
-            <p id="daily-progress-subtitle" class="text-xs text-cozy-secondary mt-0.5 leading-snug">
-              Pick one small ritual to begin your rhythm.
-            </p>
-            <div class="w-full h-2 bg-cozy-secondary rounded-full overflow-hidden mt-2.5 p-[1px]">
-              <div id="daily-progress-bar" class="h-full accent-progress-gradient rounded-full transition-all duration-500" style="width: 0%"></div>
-            </div>
+          <!-- Silky Bottom Progress Hairline -->
+          <div class="absolute left-0 right-0 bottom-0 h-[3px] pointer-events-none" style="background: var(--border-subtle);" aria-hidden="true">
+            <div id="week-progress-hairline" class="h-full accent-progress-gradient transition-all duration-500" style="width: 0%;"></div>
           </div>
         </div>
 
@@ -3039,8 +3059,7 @@
                 <button type="button" onclick="setAccent('mono')" data-accent-btn="mono" id="accent-mono-pill"
                   title="Monochrome black &amp; white accent" aria-label="Monochrome black and white accent"
                   class="accent-choice-btn px-2 py-1 rounded-full border border-cozy bg-cozy-secondary/60 inline-flex items-center gap-1.5 transition">
-                  <span class="w-3.5 h-3.5 rounded-full inline-block flex-shrink-0 border border-cozy shadow-2xs"
-                    style="background: linear-gradient(135deg, #F4F4F5 0%, #52525B 52%, #09090B 100%);"></span>
+                  <span class="mono-swatch-orb w-3.5 h-3.5 rounded-full inline-block flex-shrink-0"></span>
                   <span class="text-[10px] font-bold text-cozy-primary leading-none">Mono</span>
                 </button>
                 <div class="flex items-center gap-1.5">
@@ -3161,20 +3180,6 @@
               class="cozy-switch-track">
               <span id="toggle-confetti-knob" class="cozy-switch-knob">
                 <i class="ph-fill ph-sparkle"></i>
-              </span>
-            </button>
-          </div>
-
-          <!-- Mindful Quote Toggle -->
-          <div class="flex items-center justify-between pt-2 border-t border-subtle-cozy">
-            <div>
-              <p class="text-xs font-semibold text-cozy-primary">Daily Mindful Quote</p>
-              <p class="text-[11px] text-cozy-secondary">Show a gentle reflection on the Today screen</p>
-            </div>
-            <button id="toggle-quotes-btn" onclick="togglePreference('showQuotes')"
-              class="cozy-switch-track">
-              <span id="toggle-quotes-knob" class="cozy-switch-knob">
-                <i class="ph-fill ph-quotes"></i>
               </span>
             </button>
           </div>
@@ -3412,7 +3417,7 @@
                 <span id="pwa-update-version" class="px-1.5 py-0.5 rounded-md accent-bg-soft accent-text text-[9.5px] font-extrabold leading-none">Latest</span>
               </div>
               <h3 id="pwa-update-title" class="font-serif-cozy text-[17px] font-semibold text-cozy-primary mt-1 leading-tight truncate">
-                A Fresh Nook Update Is Ready
+                Update Ready
               </h3>
             </div>
           </div>
@@ -3425,12 +3430,12 @@
           </button>
         </div>
 
-        <!-- Short What's New Summary Box -->
-        <div class="mt-3 p-3 rounded-2xl bg-cozy-secondary/55 border border-cozy space-y-2">
-          <p id="pwa-update-summary" class="text-xs font-medium text-cozy-primary leading-relaxed">
-            A new version of Nook is ready with fresh polish and improvements.
+        <!-- Quick-Glance What's New Box -->
+        <div id="pwa-update-notes-box" class="mt-3 px-3 py-2.5 rounded-2xl bg-cozy-secondary/55 border border-cozy space-y-1.5">
+          <p id="pwa-update-summary" class="text-xs font-medium text-cozy-primary leading-snug">
+            New improvements ready.
           </p>
-          <ul id="pwa-update-highlights" class="space-y-1.5 hidden">
+          <ul id="pwa-update-highlights" class="space-y-1 hidden">
             <!-- Populated dynamically from the incoming Service Worker -->
           </ul>
         </div>
@@ -3832,7 +3837,7 @@
       { id: 'amber', label: 'Honey', grad: 'linear-gradient(135deg, #E2A659, #B07327)' },
       { id: 'matcha', label: 'Matcha', grad: 'linear-gradient(135deg, #8AB577, #578046)' },
       { id: 'blue', label: 'Azure', grad: 'linear-gradient(135deg, #6499F0, #2959B0)' },
-      { id: 'mono', label: 'Mono', grad: 'linear-gradient(135deg, #F4F4F5 0%, #52525B 52%, #09090B 100%)' }
+      { id: 'mono', label: 'Mono', grad: null }
     ];
 
     function getHabitColorAccent(habit) {
@@ -3877,22 +3882,68 @@
         .map(x => x.h);
     }
 
+    const VALID_COLLAPSIBLE_SECTIONS = ['anytime', 'morning', 'afternoon', 'evening', 'completed'];
+
+    function normalizeCollapsedSectionsMap(raw) {
+      const clean = {};
+      if (raw && typeof raw === 'object' && !Array.isArray(raw)) {
+        VALID_COLLAPSIBLE_SECTIONS.forEach(key => {
+          if (raw[key] === true) clean[key] = true;
+        });
+      }
+      return clean;
+    }
+
+    function getHabitSectionKey(todId) {
+      if (todId === null || todId === undefined) return 'completed';
+      return todId === '' ? 'anytime' : String(todId);
+    }
+
+    function isHabitSectionCollapsed(sectionKey) {
+      return Boolean(state.user && state.user.collapsedSections && state.user.collapsedSections[sectionKey]);
+    }
+
+    function toggleHabitSection(sectionKey) {
+      if (!VALID_COLLAPSIBLE_SECTIONS.includes(sectionKey)) return;
+      if (!state.user.collapsedSections || typeof state.user.collapsedSections !== 'object') {
+        state.user.collapsedSections = {};
+      }
+      const nextCollapsed = !Boolean(state.user.collapsedSections[sectionKey]);
+      if (nextCollapsed) {
+        state.user.collapsedSections[sectionKey] = true;
+      } else {
+        delete state.user.collapsedSections[sectionKey];
+      }
+      saveState();
+      playCozySound('tap');
+      triggerHaptic('tap');
+
+      // Smoothly animate the toggled section in-place without jarring full-list rebuilds
+      const groupEl = document.querySelector(`#habits-list-container [data-section-key="${sectionKey}"]`);
+      if (groupEl) {
+        const btnEl = groupEl.querySelector('.section-divider-btn');
+        const drawerEl = groupEl.querySelector('.section-cards-drawer');
+        if (btnEl) {
+          btnEl.classList.toggle('is-collapsed', nextCollapsed);
+          btnEl.setAttribute('aria-expanded', String(!nextCollapsed));
+        }
+        if (drawerEl) {
+          drawerEl.classList.toggle('is-open', !nextCollapsed);
+          drawerEl.setAttribute('aria-hidden', String(nextCollapsed));
+          if (nextCollapsed) drawerEl.setAttribute('inert', '');
+          else drawerEl.removeAttribute('inert');
+        }
+      } else {
+        renderHabitsList(false);
+      }
+    }
+
     // Living Botanical Companions (Grow visually with your active streak)
     const BOTANICAL_COMPANIONS = [
       { id: 'fern', label: 'Fern', emoji: '🌿', whisper: 'Unfurls softly with every quiet daily check-in.' },
       { id: 'lotus', label: 'Lotus', emoji: '🪷', whisper: 'Rises calmly from still water as your streak deepens.' },
       { id: 'bamboo', label: 'Bamboo', emoji: '🎋', whisper: 'Grows tall and steady through small consistent roots.' },
       { id: 'bonsai', label: 'Bonsai', emoji: '🌲', whisper: 'Shaped with patience, one mindful ritual at a time.' }
-    ];
-
-    const MINDFUL_QUOTES = [
-      "Small gentle steps every day build a life you love coming home to.",
-      "Consistency is not perfection; it is simply returning with kindness.",
-      "Nourish your calm today—one quiet ritual at a time.",
-      "Progress is quiet, like a plant growing toward the morning sun.",
-      "Be gentle with your pace. Even one mindful habit is a victory.",
-      "Your daily rituals are tiny love letters to your future self.",
-      "Breathe in warmth, breathe out rush. You are right on time."
     ];
 
     // ========================================================================
@@ -3943,7 +3994,6 @@
         soundEnabled: true,
         hapticsEnabled: true,
         confettiEnabled: true,
-        showQuotes: true,
         groupByTimeOfDay: true,
         autoSortCompleted: false,
         migratedAutoSortDefaultV28: true,
@@ -3951,6 +4001,7 @@
         insightsCalendarMode: 'calendar',
         insightsBreakdownSort: 'order',
         detailCalendarMode: 'grid',
+        collapsedSections: {},
         timerSessions: 0,
         unlockedBadges: []
       },
@@ -3964,7 +4015,6 @@
         onboardingStep: 0,
         selectedDate: getTodayKey(),
         weekOffsetDays: 0,
-        quoteIndex: 0,
         dropMode: false,
         discoverOpen: false,
         recCategory: 'mind',
@@ -4104,7 +4154,6 @@
           soundEnabled: true,
           hapticsEnabled: true,
           confettiEnabled: true,
-          showQuotes: true,
           groupByTimeOfDay: true,
           autoSortCompleted: false,
           migratedAutoSortDefaultV28: true,
@@ -4112,6 +4161,7 @@
           insightsCalendarMode: 'calendar',
           insightsBreakdownSort: 'order',
           detailCalendarMode: 'grid',
+          collapsedSections: {},
           timerSessions: 0,
           unlockedBadges: []
         },
@@ -4201,6 +4251,8 @@
             state.user.livingSky = state.user.livingSky !== false;
             state.user.autoThemeByTime = Boolean(state.user.autoThemeByTime);
             state.user.pureCanvas = Boolean(state.user.pureCanvas);
+            state.user.collapsedSections = normalizeCollapsedSectionsMap(state.user.collapsedSections);
+            delete state.user.showQuotes;
             state.logs = parsed.logs && typeof parsed.logs === 'object' ? parsed.logs : {};
             state.counts = parsed.counts && typeof parsed.counts === 'object' ? parsed.counts : {};
             state.restDays = parsed.restDays && typeof parsed.restDays === 'object' ? parsed.restDays : {};
@@ -5410,7 +5462,7 @@
     }
 
     // ========================================================================
-    // TODAY VIEW: HERO, QUOTES, 7-DAY STRIP, LIQUID ORB & RITUAL LIST
+    // TODAY VIEW: HERO, 7-DAY STRIP & RITUAL LIST
     // ========================================================================
     function formatHeroDateTitle(dateKey) {
       const todayKey = getTodayKey();
@@ -5420,18 +5472,6 @@
       if (dateKey === addDays(todayKey, -1)) return `Yesterday, ${shortMonthDay}`;
       const weekday = dt.toLocaleDateString('en-US', { weekday: 'short' });
       return `${weekday}, ${shortMonthDay}`;
-    }
-
-    function cycleQuote() {
-      state.ui.quoteIndex = (state.ui.quoteIndex + 1) % MINDFUL_QUOTES.length;
-      const el = document.getElementById('daily-quote-text');
-      if (el) {
-        el.style.opacity = '0';
-        setTimeout(() => {
-          el.textContent = `"${MINDFUL_QUOTES[state.ui.quoteIndex]}"`;
-          el.style.opacity = '1';
-        }, 140);
-      }
     }
 
     function returnToCurrentToday() {
@@ -5530,76 +5570,70 @@
 
         btn.innerHTML = `
           <div class="week-day-liquid-fill" style="height: ${info.pct}%;"></div>
+          <div class="week-day-ripple-layer absolute inset-0 pointer-events-none z-[5] overflow-hidden rounded-[17px]" aria-hidden="true"></div>
           <span class="relative z-10 text-[10px] font-semibold ${isSelected ? 'accent-text' : (resting ? 'honey-text' : 'text-cozy-muted')} leading-none">${dayLetter}</span>
           <span class="relative z-10 text-xs font-extrabold ${isSelected ? 'text-cozy-primary' : 'text-cozy-secondary'} leading-none">${dayNum}</span>
-          <span class="relative z-10 h-2.5 flex items-center justify-center">
-            ${resting
-              ? '<span class="text-[9px] leading-none" title="Planned Rest Day">🌙</span>'
-              : isFull
-                ? '<span class="text-[9px] accent-text cal-star-breathe leading-none">✦</span>'
-                : isToday
-                  ? '<span class="w-2.5 h-[3px] rounded-full accent-bg opacity-80"></span>'
-                  : info.done > 0
-                    ? '<span class="w-1.5 h-1.5 rotate-45 rounded-[1px] accent-bg opacity-65"></span>'
-                    : '<span class="w-1 h-1 rounded-full bg-cozy-muted/25"></span>'
-            }
+          <span data-week-day-status class="relative z-10 h-2.5 flex items-center justify-center">
+            ${getWeekDayStatusMarkup(info, isToday, resting)}
           </span>
         `;
         grid.appendChild(btn);
       }
+      syncTodayProgressUI(false);
     }
 
-    function syncDailyProgressWave() {
-      const info = getDayCompletionInfo(state.ui.selectedDate);
-      const waveEl = document.getElementById('daily-progress-wave');
-      const pctEl = document.getElementById('daily-progress-percent');
-      const barEl = document.getElementById('daily-progress-bar');
-      const haloEl = document.getElementById('daily-progress-orb-halo');
-
-      // Keep a soft whisper of wave visible at 0% (84%) and rise cleanly to full (-12%) at 100%
-      const translateY = Math.round(84 - (info.pct * 0.96));
-      if (waveEl) waveEl.style.transform = `translateY(${translateY}%)`;
-      if (pctEl) pctEl.textContent = `${info.pct}%`;
-      if (barEl) barEl.style.width = `${info.pct}%`;
-      if (haloEl) {
-        const complete = info.total > 0 && info.done >= info.total;
-        haloEl.classList.toggle('is-sanctuary-complete', complete);
-      }
+    function getWeekDayStatusMarkup(info, isToday, resting) {
+      const isFull = info.total > 0 && info.done >= info.total;
+      if (resting) return '<span class="text-[9px] leading-none" title="Planned Rest Day">🌙</span>';
+      if (isFull) return '<span class="text-[9px] accent-text cal-star-breathe leading-none">✦</span>';
+      if (isToday) return '<span class="w-2.5 h-[3px] rounded-full accent-bg opacity-80"></span>';
+      if (info.done > 0) return '<span class="w-1.5 h-1.5 rotate-45 rounded-[1px] accent-bg opacity-65"></span>';
+      return '<span class="w-1 h-1 rounded-full bg-cozy-muted/25"></span>';
     }
 
-    function renderDailyProgress(options = {}) {
-      const info = getDayCompletionInfo(state.ui.selectedDate);
-      const countEl = document.getElementById('daily-progress-count');
-      const titleEl = document.getElementById('daily-progress-title');
-      const subEl = document.getElementById('daily-progress-subtitle');
+    function syncTodayProgressUI(animatePill = false) {
+      const dateKey = state.ui.selectedDate;
+      const todayKey = getTodayKey();
+      const info = getDayCompletionInfo(dateKey);
+      const resting = isRestDay(dateKey);
+      const isComplete = info.total > 0 && info.done >= info.total;
 
-      if (!options.deferWave) {
-        syncDailyProgressWave();
+      const pillEl = document.getElementById('week-progress-pill');
+      const hairlineEl = document.getElementById('week-progress-hairline');
+
+      if (pillEl) {
+        if (info.total === 0) {
+          pillEl.textContent = '0 rituals';
+          pillEl.className = 'inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-cozy-secondary text-cozy-muted text-[10px] font-bold leading-none whitespace-nowrap transition-all duration-300';
+        } else if (isComplete) {
+          pillEl.textContent = `✦ ${info.done}/${info.total} · 100%`;
+          pillEl.className = 'inline-flex items-center gap-1 px-2 py-0.5 rounded-full accent-bg text-white text-[10px] font-bold leading-none whitespace-nowrap shadow-2xs transition-all duration-300';
+        } else if (resting) {
+          pillEl.textContent = `🌙 ${info.done}/${info.total} · Rest`;
+          pillEl.className = 'inline-flex items-center gap-1 px-2 py-0.5 rounded-full honey-bg-soft honey-text text-[10px] font-bold leading-none whitespace-nowrap transition-all duration-300';
+        } else {
+          pillEl.textContent = `${info.done}/${info.total} · ${info.pct}%`;
+          pillEl.className = 'inline-flex items-center gap-1 px-2 py-0.5 rounded-full accent-bg-soft accent-text text-[10px] font-bold leading-none whitespace-nowrap transition-all duration-300';
+        }
+        if (animatePill) {
+          pillEl.classList.remove('cal-header-anim');
+          void pillEl.offsetWidth;
+          pillEl.classList.add('cal-header-anim');
+        }
       }
-      if (countEl) countEl.textContent = `${info.done} / ${info.total}`;
 
-      const resting = isRestDay(state.ui.selectedDate);
-      let title = 'A gentle start';
-      let subtitle = 'Pick one small ritual to begin your rhythm.';
-      if (resting && info.pct < 100) {
-        title = 'Planned Rest Day 🌙';
-        subtitle = 'Your streaks are gently shielded—rest well or still check in anytime.';
-      } else if (info.total === 0) {
-        title = 'Open canvas';
-        subtitle = 'Tap + or open Ideas to plant your first ritual.';
-      } else if (info.pct === 100) {
-        title = 'Sanctuary complete ✨';
-        subtitle = 'Every ritual fulfilled—rest gently in your glow.';
-      } else if (info.pct >= 60) {
-        title = 'Warm momentum';
-        subtitle = 'You are flowing beautifully through your day.';
-      } else if (info.done > 0) {
-        title = 'Finding your rhythm';
-        subtitle = 'One mindful step already logged—keep it gentle.';
+      if (hairlineEl) {
+        hairlineEl.style.width = `${info.pct}%`;
       }
 
-      if (titleEl) titleEl.textContent = title;
-      if (subEl) subEl.textContent = subtitle;
+      // Smoothly update the selected day capsule's liquid level and bottom indicator in place
+      const activeCapsule = document.querySelector(`[data-week-day="${dateKey}"]`);
+      if (activeCapsule) {
+        const fillEl = activeCapsule.querySelector('.week-day-liquid-fill');
+        const statusEl = activeCapsule.querySelector('[data-week-day-status]');
+        if (fillEl) fillEl.style.height = `${info.pct}%`;
+        if (statusEl) statusEl.innerHTML = getWeekDayStatusMarkup(info, dateKey === todayKey, resting);
+      }
     }
 
     function getBloomSealSvg(completed) {
@@ -5787,10 +5821,11 @@
         return;
       }
 
-      // Measure existing card positions for smooth FLIP glide when order changes
+      // Measure existing visible card positions for smooth FLIP glide when order changes
       const prevTops = new Map();
       if (animateFlip && !animateCascade) {
         container.querySelectorAll('[data-habit-id]').forEach(el => {
+          if (el.closest('.section-cards-drawer:not(.is-open)')) return;
           prevTops.set(el.getAttribute('data-habit-id'), el.getBoundingClientRect().top);
         });
       }
@@ -5887,23 +5922,74 @@
       const frag = document.createDocumentFragment();
       const renderedCards = [];
       let itemIdx = 0;
+      let currentTargetParent = frag;
 
       renderEntries.forEach((entry) => {
         if (entry.type === 'divider') {
-          const divider = document.createElement('div');
-          divider.className = `completed-divider-row${entry.isFirst ? ' is-first-divider' : ''}`;
-          if (entry.todId !== null && entry.todId !== undefined) {
-            divider.setAttribute('data-tod-divider', entry.todId);
+          if (inDropMode) {
+            const divider = document.createElement('div');
+            divider.className = `completed-divider-row${entry.isFirst ? ' is-first-divider' : ''}`;
+            if (entry.todId !== null && entry.todId !== undefined) {
+              divider.setAttribute('data-tod-divider', entry.todId);
+            }
+            divider.innerHTML = `
+              <span class="completed-divider-line"></span>
+              <span class="text-[10px] font-bold uppercase tracking-[0.14em] ${entry.highlight ? 'accent-text' : 'text-cozy-muted'} inline-flex items-center gap-1 flex-shrink-0">
+                <span class="text-[11px] leading-none">${entry.icon}</span>
+                <span>${escapeHtml(entry.label)} · ${escapeHtml(entry.countLabel)}</span>
+              </span>
+              <span class="completed-divider-line"></span>
+            `;
+            frag.appendChild(divider);
+            currentTargetParent = frag;
+            return;
           }
-          divider.innerHTML = `
+
+          const sectionKey = getHabitSectionKey(entry.todId);
+          const collapsed = isHabitSectionCollapsed(sectionKey);
+
+          const groupEl = document.createElement('div');
+          groupEl.className = 'ritual-section-group';
+          groupEl.setAttribute('data-section-key', sectionKey);
+
+          const dividerBtn = document.createElement('button');
+          dividerBtn.type = 'button';
+          dividerBtn.onclick = () => toggleHabitSection(sectionKey);
+          dividerBtn.className = `completed-divider-row section-divider-btn${entry.isFirst ? ' is-first-divider' : ''}${collapsed ? ' is-collapsed' : ''}`;
+          dividerBtn.setAttribute('aria-expanded', String(!collapsed));
+          dividerBtn.setAttribute('aria-label', `${collapsed ? 'Expand' : 'Collapse'} ${entry.label} rituals`);
+          dividerBtn.innerHTML = `
             <span class="completed-divider-line"></span>
-            <span class="text-[10px] font-bold uppercase tracking-[0.14em] ${entry.highlight ? 'accent-text' : 'text-cozy-muted'} inline-flex items-center gap-1 flex-shrink-0">
+            <span class="section-divider-pill text-[10px] font-bold uppercase tracking-[0.14em] ${entry.highlight ? 'accent-text' : 'text-cozy-muted'} flex-shrink-0">
               <span class="text-[11px] leading-none">${entry.icon}</span>
               <span>${escapeHtml(entry.label)} · ${escapeHtml(entry.countLabel)}</span>
+              <span class="section-divider-chevron" aria-hidden="true">
+                <svg class="w-2.5 h-2.5" viewBox="0 0 12 12" fill="none">
+                  <path d="M2.75 4.5L6 7.75L9.25 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
             </span>
             <span class="completed-divider-line"></span>
           `;
-          frag.appendChild(divider);
+
+          const drawerEl = document.createElement('div');
+          drawerEl.className = `section-cards-drawer${collapsed ? '' : ' is-open'}`;
+          drawerEl.setAttribute('aria-hidden', String(collapsed));
+          if (collapsed) drawerEl.setAttribute('inert', '');
+
+          const innerEl = document.createElement('div');
+          innerEl.className = 'section-cards-inner';
+
+          const stackEl = document.createElement('div');
+          stackEl.className = 'section-cards-stack space-y-2.5';
+
+          innerEl.appendChild(stackEl);
+          drawerEl.appendChild(innerEl);
+          groupEl.appendChild(dividerBtn);
+          groupEl.appendChild(drawerEl);
+          frag.appendChild(groupEl);
+
+          currentTargetParent = stackEl;
           return;
         }
 
@@ -6021,7 +6107,7 @@
             ${gridActionHtml}
           `;
 
-          frag.appendChild(gridCard);
+          currentTargetParent.appendChild(gridCard);
           renderedCards.push({ id: habit.id, el: gridCard });
           return;
         }
@@ -6198,7 +6284,7 @@
             targetCount
           });
 
-          frag.appendChild(slot);
+          currentTargetParent.appendChild(slot);
           renderedCards.push({ id: habit.id, el: slot });
         }
       });
@@ -6211,6 +6297,7 @@
       if (prevTops.size > 0) {
         const moving = [];
         renderedCards.forEach(({ id, el }) => {
+          if (el.closest('.section-cards-drawer:not(.is-open)')) return;
           const prevTop = prevTops.get(id);
           if (typeof prevTop !== 'number') return;
           const deltaY = prevTop - el.getBoundingClientRect().top;
@@ -6300,15 +6387,16 @@
       }
 
       renderHeader();
-      renderWeekStrip(false);
       const launchedArc = nowCompleted && launchDewdropArc({
         startX: originX,
         startY: originY,
         colors: originColors,
         isAllDone,
-        onLand: () => syncDailyProgressWave()
+        onLand: () => syncTodayProgressUI(true)
       });
-      renderDailyProgress({ deferWave: launchedArc });
+      if (!launchedArc) {
+        syncTodayProgressUI(false);
+      }
       renderHabitsList(false, nowCompleted ? habitId : null, true);
       if (nowCompleted) checkAndCelebrateNewBadges({ quietAudio: isAllDone });
     }
@@ -6379,15 +6467,16 @@
       }
 
       renderHeader();
-      renderWeekStrip(false);
       const launchedArc = justCompletedHabit && launchDewdropArc({
         startX: originX,
         startY: originY,
         colors: originColors,
         isAllDone,
-        onLand: () => syncDailyProgressWave()
+        onLand: () => syncTodayProgressUI(true)
       });
-      renderDailyProgress({ deferWave: launchedArc });
+      if (!launchedArc) {
+        syncTodayProgressUI(false);
+      }
       renderHabitsList(false, justCompletedHabit ? habitId : null, wasHabitDone !== isHabitDone);
       if (justCompletedHabit) checkAndCelebrateNewBadges({ quietAudio: isAllDone });
     }
@@ -6415,14 +6504,8 @@
         restLabel.textContent = resting ? 'Rest Day' : 'Rest';
       }
 
-      const quoteBanner = document.getElementById('quote-banner');
-      const quoteText = document.getElementById('daily-quote-text');
-      if (quoteBanner) quoteBanner.classList.toggle('hidden', !state.user.showQuotes);
-      if (quoteText) quoteText.textContent = `"${MINDFUL_QUOTES[state.ui.quoteIndex]}"`;
-
       updateTodayViewSwitcherUI();
       renderWeekStrip(animateCalendar);
-      renderDailyProgress();
       renderHabitsList(animateCalendar);
       if (state.ui.discoverOpen) renderRecommendations();
     }
@@ -8188,7 +8271,12 @@
         if (opt.id) btn.setAttribute('data-accent', opt.id);
         btn.className = `ritual-color-swatch ${picked ? 'is-selected' : ''}`;
 
-        if (opt.grad) {
+        if (opt.id === 'mono') {
+          btn.classList.add('mono-swatch-orb');
+          btn.innerHTML = picked
+            ? '<i class="ph-bold ph-check text-[11px]" style="color: var(--accent-on-solid, #FFFFFF);"></i>'
+            : '';
+        } else if (opt.grad) {
           btn.style.background = opt.grad;
           btn.innerHTML = picked
             ? '<i class="ph-bold ph-check text-white text-[11px] drop-shadow-xs"></i>'
@@ -9921,7 +10009,7 @@
           state.user.pureCanvas ? (isDarkNow ? '🖤' : '🤍') : '✨'
         );
       }
-      if (key === 'showQuotes' || key === 'autoSortCompleted' || key === 'groupByTimeOfDay') {
+      if (key === 'autoSortCompleted' || key === 'groupByTimeOfDay') {
         renderTodayView(false);
         if (key === 'groupByTimeOfDay') {
           renderInsightsHabitBreakdown();
@@ -9974,7 +10062,6 @@
         { key: 'soundEnabled', btnId: 'toggle-sound-btn', knobId: 'toggle-sound-knob' },
         { key: 'hapticsEnabled', btnId: 'toggle-haptics-btn', knobId: 'toggle-haptics-knob' },
         { key: 'confettiEnabled', btnId: 'toggle-confetti-btn', knobId: 'toggle-confetti-knob' },
-        { key: 'showQuotes', btnId: 'toggle-quotes-btn', knobId: 'toggle-quotes-knob' },
         { key: 'groupByTimeOfDay', btnId: 'toggle-group-tod-btn', knobId: 'toggle-group-tod-knob' },
         { key: 'autoSortCompleted', btnId: 'toggle-sort-completed-btn', knobId: 'toggle-sort-completed-knob' }
       ];
@@ -10044,6 +10131,8 @@
             state.user.livingSky = state.user.livingSky !== false;
             state.user.autoThemeByTime = Boolean(state.user.autoThemeByTime);
             state.user.pureCanvas = Boolean(state.user.pureCanvas);
+            state.user.collapsedSections = normalizeCollapsedSectionsMap(state.user.collapsedSections);
+            delete state.user.showQuotes;
             state.logs = parsed.logs && typeof parsed.logs === 'object' ? parsed.logs : {};
             state.counts = parsed.counts && typeof parsed.counts === 'object' ? parsed.counts : {};
             state.restDays = parsed.restDays && typeof parsed.restDays === 'object' ? parsed.restDays : {};
@@ -10276,28 +10365,31 @@
       setTimeout(() => ring.remove(), 480);
     }
 
-    function triggerOrbLiquidRipple(colors = null, isAllDone = false) {
-      const orb = document.getElementById('daily-progress-orb');
-      const wave = document.getElementById('daily-progress-wave');
-      const halo = document.getElementById('daily-progress-orb-halo');
-      const rippleLayer = document.getElementById('daily-progress-ripple-layer');
+    function getDewdropTargetCapsule() {
+      return (
+        document.querySelector(`[data-week-day="${state.ui.selectedDate}"]`) ||
+        document.getElementById('week-progress-pill') ||
+        document.getElementById('week-strip-card')
+      );
+    }
+
+    function triggerCapsuleLiquidRipple(targetEl, colors = null, isAllDone = false) {
+      const capsule = targetEl || getDewdropTargetCapsule();
+      if (!capsule) return;
+      const fill = capsule.querySelector('.week-day-liquid-fill');
+      const rippleLayer = capsule.querySelector('.week-day-ripple-layer');
       const c = colors || getAccentColorsFromElement();
 
-      if (orb) {
-        orb.classList.remove('orb-impact-bounce');
-        void orb.offsetWidth;
-        orb.classList.add('orb-impact-bounce');
-      }
-      if (wave) {
-        wave.classList.remove('wave-impact-slosh');
-        void wave.offsetWidth;
-        wave.classList.add('wave-impact-slosh');
-      }
-      if (halo) {
-        halo.classList.remove('is-pulsing');
-        void halo.offsetWidth;
-        halo.classList.add('is-pulsing');
-        setTimeout(() => halo.classList.remove('is-pulsing'), 740);
+      capsule.classList.remove('orb-impact-bounce');
+      void capsule.offsetWidth;
+      capsule.classList.add('orb-impact-bounce');
+      setTimeout(() => capsule.classList.remove('orb-impact-bounce'), 580);
+
+      if (fill) {
+        fill.classList.remove('wave-impact-slosh');
+        void fill.offsetWidth;
+        fill.classList.add('wave-impact-slosh');
+        setTimeout(() => fill.classList.remove('wave-impact-slosh'), 640);
       }
 
       if (rippleLayer && !prefersReducedMotion()) {
@@ -10316,13 +10408,13 @@
           secondaryRing.remove();
         }, 820);
 
-        const bubbleCount = isAllDone ? 6 : 4;
+        const bubbleCount = isAllDone ? 5 : 3;
         for (let i = 0; i < bubbleCount; i++) {
           const b = document.createElement('span');
           b.className = 'liquid-micro-bubble';
-          const leftPct = 24 + Math.random() * 52;
-          const bottomPct = 22 + Math.random() * 28;
-          const driftX = (Math.random() - 0.5) * 18;
+          const leftPct = 22 + Math.random() * 56;
+          const bottomPct = 18 + Math.random() * 34;
+          const driftX = (Math.random() - 0.5) * 14;
           b.style.left = `${leftPct.toFixed(1)}%`;
           b.style.bottom = `${bottomPct.toFixed(1)}%`;
           b.style.setProperty('--bx', `${driftX.toFixed(1)}px`);
@@ -10334,31 +10426,31 @@
     }
 
     function launchDewdropArc({ startX, startY, colors = null, isAllDone = false, onLand = null } = {}) {
-      const orb = document.getElementById('daily-progress-orb');
+      const targetEl = getDewdropTargetCapsule();
       const c = colors || getAccentColorsFromElement();
 
       const finishImpact = () => {
         if (typeof onLand === 'function') onLand();
-        triggerOrbLiquidRipple(c, isAllDone);
+        triggerCapsuleLiquidRipple(getDewdropTargetCapsule(), c, isAllDone);
         triggerHaptic(isAllDone ? 'celebrate' : 'ripple');
         if (isAllDone) {
           spawnSanctuaryShimmer(c);
         }
       };
 
-      if (!orb || prefersReducedMotion()) {
+      if (!targetEl || prefersReducedMotion()) {
         finishImpact();
         return false;
       }
 
-      const orbRect = orb.getBoundingClientRect();
-      if (orbRect.width <= 0 || orbRect.height <= 0) {
+      const targetRect = targetEl.getBoundingClientRect();
+      if (targetRect.width <= 0 || targetRect.height <= 0) {
         finishImpact();
         return false;
       }
 
-      const targetX = orbRect.left + orbRect.width / 2;
-      const targetY = Math.max(24, Math.min(window.innerHeight - 24, orbRect.top + orbRect.height / 2));
+      const targetX = targetRect.left + targetRect.width / 2;
+      const targetY = Math.max(24, Math.min(window.innerHeight - 24, targetRect.top + targetRect.height / 2));
 
       // Graceful parabolic control point curving smoothly toward the orb
       const dx = targetX - startX;
@@ -10824,8 +10916,8 @@
 
     const DEFAULT_UPDATE_META = {
       version: 'New',
-      title: 'A Fresh Nook Update Is Ready',
-      summary: 'A newer version of Nook is ready with fresh polish and improvements.',
+      title: 'Update Ready',
+      summary: 'New improvements ready.',
       highlights: []
     };
 
@@ -10860,19 +10952,29 @@
       const meta = { ...DEFAULT_UPDATE_META, ...(info || {}) };
       const versionEl = document.getElementById('pwa-update-version');
       const titleEl = document.getElementById('pwa-update-title');
+      const notesBox = document.getElementById('pwa-update-notes-box');
       const summaryEl = document.getElementById('pwa-update-summary');
       const highlightsEl = document.getElementById('pwa-update-highlights');
       const updateNowBtn = document.getElementById('pwa-update-now-btn');
 
+      const items = Array.isArray(meta.highlights) ? meta.highlights.filter(Boolean).slice(0, 3) : [];
+      const rawSummary = typeof (info && info.summary) === 'string'
+        ? info.summary.trim()
+        : (items.length > 0 ? '' : DEFAULT_UPDATE_META.summary);
+
       if (versionEl) versionEl.textContent = meta.version || 'New';
       if (titleEl) titleEl.textContent = meta.title || DEFAULT_UPDATE_META.title;
-      if (summaryEl) summaryEl.textContent = meta.summary || DEFAULT_UPDATE_META.summary;
+
+      if (summaryEl) {
+        summaryEl.textContent = rawSummary;
+        summaryEl.classList.toggle('hidden', !rawSummary);
+      }
 
       if (highlightsEl) {
-        const items = Array.isArray(meta.highlights) ? meta.highlights.filter(Boolean).slice(0, 3) : [];
         if (items.length > 0) {
+          const textCls = rawSummary ? 'text-[11px] text-cozy-secondary' : 'text-xs font-medium text-cozy-primary';
           highlightsEl.innerHTML = items.map(text => `
-            <li class="flex items-start gap-2 text-[11px] text-cozy-secondary leading-snug">
+            <li class="flex items-start gap-2 ${textCls} leading-snug">
               <span class="w-1.5 h-1.5 rotate-45 rounded-[1px] accent-bg mt-[5px] flex-shrink-0 inline-block"></span>
               <span>${escapeHtml(text)}</span>
             </li>
@@ -10882,6 +10984,10 @@
           highlightsEl.innerHTML = '';
           highlightsEl.classList.add('hidden');
         }
+      }
+
+      if (notesBox) {
+        notesBox.classList.toggle('hidden', !rawSummary && items.length === 0);
       }
 
       if (updateNowBtn) {

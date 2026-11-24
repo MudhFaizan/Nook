@@ -1,11 +1,12 @@
-const CACHE_VERSION = 'v38';
+const CACHE_VERSION = 'v43';
 const UPDATE_INFO = {
   version: CACHE_VERSION,
-  title: 'Silky Mono Gradient Swatch',
-  summary: 'Refined the Mono accent icon and per-ritual color dot into a smooth pearl-to-obsidian diagonal gradient.',
+  title: 'Cleaner Today & Notes',
+  summary: '',
   highlights: [
-    'Smooth pearl-to-obsidian gradient icon on the 1-tap Mono pill in Settings',
-    'Matching smooth monochrome gradient dot in the Add / Edit Ritual card color picker'
+    'Removed Daily Progress card',
+    'Progress pill & bar on 7-day strip',
+    'Shorter, quick-glance update notes'
   ]
 };
 const APP_SHELL_CACHE = `nook-shell-${CACHE_VERSION}`;
