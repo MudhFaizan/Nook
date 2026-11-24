@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Nook v44 -->
+<!-- Nook v45 -->
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -3045,7 +3045,7 @@
           <div class="flex items-center justify-between pt-2 border-t border-subtle-cozy">
             <div class="min-w-0 pr-2">
               <p class="text-xs font-semibold text-cozy-primary">Auto Day / Night Theme</p>
-              <p class="text-[11px] text-cozy-secondary">Syncs with phone clock</p>
+              <p class="text-[11px] text-cozy-secondary">Gently follows sunrise &amp; nightfall</p>
             </div>
             <button id="toggle-auto-theme-btn" onclick="togglePreference('autoThemeByTime')" role="switch" aria-checked="false"
               class="cozy-switch-track">
@@ -3055,11 +3055,11 @@
             </button>
           </div>
 
-          <!-- Pure Canvas (OLED Black / Pure White) Switch Row -->
+          <!-- Paper & Ink (Clean White / Deep Black) Switch Row -->
           <div class="flex items-center justify-between pt-2 border-t border-subtle-cozy">
             <div class="min-w-0 pr-2">
-              <p class="text-xs font-semibold text-cozy-primary">Pure Canvas</p>
-              <p id="settings-pure-canvas-subtitle" class="text-[11px] text-cozy-secondary">OLED Black &amp; Pure White · No orbs</p>
+              <p class="text-xs font-semibold text-cozy-primary">Paper &amp; Ink</p>
+              <p id="settings-pure-canvas-subtitle" class="text-[11px] text-cozy-secondary">Crisp paper white &amp; midnight ink · No glow</p>
             </div>
             <button id="toggle-pure-canvas-btn" onclick="togglePreference('pureCanvas')" role="switch" aria-checked="false"
               class="cozy-switch-track">
@@ -4524,7 +4524,7 @@
 
       if (phaseText) {
         phaseText.textContent = pureActive
-          ? 'Paused · Pure Canvas'
+          ? 'Paused · Paper & Ink'
           : (skyEnabled ? `Live · ${clockStr}` : 'Static Glow');
       }
       if (liveDot) {
@@ -10036,8 +10036,8 @@
         const isDarkNow = state.user.theme === 'dark';
         showToast(
           state.user.pureCanvas
-            ? (isDarkNow ? 'Pure OLED Black on' : 'Pure White Canvas on')
-            : 'Frosted glass mesh restored',
+            ? (isDarkNow ? 'Midnight Ink on' : 'Paper White on')
+            : 'Frosted glass glow restored',
           state.user.pureCanvas ? (isDarkNow ? '🖤' : '🤍') : '✨'
         );
       }
@@ -10084,8 +10084,8 @@
       if (pureBtn) pureBtn.setAttribute('aria-checked', String(isPure));
       if (pureSub) {
         pureSub.textContent = isPure
-          ? (isDark ? 'Active · True OLED #000' : 'Active · Crisp Pure White #FFF')
-          : 'OLED Black & Pure White · No orbs';
+          ? (isDark ? 'Active · Deep midnight ink' : 'Active · Crisp paper white')
+          : 'Crisp paper white & midnight ink · No glow';
       }
 
       const prefBindings = [
