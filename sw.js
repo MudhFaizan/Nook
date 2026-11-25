@@ -1,11 +1,11 @@
-const CACHE_VERSION = 'v48';
+const CACHE_VERSION = 'v50';
 const UPDATE_INFO = {
   version: CACHE_VERSION,
-  title: 'Mon–Sun Calendar Strip',
+  title: 'Smoother Edit & Scroll',
   summary: '',
   highlights: [
-    '7-day strip now starts every Monday',
-    'Active highlight moves along each day'
+    'Drag rituals only from the left dot handle',
+    'Cleaner edit cards without time-of-day pills'
   ]
 };
 const APP_SHELL_CACHE = `nook-shell-${CACHE_VERSION}`;

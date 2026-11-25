@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Nook v48 -->
+<!-- Nook v50 -->
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -1530,7 +1530,7 @@
       .dewdrop-arc-orb, .dewdrop-trail-dot, .seal-local-ripple, .capsule-liquid-sheen {
         display: none !important;
       }
-      .capsule-dew-settle, .capsule-fill-glow, .pill-soft-bump {
+      .capsule-dew-settle, .capsule-fill-glow, .pill-soft-bump, .drop-mode-card {
         animation: none !important;
       }
     }
@@ -2076,19 +2076,67 @@
       user-select: none;
     }
 
-    /* Drop / Reorder Mode Card Styles */
+    /* Drop / Reorder Mode Card Styles (Gentle Cozy Jiggle) */
+    @keyframes dropCardJiggleA {
+      0% { transform: rotate(-0.55deg) translateY(0px); }
+      50% { transform: rotate(0.55deg) translateY(-0.6px); }
+      100% { transform: rotate(-0.55deg) translateY(0px); }
+    }
+    @keyframes dropCardJiggleB {
+      0% { transform: rotate(0.55deg) translateY(-0.5px); }
+      50% { transform: rotate(-0.55deg) translateY(0.5px); }
+      100% { transform: rotate(0.55deg) translateY(-0.5px); }
+    }
     .drop-mode-card {
       border-style: dashed;
       border-color: var(--accent-medium);
-      touch-action: none;
-      cursor: grab;
+      touch-action: pan-y;
+      cursor: default;
+      transform-origin: 50% 50%;
+      animation: dropCardJiggleA 0.44s ease-in-out infinite;
+      will-change: transform;
+    }
+    .drop-mode-card.drop-jiggle-alt {
+      animation-name: dropCardJiggleB;
+      animation-duration: 0.49s;
+    }
+    .drop-mode-card:hover:not(.is-dragging) {
+      transform: none;
+    }
+    .drop-mode-card.is-flipping {
+      animation: none !important;
     }
     .drop-mode-card.is-dragging {
       cursor: grabbing;
       z-index: 30;
       box-shadow: var(--shadow-float);
       opacity: 0.94;
+      animation: none !important;
       transition: none !important;
+    }
+    .drag-handle {
+      touch-action: none;
+      cursor: grab;
+      user-select: none;
+      -webkit-user-select: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 26px;
+      min-height: 36px;
+      margin: -6px -4px -6px -6px;
+      border-radius: 10px;
+      transition: color 0.2s ease, background-color 0.2s ease;
+    }
+    .drag-handle:hover,
+    .drag-handle:active {
+      color: var(--accent-primary);
+      background-color: var(--accent-soft);
+    }
+    .drop-mode-card.is-dragging .drag-handle {
+      cursor: grabbing;
+      color: var(--accent-primary);
+      background-color: var(--accent-soft);
     }
 
     .nav-icon-active {
@@ -3443,7 +3491,7 @@
             <div class="min-w-0">
               <div class="flex items-center gap-1.5">
                 <span class="text-[10px] font-bold uppercase tracking-[0.16em] accent-text leading-none">Freshly Updated</span>
-                <span id="pwa-update-version" class="px-1.5 py-0.5 rounded-md accent-bg-soft accent-text text-[9.5px] font-extrabold leading-none">v48</span>
+                <span id="pwa-update-version" class="px-1.5 py-0.5 rounded-md accent-bg-soft accent-text text-[9.5px] font-extrabold leading-none">v50</span>
               </div>
               <h3 id="pwa-update-title" class="font-serif-cozy text-[17px] font-semibold text-cozy-primary mt-1 leading-tight truncate">
                 Nook Updated
@@ -5720,8 +5768,7 @@
       const listBtn = document.getElementById('view-mode-list-btn');
       const gridBtn = document.getElementById('view-mode-grid-btn');
       if (switcher) {
-        switcher.classList.toggle('opacity-45', state.ui.dropMode);
-        switcher.classList.toggle('pointer-events-none', state.ui.dropMode);
+        switcher.classList.remove('opacity-45', 'pointer-events-none');
       }
       if (listBtn) {
         listBtn.classList.toggle('is-active', mode === 'list');
@@ -5739,7 +5786,7 @@
       state.user.todayViewMode = next;
       saveState();
       updateTodayViewSwitcherUI();
-      renderHabitsList(true);
+      renderHabitsList(!state.ui.dropMode);
     }
 
     function getHabitGridOriginDate(habit) {
@@ -6056,13 +6103,14 @@
         const idx = itemIdx++;
         const { habit, targetCount, isCountable, currentCount, done } = item;
 
-        const isGridMode = !inDropMode && state.user.todayViewMode === 'grid';
+        const isGridMode = state.user.todayViewMode === 'grid';
         const justDoneClass = done && justCompletedId === habit.id ? 'just-completed' : '';
         const countPct = isCountable ? Math.min(100, Math.round((currentCount / targetCount) * 100)) : 0;
         const streak = getHabitStreak(habit);
         const weekly = getWeeklyProgressForHabit(habit, dateKey);
         const isArchivedPast = Boolean(habit.archivedAt);
         const dimmedClass = done && !inDropMode ? 'habit-card-completed' : '';
+        const jiggleAltClass = idx % 2 === 1 ? 'drop-jiggle-alt' : '';
 
         if (isGridMode) {
           const totalDone = getHabitTotalCompletions(habit.id, habit.archivedAt || null);
@@ -6073,68 +6121,89 @@
             : '';
           const timerMins = getHabitTimerMinutes(habit);
           const isTimerLiveForHabit = mindfulTimer.habitId === habit.id && (mindfulTimer.status === 'running' || mindfulTimer.status === 'paused');
-          const timerPillHtml = !isArchivedPast && (timerMins > 0 || isTimerLiveForHabit)
+          const timerPillHtml = !inDropMode && !isArchivedPast && (timerMins > 0 || isTimerLiveForHabit)
             ? `<button type="button" onclick="openHabitTimer('${habit.id}', event)" data-live-timer-badge="${habit.id}"
                  class="habit-timer-chip inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[10px] font-bold ${isTimerLiveForHabit ? 'is-live' : 'bg-cozy-secondary text-cozy-secondary hover:text-cozy-primary'}">
                  <span>⏱</span>
                  <span class="timer-clock-text">${isTimerLiveForHabit ? formatTimerClock(getCurrentTimerRemainingMs()) : formatTimerDurationShort(timerMins)}</span>
                </button>`
             : '';
+
           const pastPillHtml = isArchivedPast
             ? `<span class="inline-flex items-center px-1.5 py-0.5 rounded-md text-[9px] font-bold bg-cozy-secondary text-cozy-muted">Past ritual</span>`
             : '';
 
           const dotGridHtml = buildHabitDotGridHtml(habit, dateKey);
-          const gridActionHtml = isCountable
+          const gridActionHtml = inDropMode
             ? `
-              <div class="flex items-center gap-2">
-                <button type="button" onclick="adjustHabitCount('${habit.id}', -1, event)" ${currentCount <= 0 ? 'disabled' : ''}
-                  aria-label="Decrease ${escapeHtml(habit.title)}"
-                  class="count-step-btn w-11 h-10 rounded-2xl border border-cozy bg-cozy-elevated text-cozy-secondary font-extrabold text-sm flex items-center justify-center flex-shrink-0 ${currentCount <= 0 ? 'opacity-35 cursor-default' : 'hover:text-cozy-primary'}">
-                  −
+              <div class="grid grid-cols-2 gap-2">
+                <button type="button" onclick="event.stopPropagation(); openHabitModal('${habit.id}')"
+                  class="h-10 px-3 rounded-2xl accent-bg-soft accent-text text-xs font-extrabold flex items-center justify-center gap-1.5" aria-label="Edit ritual">
+                  <i class="ph-bold ph-pencil-simple text-sm"></i>
+                  <span>Edit</span>
                 </button>
-                <button type="button" onclick="adjustHabitCount('${habit.id}', 1, event)"
-                  aria-label="Add one to ${escapeHtml(habit.title)}"
-                  class="grid-action-btn relative overflow-hidden flex-1 h-10 px-4 rounded-2xl text-xs font-extrabold flex items-center justify-center gap-1.5 ${done ? 'accent-bg-soft accent-text border border-[var(--accent-medium)]' : 'accent-progress-gradient text-white shadow-sm'} ${justDoneClass}">
-                  ${done
-                    ? `<i class="ph-bold ph-check text-sm"></i><span>Completed · ${escapeHtml(formatCountProgressText(currentCount, targetCount, habit.unit))}</span>`
-                    : `<span>+1</span><span class="opacity-65">·</span><span>${escapeHtml(formatCountProgressText(currentCount, targetCount, habit.unit))}</span>`
-                  }
+                <button type="button" onclick="event.stopPropagation(); quickDropHabit('${habit.id}')"
+                  class="h-10 px-3 rounded-2xl terracotta-bg-soft terracotta-text text-xs font-extrabold flex items-center justify-center gap-1.5" aria-label="Drop ritual">
+                  <i class="ph-bold ph-trash text-sm"></i>
+                  <span>Drop</span>
                 </button>
               </div>
             `
-            : `
-              <button type="button" onclick="toggleHabitCompletion('${habit.id}', event)"
-                aria-label="Toggle ${escapeHtml(habit.title)}"
-                class="grid-action-btn w-full h-10 px-4 rounded-2xl text-xs font-extrabold flex items-center justify-center gap-1.5 ${done ? 'accent-bg-soft accent-text border border-[var(--accent-medium)]' : 'accent-progress-gradient text-white shadow-sm'} ${justDoneClass}">
-                ${done
-                  ? '<i class="ph-bold ph-check text-sm"></i><span>Completed</span>'
-                  : '<span>Complete</span>'
-                }
-              </button>
-            `;
+            : isCountable
+              ? `
+                <div class="flex items-center gap-2">
+                  <button type="button" onclick="adjustHabitCount('${habit.id}', -1, event)" ${currentCount <= 0 ? 'disabled' : ''}
+                    aria-label="Decrease ${escapeHtml(habit.title)}"
+                    class="count-step-btn w-11 h-10 rounded-2xl border border-cozy bg-cozy-elevated text-cozy-secondary font-extrabold text-sm flex items-center justify-center flex-shrink-0 ${currentCount <= 0 ? 'opacity-35 cursor-default' : 'hover:text-cozy-primary'}">
+                    −
+                  </button>
+                  <button type="button" onclick="adjustHabitCount('${habit.id}', 1, event)"
+                    aria-label="Add one to ${escapeHtml(habit.title)}"
+                    class="grid-action-btn relative overflow-hidden flex-1 h-10 px-4 rounded-2xl text-xs font-extrabold flex items-center justify-center gap-1.5 ${done ? 'accent-bg-soft accent-text border border-[var(--accent-medium)]' : 'accent-progress-gradient text-white shadow-sm'} ${justDoneClass}">
+                    ${done
+                      ? `<i class="ph-bold ph-check text-sm"></i><span>Completed · ${escapeHtml(formatCountProgressText(currentCount, targetCount, habit.unit))}</span>`
+                      : `<span>+1</span><span class="opacity-65">·</span><span>${escapeHtml(formatCountProgressText(currentCount, targetCount, habit.unit))}</span>`
+                    }
+                  </button>
+                </div>
+              `
+              : `
+                <button type="button" onclick="toggleHabitCompletion('${habit.id}', event)"
+                  aria-label="Toggle ${escapeHtml(habit.title)}"
+                  class="grid-action-btn w-full h-10 px-4 rounded-2xl text-xs font-extrabold flex items-center justify-center gap-1.5 ${done ? 'accent-bg-soft accent-text border border-[var(--accent-medium)]' : 'accent-progress-gradient text-white shadow-sm'} ${justDoneClass}">
+                  ${done
+                    ? '<i class="ph-bold ph-check text-sm"></i><span>Completed</span>'
+                    : '<span>Complete</span>'
+                  }
+                </button>
+              `;
 
           const habitAccent = getHabitColorAccent(habit);
           const gridCard = document.createElement('div');
           gridCard.setAttribute('data-habit-id', habit.id);
           if (habitAccent) gridCard.setAttribute('data-accent', habitAccent);
-          gridCard.className = `cozy-card habit-grid-card space-y-3 cursor-pointer ${dimmedClass} ${animateCascade ? 'cascade-item' : ''}`;
-          if (animateCascade) {
+          gridCard.className = `cozy-card habit-grid-card space-y-3 ${inDropMode ? `drop-mode-card ${jiggleAltClass}` : 'cursor-pointer'} ${dimmedClass} ${!inDropMode && animateCascade ? 'cascade-item' : ''}`;
+          if (inDropMode) {
+            gridCard.style.animationDelay = `-${(idx * 130) % 420}ms`;
+          } else if (animateCascade) {
             gridCard.style.animationDelay = `${Math.min(idx * 40, 260)}ms`;
           }
-          gridCard.onclick = (e) => {
-            if (e.target.closest('.grid-action-btn') || e.target.closest('.count-step-btn') || e.target.closest('.habit-timer-chip')) return;
-            openHabitDetailModal(habit.id);
-          };
+          if (!inDropMode) {
+            gridCard.onclick = (e) => {
+              if (e.target.closest('.grid-action-btn') || e.target.closest('.count-step-btn') || e.target.closest('.habit-timer-chip')) return;
+              openHabitDetailModal(habit.id);
+            };
+          }
 
           gridCard.innerHTML = `
             <div class="flex items-center justify-between gap-2.5">
               <div class="flex items-center gap-2.5 min-w-0 flex-1">
+                ${inDropMode ? '<span class="drag-handle text-cozy-muted flex-shrink-0" role="button" aria-label="Drag to reorder" title="Drag to reorder"><i class="ph-bold ph-dots-six-vertical text-base"></i></span>' : ''}
                 <div class="emoji-pebble-well w-10 h-10 bg-cozy-elevated border border-cozy flex items-center justify-center text-xl flex-shrink-0">
                   ${escapeHtml(habit.emoji || '🌿')}
                 </div>
                 <div class="min-w-0 flex-1">
-                  <p class="text-[14px] font-bold text-cozy-primary truncate leading-snug ${done ? 'line-through decoration-[var(--accent-primary)]/55 opacity-75' : ''}">
+                  <p class="text-[14px] font-bold text-cozy-primary truncate leading-snug ${done && !inDropMode ? 'line-through decoration-[var(--accent-primary)]/55 opacity-75' : ''}">
                     ${escapeHtml(habit.title)}
                   </p>
                   <div class="flex items-center flex-wrap gap-2 mt-0.5">
@@ -6166,18 +6235,19 @@
             ${gridActionHtml}
           `;
 
+          if (inDropMode) {
+            attachDragReorderHandlers(gridCard, habit.id);
+          }
           currentTargetParent.appendChild(gridCard);
           renderedCards.push({ id: habit.id, el: gridCard });
           return;
         }
 
         const card = document.createElement('div');
-        card.className = `cozy-card p-3.5 flex items-center justify-between gap-3 ${inDropMode ? 'drop-mode-card' : 'habit-swipe-card cursor-pointer'} ${dimmedClass} ${inDropMode && animateCascade ? 'cascade-item' : ''}`;
+        card.className = `cozy-card p-3.5 flex items-center justify-between gap-3 ${inDropMode ? `drop-mode-card ${jiggleAltClass}` : 'habit-swipe-card cursor-pointer'} ${dimmedClass}`;
         if (inDropMode) {
           card.setAttribute('data-habit-id', habit.id);
-          if (animateCascade) {
-            card.style.animationDelay = `${Math.min(idx * 35, 240)}ms`;
-          }
+          card.style.animationDelay = `-${(idx * 130) % 420}ms`;
         } else {
           card.onclick = (e) => {
             if (e.target.closest('.check-btn') || e.target.closest('.count-step-btn') || e.target.closest('.habit-timer-chip')) return;
@@ -6212,10 +6282,7 @@
              </button>`
           : '';
 
-        const todId = getHabitTimeOfDay(habit);
-        const dropTodPillHtml = inDropMode && todId
-          ? `<span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md text-[9.5px] font-bold bg-cozy-secondary text-cozy-secondary">${getTimeOfDayMeta(todId).icon} ${getTimeOfDayMeta(todId).label}</span>`
-          : '';
+
 
         const pastPillHtml = isArchivedPast
           ? `<span class="inline-flex items-center px-1.5 py-0.5 rounded-md text-[9px] font-bold bg-cozy-secondary text-cozy-muted">Past ritual</span>`
@@ -6263,7 +6330,7 @@
 
         card.innerHTML = `
           <div class="habit-card-body flex items-center gap-3 min-w-0 flex-1">
-            ${inDropMode ? '<span class="drag-handle text-cozy-muted flex-shrink-0 px-0.5"><i class="ph-bold ph-dots-six-vertical text-base"></i></span>' : ''}
+            ${inDropMode ? '<span class="drag-handle text-cozy-muted flex-shrink-0" role="button" aria-label="Drag to reorder" title="Drag to reorder"><i class="ph-bold ph-dots-six-vertical text-base"></i></span>' : ''}
             <div class="emoji-pebble-well w-11 h-11 bg-cozy-elevated border border-cozy flex items-center justify-center text-xl flex-shrink-0">
               ${escapeHtml(habit.emoji || '🌿')}
             </div>
@@ -6277,7 +6344,6 @@
                   🌿 ${streak}d
                 </span>
                 ${countPillHtml}
-                ${dropTodPillHtml}
                 ${timerPillHtml}
                 ${weeklyPillHtml}
                 ${pastPillHtml}
@@ -6361,6 +6427,7 @@
           if (typeof prevTop !== 'number') return;
           const deltaY = prevTop - el.getBoundingClientRect().top;
           if (Math.abs(deltaY) > 1) {
+            el.classList.add('is-flipping');
             el.style.transition = 'none';
             el.style.transform = `translateY(${Math.round(deltaY)}px)`;
             if (id === justCompletedId) el.style.zIndex = '12';
@@ -6377,6 +6444,7 @@
             });
             setTimeout(() => {
               moving.forEach(el => {
+                el.classList.remove('is-flipping');
                 el.style.transition = '';
                 el.style.transform = '';
                 el.style.zIndex = '';
@@ -6664,6 +6732,7 @@
 
     function toggleDropMode() {
       state.ui.dropMode = !state.ui.dropMode;
+      triggerHaptic(state.ui.dropMode ? 'arm' : 'tap');
       const btn = document.getElementById('manage-drop-btn');
       const label = document.getElementById('manage-drop-label');
       if (btn && label) {
@@ -6767,19 +6836,29 @@
     }
 
     function attachDragReorderHandlers(card, habitId) {
+      const handle = card.querySelector('.drag-handle');
+      if (!handle) return;
+
       let dragging = false;
+      let activePointerId = null;
       let startY = 0;
 
-      card.addEventListener('pointerdown', (e) => {
-        if (e.target.closest('button')) return;
+      handle.addEventListener('pointerdown', (e) => {
+        if (e.button !== undefined && e.button !== 0) return;
+        e.preventDefault();
+        e.stopPropagation();
         dragging = true;
+        activePointerId = e.pointerId;
         startY = e.clientY;
         card.classList.add('is-dragging');
-        card.setPointerCapture(e.pointerId);
+        triggerHaptic('arm');
+        if (typeof handle.setPointerCapture === 'function') {
+          try { handle.setPointerCapture(e.pointerId); } catch (err) {}
+        }
       });
 
-      card.addEventListener('pointermove', (e) => {
-        if (!dragging) return;
+      handle.addEventListener('pointermove', (e) => {
+        if (!dragging || e.pointerId !== activePointerId) return;
         const dy = e.clientY - startY;
         card.style.transform = `translateY(${dy}px) scale(1.02)`;
         const container = document.getElementById('habits-list-container');
@@ -6807,23 +6886,26 @@
             container.insertBefore(card, sib.nextSibling);
             startY = e.clientY;
             card.style.transform = 'scale(1.02)';
+            triggerHaptic('tap');
             break;
           } else if (cardIndex > i && cardMid < sibMid) {
             container.insertBefore(card, sib);
             startY = e.clientY;
             card.style.transform = 'scale(1.02)';
+            triggerHaptic('tap');
             break;
           }
         }
       });
 
       const endDrag = (e) => {
-        if (!dragging) return;
+        if (!dragging || (e && e.pointerId !== activePointerId)) return;
         dragging = false;
+        activePointerId = null;
         card.classList.remove('is-dragging');
         card.style.transform = '';
-        if (e && e.pointerId != null && card.hasPointerCapture(e.pointerId)) {
-          card.releasePointerCapture(e.pointerId);
+        if (e && e.pointerId != null && typeof handle.hasPointerCapture === 'function' && handle.hasPointerCapture(e.pointerId)) {
+          try { handle.releasePointerCapture(e.pointerId); } catch (err) {}
         }
 
         const container = document.getElementById('habits-list-container');
@@ -6872,8 +6954,8 @@
         }
       };
 
-      card.addEventListener('pointerup', endDrag);
-      card.addEventListener('pointercancel', endDrag);
+      handle.addEventListener('pointerup', endDrag);
+      handle.addEventListener('pointercancel', endDrag);
     }
 
     // ========================================================================
@@ -10958,12 +11040,12 @@
 
     const SEEN_UPDATE_VERSION_KEY = 'nook_seen_update_version_v1';
     const APP_UPDATE_META = {
-      version: 'v48',
-      title: 'Mon–Sun Calendar Strip',
+      version: 'v50',
+      title: 'Smoother Edit & Scroll',
       summary: '',
       highlights: [
-        '7-day strip now starts every Monday',
-        'Active highlight moves along each day'
+        'Drag rituals only from the left dot handle',
+        'Cleaner edit cards without time-of-day pills'
       ]
     };
 
